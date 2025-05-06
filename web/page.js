@@ -190,7 +190,7 @@ function pageCompositorTable(targetContainer, data) {
     function mouseMoveSet(...elements) {
         elements.forEach((el) => {
             if (el != null)
-                el.addEventListener("mosemove", mouseMoveHandler)
+                el.addEventListener("mousemove", mouseMoveHandler)
         })
     }
 
@@ -200,9 +200,6 @@ function pageCompositorTable(targetContainer, data) {
         targetContainer,
         document.querySelector("body")
     )
-
-    table.addEventListener("mousemove", mouseMoveHandler)
-    document.querySelector("body")
 
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
