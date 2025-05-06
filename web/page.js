@@ -53,22 +53,40 @@ function e(elementName, opts, children) {
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
-    const root = e("div",
-        { class: "comp-table", style: { "--cols": compCount + 1 } },
+    const tableFix = e("div",
+        { class: ["comp-table", "comp-header-fix-inner"] },
         [e("div", { class: "comp-table-dummy" })]
     )
 
+    const tableFixOuter = e("div",
+        { class: ["comp-header-fix"] },
+        [tableFix]
+    )
+
+    const table = e("div",
+        { class: "comp-table" },
+        [e("div", { class: "comp-table-dummy" })]
+    )
+
+    const root = e("div",
+        { class: "comp-table-root", style: { "--cols": compCount + 1 } },
+        [tableFixOuter, table]
+    )
+
     for (const c of data.compositors) {
-        root.appendChild(e("div", { class: "comp-table-name" }, [
-            e("div", { class: "comp-table-name-text" }, [c.name]),
-            c.icon == null
-                ? e("div", { class: ["comp-icon", "comp-icon-dummy"] })
-                : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
-        ]))
+        const headerCell = () =>
+            e("div", { class: "comp-table-name" }, [
+                e("div", { class: "comp-table-name-text" }, [c.name]),
+                c.icon == null
+                    ? e("div", { class: ["comp-icon", "comp-icon-dummy"] })
+                    : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
+            ])
+        table.appendChild(headerCell())
+        tableFix.appendChild(headerCell())
     }
 
     for (const p of data.protocols) {
-        root.appendChild(
+        table.appendChild(
             e("div", { class: "comp-table-desc" }, [
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name])
             ])
@@ -83,7 +101,7 @@ function pageCompositorTable(targetContainer, data) {
                         : support === "none"
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
-            root.appendChild(
+            table.appendChild(
                 e("div", { class: "comp-table-cell" }, [
                     e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
                 ])
@@ -93,6 +111,26 @@ function pageCompositorTable(targetContainer, data) {
 
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
+
+    function setFixWidthVar(name, sel) {
+        if (typeof sel === "string")
+            sel = table.querySelector(sel)
+        tableFix.style.setProperty(name, sel.clientWidth + "px")
+    }
+
+    setTimeout(() => {
+        setFixWidthVar("--dummy-w", ".comp-table-dummy")
+        setFixWidthVar("--head-w", ".comp-table-name")
+        setFixWidthVar("--full-w", table)
+
+        function fixVisibilityCallback() {
+            const offset = table.getBoundingClientRect().y
+            tableFixOuter.style.setProperty("opacity", offset < -100 ? 1 : 0)
+        }
+
+        document.addEventListener("scroll", fixVisibilityCallback)
+        fixVisibilityCallback()
+    }, 0)
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
