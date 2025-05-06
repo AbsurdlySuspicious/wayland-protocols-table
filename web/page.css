@@ -23,12 +23,15 @@ body {
 
 .comp-table-name {
     padding-bottom: var(--row-gap);
+    display: flex;
+    row-gap: .8em;
+    flex-flow: column;
+    justify-content: end;
 }
 
 .comp-table-name-text {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    margin-top: .8em;
     font-weight: 600;
 }
 

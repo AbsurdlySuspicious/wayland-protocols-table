@@ -60,10 +60,10 @@ function pageCompositorTable(targetContainer, data) {
 
     for (const c of data.compositors) {
         root.appendChild(e("div", { class: "comp-table-name" }, [
+            e("div", { class: "comp-table-name-text" }, [c.name]),
             c.icon == null
                 ? e("div", { class: ["comp-icon", "comp-icon-dummy"] })
                 : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
-            e("div", { class: "comp-table-name-text" }, [c.name]),
         ]))
     }
 
