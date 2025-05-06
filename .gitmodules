@@ -1,0 +1,3 @@
+[submodule "wayland-explorer"]
+	path = wayland-explorer
+	url = https://github.com/vially/wayland-explorer.git
