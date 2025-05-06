@@ -85,6 +85,26 @@ function pageCompositorTable(targetContainer, data) {
         tableFix.appendChild(headerCell())
     }
 
+    table.appendChild(
+        e("div", { class: "comp-table-dummy" })
+    )
+    for (const c of data.compositors) {
+        const percent = c.supportedPercent
+        table.appendChild(
+            e("div", {
+                class: ["comp-table-cell", "comp-table-cell-no-border"],
+                style: { "--prc": percent / 100 },
+            }, [
+                e("div", {
+                    class: ["comp-table-cell-prc"],
+                }, [
+                    `${percent}%`,
+                    e("div", { class: ["comp-table-cell-prc-bg"] }),
+                ]),
+            ])
+        )
+    }
+
     for (const p of data.protocols) {
         table.appendChild(
             e("div", { class: "comp-table-desc" }, [

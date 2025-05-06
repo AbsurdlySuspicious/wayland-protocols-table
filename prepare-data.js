@@ -14,8 +14,14 @@ const SUPPORT_FULL = "full"
 const SUPPORT_PARTIAL = "partial"
 const SUPPORT_NONE = "none"
 
+function protoPercentageFilter(p) {
+    return true
+}
+
+let protocolsTotal = 0
 const protocols = []
 const protocolInterfaceMap = {}
+const protocolSupportByComp = {}
 protoData.waylandProtocolRegistry.protocols.forEach((p) => {
     const protocol = {
         id: p.id,
@@ -30,16 +36,21 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         protocolInterfaceMap[iface.name] = protocol
     })
     protocols.push(protocol)
+    if (protoPercentageFilter(protocol)) 
+        protocolsTotal += 1
 })
 
 const compositors = []
+const compositorsById = {}
 compData.compositorRegistry.forEach((c) => {
     const shortData = {
         id: c.id,
         name: c.name,
         icon: c.icon,
+        supportedPercent: 0,
     }
     compositors.push(shortData)
+    compositorsById[c.id] = shortData
     for (let compProto of c.info.globals) {
         const ifName = compProto.interface
         const protoCompSupport = protocolInterfaceMap[ifName]?.supportIf
@@ -58,19 +69,25 @@ protocols.forEach((p) => {
         for (const compName of Object.keys(compSet))
             objIncr(compCount, compName)
     }
-    for (const [compName, cnt] of Object.entries(compCount)) {
+    for (const [compId, cnt] of Object.entries(compCount)) {
         const supportGrade =
             cnt >= ifTotal
                 ? SUPPORT_FULL
                 : cnt > 0
                     ? SUPPORT_PARTIAL
                     : SUPPORT_NONE
-        p.supportSum[compName] = supportGrade
+        p.supportSum[compId] = supportGrade
         if (supportGrade != SUPPORT_FULL)
             hasNonFull = true
+        if (supportGrade != SUPPORT_NONE && protoPercentageFilter(p))
+            objIncr(protocolSupportByComp, compId, supportGrade == SUPPORT_FULL ? 1 : 0.5)
     }
     p.defaultExpand = hasNonFull
 })
+
+for (const [compId, supported] of Object.entries(protocolSupportByComp)) {
+    compositorsById[compId].supportedPercent = Math.round(supported / protocolsTotal * 100)
+}
 
 const dataOut = { compositors, protocols }
 stdout.write(JSON.stringify(dataOut))
