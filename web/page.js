@@ -68,9 +68,13 @@ function pageCompositorTable(targetContainer, data) {
         [e("div", { class: "comp-table-dummy" })]
     )
 
+    const bottomPaddingBlock = e("div",
+        {class: "comp-table-bottom-pad"}
+    )
+
     const root = e("div",
         { class: "comp-table-root", style: { "--cols": compCount + 1 } },
-        [tableFixOuter, table]
+        [tableFixOuter, table, bottomPaddingBlock]
     )
 
     for (const c of data.compositors) {

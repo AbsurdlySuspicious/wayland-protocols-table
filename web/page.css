@@ -48,6 +48,10 @@ body {
     row-gap: var(--row-gap-real);
 }
 
+.comp-table-bottom-pad {
+    height: 80vh;
+}
+
 .comp-table-name {
     padding-bottom: var(--row-gap);
     display: flex;
