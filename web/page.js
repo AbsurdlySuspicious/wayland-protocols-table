@@ -50,6 +50,24 @@ function e(elementName, opts, children) {
     return el
 }
 
+const tagColors = {
+    core: "rgb(22 101 52)",
+    wayland: "rgb(30 64 175)",
+    wlr: "rgb(254 226 226)",
+    kde: "rgb(107 33 168)",
+    hyprland: "rgb(7 89 133)",
+    cosmic: "rgb(146 64 14)",
+    weston: "rgb(133 77 14)",
+    treeland: "rgb(21 94 117)",
+    external: "rgb(244 244 245)",
+
+    stable: "rgb(22 101 52)",
+    staging: "rgb(254 226 226)",
+    unstable: "rgb(157 23 77)",
+
+    __default: "rgb(244 244 245)",
+}
+
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
@@ -110,9 +128,10 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     for (const p of data.protocols) {
-        const tags = p.tags.map((t) =>
-            e("div", { class: ["comp-table-tag"] }, [t])
-        )
+        const tags = p.tags.map((t) => {
+            const color = tagColors[t] ?? tagColors.__default
+            return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": color} }, [t])
+        })
         table.appendChild(
             e("div", { class: "comp-table-desc" }, [
                 e("div", { class: "comp-table-desc-name" }, [
