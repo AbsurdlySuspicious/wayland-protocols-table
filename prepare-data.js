@@ -7,6 +7,18 @@ function pushNonIncl(array, item) {
         array.push(item)
 }
 
+function objIncr(obj, key, incrBy, init) {
+    incrBy ??= 1
+    if (obj[key] == null)
+        obj[key] = (init ?? 0) + incrBy
+    else
+        obj[key] += incrBy
+}
+
+const SUPPORT_FULL = "full"
+const SUPPORT_PARTIAL = "partial"
+const SUPPORT_NONE = "none"
+
 const protocols = []
 const protocolInterfaceMap = {}
 protoData.waylandProtocolRegistry.protocols.forEach((p) => {
@@ -15,7 +27,8 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         name: p.name,
         desc: p.protocol.description?.summary,
         tags: [p.source, p.stability],
-        support: {},
+        supportIf: {},
+        supportSum: {}
     }
     p.protocol?.interfaces?.forEach((iface) => {
         protocolInterfaceMap[iface.name] = protocol
@@ -33,10 +46,29 @@ compData.compositorRegistry.forEach((c) => {
     compositors.push(shortData)
     for (let compProto of c.info.globals) {
         const ifName = compProto.interface
-        const protoCompSupport = protocolInterfaceMap[ifName]?.support
-        if (protoCompSupport == null) 
+        const protoCompSupport = protocolInterfaceMap[ifName]?.supportIf
+        if (protoCompSupport == null)
             continue
-        pushNonIncl(protoCompSupport[ifName] ??= [], c.id)        
+        pushNonIncl(protoCompSupport[ifName] ??= [], c.id)
+    }
+})
+
+protocols.forEach((p) => {
+    let ifTotal = 0
+    const compCount = {}
+    for (const compSet of Object.values(p.supportIf)) {
+        ifTotal += 1
+        for (const compName of compSet)
+            objIncr(compCount, compName)
+    }
+    for (const [compName, cnt] of Object.entries(compCount)) {
+        const supportGrade =
+            cnt >= ifTotal
+                ? SUPPORT_FULL
+                : cnt > 0
+                    ? SUPPORT_PARTIAL
+                    : SUPPORT_NONE
+        p.supportSum[compName] = supportGrade
     }
 })
 
