@@ -10,11 +10,11 @@ function e(elementName, opts, children) {
         }
         else if (name == 'on') {
             for (const [event, cb] of Object.entries(value)) {
-                element.addEventListener(event.toLocaleLowerCase(), cb)
+                el.addEventListener(event.toLocaleLowerCase(), cb)
             }
         }
         else if (name.startsWith('on') && name.toLowerCase() in window) {
-            element.addEventListener(name.toLowerCase().substring(2), value)
+            el.addEventListener(name.toLowerCase().substring(2), value)
         }
         else if (name === "class" && Array.isArray(value)) {
             if (value.length > 0)
@@ -22,7 +22,7 @@ function e(elementName, opts, children) {
         }
         else if (name === "data") {
             for (const [dataName, dataValue] of Object.entries(value)) {
-                element.dataset[dataName] = dataValue
+                el.dataset[dataName] = dataValue
             }
         }
         else if (name === "style") {
@@ -50,6 +50,16 @@ function e(elementName, opts, children) {
     return el
 }
 
+function findParent(child, selector, opts) {
+    let skipParents = opts?.skip ?? 0
+    while (child != null && (skipParents > 0 || !child.matches(selector))) {
+        if (skipParents > 0)
+            skipParents--
+        child = child.parentElement
+    }
+    return child ?? null
+}
+
 const tagColors = {
     core: ["rgb(220 252 231)", "rgb(22 101 52)"],
     wayland: ["rgb(219 234 254)", "rgb(30 64 175)"],
@@ -70,6 +80,8 @@ const tagColors = {
 
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
+    const columnCells = {}
+    const allCells = []
 
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
@@ -150,13 +162,30 @@ function pageCompositorTable(targetContainer, data) {
                         : support === "none"
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
-            table.appendChild(
-                e("div", { class: "comp-table-cell" }, [
-                    e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
-                ])
-            )
+            const cell = e("div", { class: "comp-table-cell", data: {comp: c.id} }, [
+                e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
+            ])
+            allCells.push(cell)
+            ;(columnCells[c.id] ??= []).push(cell)
+            table.appendChild(cell)
         }
     }
+
+    table.addEventListener("mousemove", (ev) => {
+        const hoverClass = "comp-table-cell-hover"
+        allCells.forEach((cell) => cell.classList.remove(hoverClass))
+
+        const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
+        const targetElement = findParent(hoverElement, ".comp-table-cell")
+        if (targetElement == null)
+            return
+
+        const column = columnCells[targetElement.dataset.comp]
+        if (!column)
+            return
+
+        column.forEach((cell) => cell.classList.add(hoverClass))
+    })
 
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
