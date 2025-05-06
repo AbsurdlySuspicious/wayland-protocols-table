@@ -15,7 +15,14 @@ const SUPPORT_PARTIAL = "partial"
 const SUPPORT_NONE = "none"
 
 function protoPercentageFilter(p) {
-    return true
+    // exclude compositor specific protocols from percentage
+    return ![
+        'kde-protocols', 
+        'hyprland-protocols',
+        'cosmic-protocols',
+        'weston-protocols',
+        'treeland-protocols',
+    ].includes(p.source)
 }
 
 let protocolsTotal = 0
@@ -27,7 +34,11 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         id: p.id,
         name: p.name,
         desc: p.protocol.description?.summary,
-        tags: [p.source, p.stability],
+        tags: [
+            p.source.replace(/-protocols$/, ""), 
+            p.stability
+        ],
+        source: p.source,
         supportIf: {},
         supportSum: {},
         defaultExpand: false,
