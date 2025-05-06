@@ -10,19 +10,21 @@ if [[ $SKIP_SUBMODULES != 1 ]]; then
     git submodule update --init --depth=1
 fi
 
-pushd we-data
 log Compiling Typescript registry modules
+pushd we-data
 tsc compositor-registry.ts protocol-registry.ts
 popd
 
+log Preparing 'dist' directory
+rm -r dist || true
+mkdir -v dist
+cp -rv web/* dist
+
 log Copying logo svgs
-logo_dst=web/logos
-mkdir -v "$logo_dst" || true
-rm -v "$logo_dst"/* || true
-cp -v wayland-explorer/public/logos/* "$logo_dst"/
-touch "$logo_dst"/.keep
+mkdir -v dist/logos || true
+cp -v wayland-explorer/public/logos/* dist/logos/
 
 log Running data.json prepare script
-node prepare-data.js >web/data/data.json
+node prepare-data.js | tee generated/data_last.json dist/data.json >/dev/null
 
 log Finished
