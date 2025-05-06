@@ -10,10 +10,12 @@ if [[ $SKIP_SUBMODULES != 1 ]]; then
     git submodule update --init --depth=1
 fi
 
-log Compiling Typescript registry modules
-pushd we-data
-tsc compositor-registry.ts protocol-registry.ts
-popd
+if [[ $SKIP_TSC != 1 ]]; then
+    log Compiling Typescript registry modules
+    pushd we-data
+    tsc compositor-registry.ts protocol-registry.ts
+    popd
+fi
 
 log Preparing 'dist' directory
 rm -r dist || true
