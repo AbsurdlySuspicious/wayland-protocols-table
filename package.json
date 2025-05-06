@@ -1,0 +1,6 @@
+{
+    "name": "wayland-explorer-listings",
+    "devDependencies": {
+        "@types/node": "^16.7.10"
+    }
+}
