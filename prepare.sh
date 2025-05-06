@@ -23,6 +23,6 @@ cp -v wayland-explorer/public/logos/* "$logo_dst"/
 touch "$logo_dst"/.keep
 
 log Running data.json prepare script
-node prepare-data.js
+node prepare-data.js >web/data/data.json
 
 log Finished

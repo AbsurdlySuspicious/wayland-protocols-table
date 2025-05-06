@@ -1,4 +1,4 @@
-const { writeFileSync } = require("fs")
+const { stdout } = require("process")
 const compData = require("./we-data/compositor-registry")
 const protoData = require("./we-data/protocol-registry")
 
@@ -73,4 +73,4 @@ protocols.forEach((p) => {
 })
 
 const dataOut = { compositors, protocols }
-writeFileSync("web/data/data.json", JSON.stringify(dataOut))
+stdout.write(JSON.stringify(dataOut))
