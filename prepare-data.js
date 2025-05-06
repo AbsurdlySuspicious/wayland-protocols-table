@@ -2,11 +2,6 @@ const { writeFileSync } = require("fs")
 const compData = require("./we-data/compositor-registry")
 const protoData = require("./we-data/protocol-registry")
 
-function pushNonIncl(array, item) {
-    if (!array.includes(item))
-        array.push(item)
-}
-
 function objIncr(obj, key, incrBy, init) {
     incrBy ??= 1
     if (obj[key] == null)
@@ -28,7 +23,8 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         desc: p.protocol.description?.summary,
         tags: [p.source, p.stability],
         supportIf: {},
-        supportSum: {}
+        supportSum: {},
+        defaultExpand: false,
     }
     p.protocol?.interfaces?.forEach((iface) => {
         protocolInterfaceMap[iface.name] = protocol
@@ -49,16 +45,17 @@ compData.compositorRegistry.forEach((c) => {
         const protoCompSupport = protocolInterfaceMap[ifName]?.supportIf
         if (protoCompSupport == null)
             continue
-        pushNonIncl(protoCompSupport[ifName] ??= [], c.id)
+        (protoCompSupport[ifName] ??= {})[c.id] = 1
     }
 })
 
 protocols.forEach((p) => {
     let ifTotal = 0
+    let hasNonFull = false
     const compCount = {}
     for (const compSet of Object.values(p.supportIf)) {
         ifTotal += 1
-        for (const compName of compSet)
+        for (const compName of Object.keys(compSet))
             objIncr(compCount, compName)
     }
     for (const [compName, cnt] of Object.entries(compCount)) {
@@ -69,7 +66,10 @@ protocols.forEach((p) => {
                     ? SUPPORT_PARTIAL
                     : SUPPORT_NONE
         p.supportSum[compName] = supportGrade
+        if (supportGrade != SUPPORT_FULL)
+            hasNonFull = true
     }
+    p.defaultExpand = hasNonFull
 })
 
 const dataOut = { compositors, protocols }
