@@ -98,10 +98,12 @@ body {
 
 .comp-table-tag {
     --tag-bg: #eee;
+    --tag-fg: #000;
 
     padding: 1px 10px;
     border-radius: 9999px;
-    color: #000;
+    font-weight: 500;
+    color: var(--tag-fg);
     background-color: var(--tag-bg);
 }
 

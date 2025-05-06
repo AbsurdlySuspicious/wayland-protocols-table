@@ -51,19 +51,19 @@ function e(elementName, opts, children) {
 }
 
 const tagColors = {
-    core: "rgb(22 101 52)",
-    wayland: "rgb(30 64 175)",
+    core: "rgb(220 252 231)",
+    wayland: "rgb(219 234 254)",
     wlr: "rgb(254 226 226)",
-    kde: "rgb(107 33 168)",
-    hyprland: "rgb(7 89 133)",
-    cosmic: "rgb(146 64 14)",
-    weston: "rgb(133 77 14)",
-    treeland: "rgb(21 94 117)",
+    kde: "rgb(243 232 255)",
+    hyprland: "rgb(224 242 254)",
+    cosmic: "rgb(254 226 226)",
+    weston: "rgb(254 249 195)",
+    treeland: "rgb(207 250 254)",
     external: "rgb(244 244 245)",
 
-    stable: "rgb(22 101 52)",
+    stable: "rgb(220 252 231)",
     staging: "rgb(254 226 226)",
-    unstable: "rgb(157 23 77)",
+    unstable: "rgb(252 231 243)",
 
     __default: "rgb(244 244 245)",
 }
