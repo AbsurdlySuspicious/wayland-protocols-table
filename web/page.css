@@ -72,12 +72,37 @@ body {
     padding-right: var(--col-gap);
     border-bottom: var(--row-border) solid var(--border-color);
     min-height: var(--cell-size);
+
+    display: flex;
+    row-gap: 10px;
+    flex-flow: row wrap;
 }
 
-.comp-table-desc a {
+.comp-table-desc-name {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.comp-table-desc-name a {
     text-decoration: none;
     color: #07628f;
     font-weight: 800;
+}
+
+.comp-table-tag-box {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 5px;
+}
+
+.comp-table-tag {
+    --tag-bg: #eee;
+
+    padding: 1px 10px;
+    border-radius: 9999px;
+    color: #000;
+    background-color: var(--tag-bg);
 }
 
 .comp-table-cell {

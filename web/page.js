@@ -69,7 +69,7 @@ function pageCompositorTable(targetContainer, data) {
     )
 
     const bottomPaddingBlock = e("div",
-        {class: "comp-table-bottom-pad"}
+        { class: "comp-table-bottom-pad" }
     )
 
     const root = e("div",
@@ -110,9 +110,15 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     for (const p of data.protocols) {
+        const tags = p.tags.map((t) =>
+            e("div", { class: ["comp-table-tag"] }, [t])
+        )
         table.appendChild(
             e("div", { class: "comp-table-desc" }, [
-                e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name])
+                e("div", { class: "comp-table-desc-name" }, [
+                    e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
+                ]),
+                e("div", { class: ["comp-table-tag-box"] }, tags),
             ])
         )
         for (const c of data.compositors) {
