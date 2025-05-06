@@ -142,7 +142,7 @@ function pageCompositorTable(targetContainer, data) {
     for (const p of data.protocols) {
         const tags = p.tags.map((t) => {
             const [bg, fg] = tagColors[t] ?? tagColors.__default
-            return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg} }, [t])
+            return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
         })
         table.appendChild(
             e("div", { class: "comp-table-desc" }, [
@@ -162,16 +162,16 @@ function pageCompositorTable(targetContainer, data) {
                         : support === "none"
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
-            const cell = e("div", { class: "comp-table-cell", data: {comp: c.id} }, [
+            const cell = e("div", { class: "comp-table-cell", data: { comp: c.id } }, [
                 e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
             ])
             allCells.push(cell)
-            ;(columnCells[c.id] ??= []).push(cell)
+                ; (columnCells[c.id] ??= []).push(cell)
             table.appendChild(cell)
         }
     }
 
-    table.addEventListener("mousemove", (ev) => {
+    function mouseMoveHandler(ev) {
         const hoverClass = "comp-table-cell-hover"
         allCells.forEach((cell) => cell.classList.remove(hoverClass))
 
@@ -185,7 +185,24 @@ function pageCompositorTable(targetContainer, data) {
             return
 
         column.forEach((cell) => cell.classList.add(hoverClass))
-    })
+    }
+
+    function mouseMoveSet(...elements) {
+        elements.forEach((el) => {
+            if (el != null)
+                el.addEventListener("mosemove", mouseMoveHandler)
+        })
+    }
+
+    mouseMoveSet(
+        table,
+        root,
+        targetContainer,
+        document.querySelector("body")
+    )
+
+    table.addEventListener("mousemove", mouseMoveHandler)
+    document.querySelector("body")
 
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
