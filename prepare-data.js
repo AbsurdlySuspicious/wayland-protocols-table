@@ -7,7 +7,7 @@ function pushNonIncl(array, item) {
         array.push(item)
 }
 
-const protocols = {}
+const protocols = []
 const protocolInterfaceMap = {}
 protoData.waylandProtocolRegistry.protocols.forEach((p) => {
     const protocol = {
@@ -20,7 +20,7 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
     p.protocol?.interfaces?.forEach((iface) => {
         protocolInterfaceMap[iface.name] = protocol
     })
-    protocols[protocol.id] = protocol
+    protocols.push(protocol)
 })
 
 const compositors = []
