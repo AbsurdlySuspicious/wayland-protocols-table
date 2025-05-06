@@ -100,9 +100,11 @@ body {
     --tag-bg: #eee;
     --tag-fg: #000;
 
-    padding: 1px 10px;
+    cursor: default;
+    padding: 2px 10px;
     border-radius: 9999px;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 13px;
     color: var(--tag-fg);
     background-color: var(--tag-bg);
 }

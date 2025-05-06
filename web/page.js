@@ -51,21 +51,21 @@ function e(elementName, opts, children) {
 }
 
 const tagColors = {
-    core: "rgb(220 252 231)",
-    wayland: "rgb(219 234 254)",
-    wlr: "rgb(254 226 226)",
-    kde: "rgb(243 232 255)",
-    hyprland: "rgb(224 242 254)",
-    cosmic: "rgb(254 226 226)",
-    weston: "rgb(254 249 195)",
-    treeland: "rgb(207 250 254)",
-    external: "rgb(244 244 245)",
+    core: ["rgb(220 252 231)", "rgb(22 101 52)"],
+    wayland: ["rgb(219 234 254)", "rgb(30 64 175)"],
+    wlr: ["rgb(254 226 226)", "rgb(153 27 27)"],
+    kde: ["rgb(243 232 255)", "rgb(107 33 168)"],
+    hyprland: ["rgb(224 242 254)", "rgb(7 89 133)"],
+    cosmic: ["rgb(254 226 226)", "rgb(146 64 14)"],
+    weston: ["rgb(254 249 195)", "rgb(133 77 14)"],
+    treeland: ["rgb(207 250 254)", "rgb(21 94 117)"],
+    external: ["rgb(244 244 245)", "rgb(39 39 42)"],
 
-    stable: "rgb(220 252 231)",
-    staging: "rgb(254 226 226)",
-    unstable: "rgb(252 231 243)",
+    stable: ["rgb(220 252 231)", "rgb(22 101 52)"],
+    staging: ["rgb(254 226 226)", "rgb(153 27 27)"],
+    unstable: ["rgb(252 231 243)", "rgb(157 23 77)"],
 
-    __default: "rgb(244 244 245)",
+    __default: ["rgb(244 244 245)", "rgb(39 39 42)"],
 }
 
 function pageCompositorTable(targetContainer, data) {
@@ -129,8 +129,8 @@ function pageCompositorTable(targetContainer, data) {
 
     for (const p of data.protocols) {
         const tags = p.tags.map((t) => {
-            const color = tagColors[t] ?? tagColors.__default
-            return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": color} }, [t])
+            const [bg, fg] = tagColors[t] ?? tagColors.__default
+            return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg} }, [t])
         })
         table.appendChild(
             e("div", { class: "comp-table-desc" }, [
