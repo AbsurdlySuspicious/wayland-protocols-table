@@ -61,6 +61,7 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 25px;
+    cursor: default;
 
     margin-bottom: var(--row-gap-real);
 }
