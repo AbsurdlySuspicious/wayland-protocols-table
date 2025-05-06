@@ -2,6 +2,11 @@ const { writeFileSync } = require("fs")
 const compData = require("./we-data/compositor-registry")
 const protoData = require("./we-data/protocol-registry")
 
+function pushNonIncl(array, item) {
+    if (!array.includes(item))
+        array.push(item)
+}
+
 const protocols = {}
 const protocolInterfaceMap = {}
 protoData.waylandProtocolRegistry.protocols.forEach((p) => {
@@ -31,11 +36,7 @@ compData.compositorRegistry.forEach((c) => {
         const protoCompSupport = protocolInterfaceMap[ifName]?.support
         if (protoCompSupport == null) 
             continue
-        const supportedInterfaces = protoCompSupport[c.id]
-        if (supportedInterfaces == null)
-            protoCompSupport[c.id] = [ifName]
-        else if (!supportedInterfaces.includes(ifName))
-            supportedInterfaces.push(ifName)
+        pushNonIncl(protoCompSupport[ifName] ??= [], c.id)        
     }
 })
 
