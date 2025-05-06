@@ -80,8 +80,11 @@ const tagColors = {
 
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
-    const columnCells = {}
-    const allCells = []
+    const columnCellsByComp = {}
+    const allColumnCells = []
+    const rowCellsSupportedByComp = {}
+    const allRowCells = []
+    const headerCellsByComp = {}
 
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
@@ -107,14 +110,45 @@ function pageCompositorTable(targetContainer, data) {
         [tableFixOuter, table, bottomPaddingBlock]
     )
 
+    function filterByCompClickHandler(ev) {
+        const headSelectedClass = "comp-table-name-selected"
+        allRowCells.forEach((cell) => {
+            cell.style["display"] = "none"
+        })
+        document.querySelectorAll(".comp-table-name").forEach((headCell) => {
+            headCell.classList.remove(headSelectedClass)
+        })
+
+        const targetComp = ev.currentTarget.dataset.comp
+        const compRows = rowCellsSupportedByComp[targetComp]
+        if (compRows == null)
+            return
+        compRows.forEach((row) => {
+            row.forEach((cell) => cell.style.removeProperty("display"))
+        })
+        headerCellsByComp[targetComp].forEach((headCell) => {
+            headCell.classList.add(headSelectedClass)
+        })
+    }
+
     for (const c of data.compositors) {
-        const headerCell = () =>
-            e("div", { class: "comp-table-name" }, [
-                e("div", { class: "comp-table-name-text" }, [c.name]),
-                c.icon == null
-                    ? e("div", { class: ["comp-icon", "comp-icon-dummy"] })
-                    : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
-            ])
+        const headerCell = () => {
+            const headCell = e("div",
+                {
+                    class: "comp-table-name",
+                    data: { comp: c.id },
+                    onClick: filterByCompClickHandler,
+                },
+                [
+                    e("div", { class: "comp-table-name-text" }, [c.name]),
+                    c.icon == null
+                        ? e("div", { class: ["comp-icon", "comp-icon-dummy"] })
+                        : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
+                ]
+            )
+                ; (headerCellsByComp[c.id] ??= []).push(headCell)
+            return headCell
+        }
         table.appendChild(headerCell())
         tableFix.appendChild(headerCell())
     }
@@ -144,14 +178,16 @@ function pageCompositorTable(targetContainer, data) {
             const [bg, fg] = tagColors[t] ?? tagColors.__default
             return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
         })
-        table.appendChild(
-            e("div", { class: "comp-table-desc" }, [
-                e("div", { class: "comp-table-desc-name" }, [
-                    e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
-                ]),
-                e("div", { class: ["comp-table-tag-box"] }, tags),
-            ])
-        )
+        const descCell = e("div", { class: "comp-table-desc" }, [
+            e("div", { class: "comp-table-desc-name" }, [
+                e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
+            ]),
+            e("div", { class: ["comp-table-tag-box"] }, tags),
+        ])
+        table.appendChild(descCell)
+        allRowCells.push(descCell)
+        const currentProtoCells = [descCell]
+
         for (const c of data.compositors) {
             const support = p.supportSum[c.id] ?? "none"
             const [cellClass, cellText] =
@@ -165,22 +201,27 @@ function pageCompositorTable(targetContainer, data) {
             const cell = e("div", { class: "comp-table-cell", data: { comp: c.id } }, [
                 e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
             ])
-            allCells.push(cell)
-                ; (columnCells[c.id] ??= []).push(cell)
+            if (support != "none") {
+                (rowCellsSupportedByComp[c.id] ??= []).push(currentProtoCells)
+            }
+            allColumnCells.push(cell)
+            allRowCells.push(cell)
+            currentProtoCells.push(cell)
+                ; (columnCellsByComp[c.id] ??= []).push(cell)
             table.appendChild(cell)
         }
     }
 
     function mouseMoveHandler(ev) {
         const hoverClass = "comp-table-cell-hover"
-        allCells.forEach((cell) => cell.classList.remove(hoverClass))
+        allColumnCells.forEach((cell) => cell.classList.remove(hoverClass))
 
         const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
         const targetElement = findParent(hoverElement, ".comp-table-cell")
         if (targetElement == null)
             return
 
-        const column = columnCells[targetElement.dataset.comp]
+        const column = columnCellsByComp[targetElement.dataset.comp]
         if (!column)
             return
 
@@ -207,18 +248,30 @@ function pageCompositorTable(targetContainer, data) {
     function setFixWidthVar(name, sel) {
         if (typeof sel === "string")
             sel = table.querySelector(sel)
-        tableFix.style.setProperty(name, sel.clientWidth + "px")
+        const width = sel.clientWidth
+        tableFix.style.setProperty(name, width + "px")
+        return width
     }
 
     setTimeout(() => {
-        setFixWidthVar("--dummy-w", ".comp-table-dummy")
+        const dummyWidth = setFixWidthVar("--dummy-w", ".comp-table-dummy")
         setFixWidthVar("--head-w", ".comp-table-name")
-        setFixWidthVar("--full-w", table)
+        table.querySelector(".comp-table-dummy").style["width"] = dummyWidth + "px"
+
+        const fixStyle = tableFixOuter.style
 
         function fixVisibilityCallback() {
             const offset = table.getBoundingClientRect().y
-            tableFixOuter.style.setProperty("opacity", offset < -100 ? 1 : 0)
+            const show = offset < -100
+            if (show)
+                fixStyle["visibility"] = "visible"
+            fixStyle["opacity"] = show ? 1 : 0
         }
+
+        tableFixOuter.addEventListener("transitionend", () => {
+            const opacity = tableFixOuter.style["opacity"] ?? 0
+            tableFixOuter.style["visibility"] = opacity > 0 ? "visible" : "hidden"
+        })
 
         document.addEventListener("scroll", fixVisibilityCallback)
         fixVisibilityCallback()

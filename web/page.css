@@ -17,11 +17,13 @@ body {
 
     width: 100%;
     position: fixed;
-    z-index: 10;
-    opacity: 0;
     transition: opacity .1s ease-out;
     background-color: #eee;
     /* background-color: #875050; */
+
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
 }
 
 .comp-header-fix .comp-table-dummy {
@@ -58,6 +60,11 @@ body {
     flex-flow: column;
     justify-content: end;
     align-items: center;
+    cursor: pointer;
+}
+
+.comp-table-name-selected {
+    background-color: #b9d992;
 }
 
 .comp-table-name-text {
