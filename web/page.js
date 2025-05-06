@@ -112,19 +112,34 @@ function pageCompositorTable(targetContainer, data) {
 
     function filterByCompClickHandler(ev) {
         const headSelectedClass = "comp-table-name-selected"
+
+        const targetHeadCell = ev.currentTarget
+        const clear = targetHeadCell.classList.contains(headSelectedClass)
+
+        function setDisplay(cell, visible) {
+            if (visible)   
+                cell.style.removeProperty("display")
+            else
+                cell.style["display"] = "none"
+        }
+
         allRowCells.forEach((cell) => {
-            cell.style["display"] = "none"
+            setDisplay(cell, clear)
         })
         document.querySelectorAll(".comp-table-name").forEach((headCell) => {
             headCell.classList.remove(headSelectedClass)
         })
 
-        const targetComp = ev.currentTarget.dataset.comp
+        if (clear)
+            return
+
+        const targetComp = targetHeadCell.dataset.comp
         const compRows = rowCellsSupportedByComp[targetComp]
         if (compRows == null)
             return
+
         compRows.forEach((row) => {
-            row.forEach((cell) => cell.style.removeProperty("display"))
+            row.forEach((cell) => setDisplay(cell, true))
         })
         headerCellsByComp[targetComp].forEach((headCell) => {
             headCell.classList.add(headSelectedClass)
