@@ -85,6 +85,7 @@ function pageCompositorTable(targetContainer, data) {
     const rowCellsSupportedByComp = {}
     const allRowCells = []
     const headerCellsByComp = {}
+    const interfaceRowCells = {}
 
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
@@ -146,6 +147,20 @@ function pageCompositorTable(targetContainer, data) {
         })
     }
 
+    function descButtonToggle(ev) {
+        const button = ev.currentTarget
+        const isOpen = parseInt(button.dataset.open ?? 0)
+        const newState = !isOpen
+        button.classList.toggle("comp-table-db-active", newState)
+        button.dataset.open = +newState
+        return [findParent(button, ".comp-table-desc"), newState]
+    }
+
+    function interfacesExpandClickHandler(ev) {
+        const [descElement, currentState] = descButtonToggle(ev)
+        const compId = descElement.dataset.comp
+    }
+
     for (const c of data.compositors) {
         const headerCell = () => {
             const headCell = e("div",
@@ -194,10 +209,14 @@ function pageCompositorTable(targetContainer, data) {
             return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
         })
         const descCell = e("div", { class: "comp-table-desc" }, [
-            e("div", { class: "comp-table-desc-name" }, [
+            e("div", { class: "comp-table-desc-name", data: {proto: p.id} }, [
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
-            e("div", { class: ["comp-table-tag-box"] }, tags),
+            e("div", { class: ["comp-table-tag-box"] }, [
+                e("div", {class: ["comp-table-db", "comp-db-interfaces"], onClick: interfacesExpandClickHandler}, ["I"]),
+                e("div", {class: ["comp-table-db", "comp-db-description"]}, ["D"]),
+                ...tags,
+            ]),
         ])
         table.appendChild(descCell)
         allRowCells.push(descCell)
