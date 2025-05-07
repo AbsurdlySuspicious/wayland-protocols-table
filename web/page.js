@@ -81,14 +81,6 @@ function mapLookupAdd(map, keys, ...items) {
     return set
 }
 
-function mapLookupSingleSet(map, keys, value) {
-    return map.set(mapLookupKey(keys), value)
-}
-
-function mapLookupSingleGet(map, keys) {
-    return map.get(mapLookupKey(keys))
-}
-
 function mapLookupMultiple(map, keys) {
     return map.get(mapLookupKey(keys)) ?? new Set()
 }
