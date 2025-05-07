@@ -60,6 +60,10 @@ function findParent(child, selector, opts) {
     return child ?? null
 }
 
+function* iterChain(...iterators) {
+    for (let it of iterators) yield* it;
+}
+
 function mapDefault(map, key, def) {
     let ex = map.get(key)
     if (ex === undefined)
@@ -134,14 +138,18 @@ function pageCompositorTable(targetContainer, data) {
         return mapLookupSet(cellLookup, keys)
     }
 
+    function lookupCells(...keys) {
+        return lookupCellSet(...keys).values()
+    }
+
     function lookupCellsWithData(...keys) {
-        return lookupCellSet(keys).values().map((cell) => [cell, cellData[cell]])
+        return lookupCells(keys).map((cell) => [cell, cellData[cell]])
     }
 
     function* getCells(opts) {
-        yield* lookupCellSet("type", "data").values()
+        yield* lookupCells("type", "data")
         if (opts?.withDesc)
-            yield* lookupCellSet("type", "row").values()
+            yield* lookupCells("type", "row")
     }
 
     const tableFix = e("div",
@@ -308,16 +316,11 @@ function pageCompositorTable(targetContainer, data) {
 
         const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
         const targetElement = findParent(hoverElement, ".comp-table-cell")
-        const compId = targetElement?.dataset?.comp
-        const included = lookupCellSet("data-comp", compId)
+        const compId = targetElement?.dataset?.comp ?? ""
         
-            .forEach((cell) => ell.classList.remove(hoverClass))
-
-        const column = columnCellsByComp[targetElement.dataset.comp]
-        if (!column)
-            return
-
-        column.forEach((cell) => cell.classList.add(hoverClass))
+        const included = lookupCellSet("data-comp", compId)
+        lookupCellSet("type", "data").values()
+            .forEach((cell) => cell.classList.toggle(hoverClass, included.has(cell)))
     }
 
     function mouseMoveSet(...elements) {
