@@ -401,8 +401,10 @@ function pageCompositorTable(targetContainer, data) {
             const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
             const targetElement = findParent(hoverElement, ".comp-table-cell")
             const compId = targetElement?.dataset?.comp ?? null
-            columnHighlightComp = compId
-            syncState()
+            if (compId != columnHighlightComp) {
+                columnHighlightComp = compId
+                syncState()
+            }
         }
 
         elements.forEach((el) => {
