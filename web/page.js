@@ -141,12 +141,6 @@ function pageCompositorTable(targetContainer, data) {
         return lookupCells(keys).map((cell) => [cell, cellData[cell]])
     }
 
-    function* getCells(opts) {
-        yield* lookupCells("type", "data")
-        if (opts?.withDesc)
-            yield* lookupCells("type", "row")
-    }
-
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
         [e("div", { class: "comp-table-dummy" })]
