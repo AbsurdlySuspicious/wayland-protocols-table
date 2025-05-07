@@ -1,4 +1,6 @@
 
+// === Utils ===
+
 function e(elementName, opts, children) {
     const el = document.createElement(elementName)
     const sa = (name, value) => el.setAttribute(name, value)
@@ -60,34 +62,14 @@ function findParent(child, selector, opts) {
     return child ?? null
 }
 
-function* iterChain(...iterators) {
-    for (let it of iterators) yield* it;
+function setDisplay(el, visible) {
+    if (visible)
+        el.style.removeProperty("display")
+    else
+        el.style["display"] = "none"
 }
 
-function mapDefault(map, key, def) {
-    let ex = map.get(key)
-    if (ex === undefined)
-        map.set(key, ex = def(key))
-    return ex
-}
-
-function mapLookupKey(keys) {
-    return keys.join(":")
-}
-
-function mapLookupAdd(map, keys, ...items) {
-    const set = mapDefault(map, mapLookupKey(keys), () => new Set())
-    set.add(...items)
-    return set
-}
-
-function mapLookupMultiple(map, keys) {
-    return map.get(mapLookupKey(keys)) ?? new Set()
-}
-
-function mapLookupValues(map, keys) {
-    return mapLookupMultiple(map, keys).values()
-}
+// === Defs ===
 
 const tagColors = {
     core: ["rgb(220 252 231)", "rgb(22 101 52)"],
@@ -111,52 +93,12 @@ const SUPPORT_FULL = "full"
 const SUPPORT_PARTIAL = "partial"
 const SUPPORT_NONE = "none"
 
-const EXPAND_STATE_INTERFACES = "interfaces"
-
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
-    // === Cell lookup ===
+    // === State sync ===
 
-    const cellData = new WeakMap()
-    const cellLookup = new Map()
-    const isExpandedMap = new Map()
-
-    function setCellData(cell, data) {
-        cellData.set(cell, data)
-        mapLookupAdd(cellLookup, ["type", data.type], cell)
-        if (data.type == "head") {
-            mapLookupAdd(cellLookup, ["head-comp", data.comp.id], cell)
-        }
-        else if (data.type == "row") {
-            mapLookupAdd(cellLookup, ["row-proto", data.proto.id], cell)
-            if (data.interface) {
-                mapLookupAdd(cellLookup, ["row-if-proto", data.proto.id], cell)
-                mapLookupAdd(cellLookup, ["if-proto", data.proto.id], cell)
-            }
-        }
-        else if (data.type == "data") {
-            mapLookupAdd(cellLookup, ["data-comp", data.comp.id], cell)
-            mapLookupAdd(cellLookup, ["data-proto", data.proto.id], cell)
-            if (!data.summary) {
-                mapLookupAdd(cellLookup, ["data-if-proto", data.proto.id], cell)
-                mapLookupAdd(cellLookup, ["if-proto", data.proto.id], cell)
-            }
-        }
-
-    }
-
-    function lookupCellSet(...keys) {
-        return mapLookupMultiple(cellLookup, keys)
-    }
-
-    function lookupCells(...keys) {
-        return lookupCellSet(...keys).values()
-    }
-
-    function lookupCellsWithData(...keys) {
-        return lookupCells(...keys).map((cell) => [cell, cellData.get(cell)])
-    }
+    
 
     // === Root elements ===
 
@@ -185,13 +127,6 @@ function pageCompositorTable(targetContainer, data) {
     )
 
     // === Table handlers ===
-
-    function setDisplay(el, visible) {
-        if (visible)
-            el.style.removeProperty("display")
-        else
-            el.style["display"] = "none"
-    }
 
     function filterByCompClickHandler(ev) {
         const headSelectedClass = "comp-table-name-selected"
