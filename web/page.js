@@ -155,7 +155,7 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     function lookupCellsWithData(...keys) {
-        return lookupCells(keys).map((cell) => [cell, cellData[cell]])
+        return lookupCells(...keys).map((cell) => [cell, cellData.get(cell)])
     }
 
     // === Root elements ===
@@ -313,12 +313,12 @@ function pageCompositorTable(targetContainer, data) {
                 ...tags,
             ]),
         ])
+        const compSupportSum = new Set()
         table.appendChild(descCell)
-        const rowMetadata = { type: "row", proto: p, compSupport: new Set() }
-        setCellData(descCell, rowMetadata)
+        setCellData(descCell, { type: "row", proto: p, compSupport: compSupportSum  })
 
-        function populateDataCells(c, opts) {
-            const interface = opts?.interface
+        function createDataCell(c, opts) {
+            const interface = opts.interface
             const isSummary = interface == null
 
             const support =
@@ -337,8 +337,8 @@ function pageCompositorTable(targetContainer, data) {
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
 
-            if (isSummary && support != SUPPORT_NONE)
-                rowMetadata.compSupport.add(c.id)
+            if (opts.supportSet != null && support != SUPPORT_NONE)
+                opts.supportSet.add(c.id)
 
             const cellClasses = ["comp-table-cell-content", cellClass]
             if (!isSummary)
@@ -353,7 +353,7 @@ function pageCompositorTable(targetContainer, data) {
 
         for (const c of data.compositors) {
             /* Setup data cells (summary) */
-            populateDataCells(c)
+            createDataCell(c, {supportSet: compSupportSum})
         }
 
         for (const interfaceId of Object.keys(p.supportIf)) {
@@ -361,12 +361,13 @@ function pageCompositorTable(targetContainer, data) {
             const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-desc-interface"] }, [
                 e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [interfaceId]),
             ])
+            const compSupportIf = new Set()
             table.appendChild(intetfaceCell)
-            setCellData(intetfaceCell, { type: "row", proto: p, interface: interfaceId })
+            setCellData(intetfaceCell, { type: "row", proto: p, interface: interfaceId, compSupport: compSupportIf })
 
             for (const c of data.compositors) {
                 /* Setup data cells (interfaces) */
-                populateDataCells(c, { interface: interfaceId })
+                createDataCell(c, { interface: interfaceId, supportSet: compSupportIf })
             }
         }
 
