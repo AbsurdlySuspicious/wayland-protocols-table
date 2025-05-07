@@ -113,23 +113,18 @@ function pageCompositorTable(targetContainer, data) {
     const cellData = new WeakMap()
     const cellLookup = new Map()
 
-    const columnCellsByComp = {}
-    const rowCellsSupportedByComp = {}
-    const headerCellsByComp = {}
-    const interfaceRowCells = {}
-
     function setCellData(cell, data) {
         cellData.set(cell, data)
         mapLookupAdd(cellLookup, ["type", data.type], cell)
-        if (data.type == "head")
+        if (data.type == "head") {
             mapLookupAdd(cellLookup, ["head-comp", data.comp.id], cell)
-        if (data.type == "row")
+        }
+        else if (data.type == "row") {
             mapLookupAdd(cellLookup, ["row-proto", data.proto.id], cell)
-        if (data.type == "data") {
-            mapLookupAdd(cellLookup, ["data-comp", data.compId], cell)
-            mapLookupAdd(cellLookup, ["data-proto", data.protoId], cell)
-            if (data.support != null && data.support != SUPPORT_NONE)
-                mapLookupAdd(cellLookup, ["support-comp", data.compId], cell)
+        }
+        else if (data.type == "data") {
+            mapLookupAdd(cellLookup, ["data-comp", data.comp.id], cell)
+            mapLookupAdd(cellLookup, ["data-proto", data.proto.id], cell)
         }
 
     }
@@ -144,12 +139,6 @@ function pageCompositorTable(targetContainer, data) {
 
     function lookupCellsWithData(...keys) {
         return lookupCells(keys).map((cell) => [cell, cellData[cell]])
-    }
-
-    function* getCells(opts) {
-        yield* lookupCells("type", "data")
-        if (opts?.withDesc)
-            yield* lookupCells("type", "row")
     }
 
     const tableFix = e("div",
@@ -180,6 +169,7 @@ function pageCompositorTable(targetContainer, data) {
         const headSelectedClass = "comp-table-name-selected"
 
         const targetHeadCell = ev.currentTarget
+        const targetComp = targetHeadCell.dataset.comp
         const clear = targetHeadCell.classList.contains(headSelectedClass)
 
         function setDisplay(cell, visible) {
@@ -189,27 +179,17 @@ function pageCompositorTable(targetContainer, data) {
                 cell.style["display"] = "none"
         }
 
-        getCells({ withDesc: true }).forEach((cell) => {
-            setDisplay(cell, clear)
-        })
-        document.querySelectorAll(".comp-table-name").forEach((headCell) => {
-            headCell.classList.remove(headSelectedClass)
-        })
 
-        if (clear)
-            return
-
-        const targetComp = targetHeadCell.dataset.comp
-        const compRows = rowCellsSupportedByComp[targetComp]
-        if (compRows == null)
-            return
-
-        compRows.forEach((row) => {
-            row.forEach((cell) => setDisplay(cell, true))
-        })
-        headerCellsByComp[targetComp].forEach((headCell) => {
-            headCell.classList.add(headSelectedClass)
-        })
+        for (const [headCell, meta] of lookupCellsWithData("type", "head")) {
+            headCell.classList.toggle(headSelectedClass, !clear && meta.comp.id == targetComp)
+        }
+        for (const [rowCell, meta] of lookupCellsWithData("type", "row")) {
+            const show = clear || meta.compSupport.has(targetComp)
+            setDisplay(rowCell, show)
+            lookupCells("data-proto", meta.proto.id).forEach((dataCell) => {
+                setDisplay(dataCell, show)
+            })
+        }
     }
 
     function descButtonToggle(ev) {
@@ -241,7 +221,7 @@ function pageCompositorTable(targetContainer, data) {
                         : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
                 ]
             )
-                ; (headerCellsByComp[c.id] ??= []).push(headCell)
+            setCellData(headCell, { type: "head", comp: c })
             return headCell
         }
         table.appendChild(headerCell())
@@ -284,9 +264,8 @@ function pageCompositorTable(targetContainer, data) {
             ]),
         ])
         table.appendChild(descCell)
-        setCellData(descCell, { type: "row", proto: p })
-
-        const currentProtoCells = [descCell]
+        const rowMetadata = { type: "row", proto: p, compSupport: new Set() }
+        setCellData(descCell, rowMetadata)
 
         for (const c of data.compositors) {
             const support = p.supportSum[c.id] ?? SUPPORT_NONE
@@ -301,13 +280,10 @@ function pageCompositorTable(targetContainer, data) {
             const cell = e("div", { class: ["comp-table-cell", "comp-table-cell-data"], data: { comp: c.id } }, [
                 e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
             ])
-            if (support != SUPPORT_NONE) {
-                (rowCellsSupportedByComp[c.id] ??= []).push(currentProtoCells)
-            }
-            currentProtoCells.push(cell)
-                ; (columnCellsByComp[c.id] ??= []).push(cell)
+            if (support != SUPPORT_NONE)
+                rowMetadata.compSupport.add(c.id)
             table.appendChild(cell)
-            setCellData(cell, { type: "data", compId: c.id, protoId: p.id, support: support })
+            setCellData(cell, { type: "data", comp: c, proto: p })
         }
     }
 
