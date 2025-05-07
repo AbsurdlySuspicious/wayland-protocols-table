@@ -105,6 +105,8 @@ const SUPPORT_NONE = "none"
 
 const KEY_EXPAND_INTERFACES = "interfaces"
 
+const SYNC_DUE_TO_MOUSEMOVE = 1
+
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
     const expandDefaultState = {
@@ -179,7 +181,14 @@ function pageCompositorTable(targetContainer, data) {
             return shouldHide
         }
 
-        return () => {
+        function mouseMoveData(el, m) {
+            if (m.visible) {
+                if (lastHighlightComp != columnHighlightComp)
+                    el.classList.toggle(hoverClass, columnHighlightComp == m.comp.id)
+            }
+        }
+
+        return (dueTo) => {
             for (const elWeak of dynElements.values()) {
                 const el = elWeak.deref()
                 const m = dynState.get(el)
@@ -188,23 +197,25 @@ function pageCompositorTable(targetContainer, data) {
                     continue
                 }
 
-                if (m.type == "data") {
-                    shouldHide = protoHide(false, m)
-                    changeVisibility(el, m, !shouldHide)
+                if (dueTo == SYNC_DUE_TO_MOUSEMOVE) {
+                    if (m.type === "data")
+                        mouseMoveData(el, m)
+                    return
+                }
 
-                    if (m.visible) {
-                        if (lastHighlightComp != columnHighlightComp)
-                            el.classList.toggle(hoverClass, columnHighlightComp == m.comp.id)
-                    }
+                if (m.type === "data") {
+                    shouldHide = protoHide(false, m)
+                    changeVisibility(el, m, !shouldHide)
+                    mouseMoveData(el, m)
                 }
-                else if (m.type == "row") {
+                else if (m.type === "row") {
                     shouldHide = protoHide(false, m)
                     changeVisibility(el, m, !shouldHide)
                 }
-                else if (m.type == "head") {
+                else if (m.type === "head") {
                     el.classList.toggle(headSelectedClass, isCompFiltered(m.comp.id))
                 }
-                else if (m.type == "descButton") {
+                else if (m.type === "descButton") {
                     const active = expandGetState(m.buttonType, m)
                     if (active !== m.active) {
                         m.active = active
