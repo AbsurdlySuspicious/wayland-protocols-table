@@ -198,6 +198,8 @@ function pageCompositorTable(targetContainer, data) {
                 }
 
                 if (dueTo == SYNC_DUE_TO_MOUSEMOVE) {
+                    if (!m.visible)
+                        return
                     if (m.type === "data")
                         mouseMoveData(el, m)
                     return
