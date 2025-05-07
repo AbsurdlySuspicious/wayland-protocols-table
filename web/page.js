@@ -221,7 +221,6 @@ function pageCompositorTable(targetContainer, data) {
         if (opts?.toggle)
             isExpanded = !isExpanded
         if (isExpanded !== wasExpanded) {
-            console.log("iw ne", protoId, wasExpanded, isExpanded)
             isExpandedMap.set(isExpandedKey, isExpanded)
             for (const rowCell of lookupCells("row-proto", protoId)) {
                 const button = rowCell.querySelector(`.comp-db-${type}`)
@@ -244,7 +243,6 @@ function pageCompositorTable(targetContainer, data) {
 
     function interfacesExpandClickHandler(ev) {
         const protoId = descButtonGetProtoId(ev)
-        console.log("clk", protoId)
         interfacesExpand(protoId, { toggle: true })
     }
 
