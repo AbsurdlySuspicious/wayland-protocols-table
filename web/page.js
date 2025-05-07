@@ -215,6 +215,7 @@ function pageCompositorTable(targetContainer, data) {
     // === Table populate ===
 
     for (const c of data.compositors) {
+        /* Setup headings (normal & fixed/floating) */
         const headerCell = () => {
             const headCell = e("div",
                 {
@@ -242,6 +243,7 @@ function pageCompositorTable(targetContainer, data) {
     )
 
     for (const c of data.compositors) {
+        /* Setup support percentages */
         const percent = c.supportedPercent
         table.appendChild(
             e("div", {
@@ -259,6 +261,7 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     for (const p of data.protocols) {
+        /* Setup protocol row titles */
         const tags = p.tags.map((t) => {
             const [bg, fg] = tagColors[t] ?? tagColors.__default
             return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
@@ -278,6 +281,7 @@ function pageCompositorTable(targetContainer, data) {
         setCellData(descCell, rowMetadata)
 
         for (const c of data.compositors) {
+            /* Setup data cells */
             const support = p.supportSum[c.id] ?? SUPPORT_NONE
             const [cellClass, cellText] =
                 support === SUPPORT_FULL
