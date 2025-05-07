@@ -110,6 +110,8 @@ const SUPPORT_NONE = "none"
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
+    // === Cell lookup ===
+
     const cellData = new WeakMap()
     const cellLookup = new Map()
 
@@ -141,6 +143,8 @@ function pageCompositorTable(targetContainer, data) {
         return lookupCells(keys).map((cell) => [cell, cellData[cell]])
     }
 
+    // === Root elements ===
+
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
         [e("div", { class: "comp-table-dummy" })]
@@ -164,6 +168,8 @@ function pageCompositorTable(targetContainer, data) {
         { class: "comp-table-root", style: { "--cols": compCount + 1 } },
         [tableFixOuter, table, bottomPaddingBlock]
     )
+
+    // === Table handlers ===
 
     function filterByCompClickHandler(ev) {
         const headSelectedClass = "comp-table-name-selected"
@@ -206,7 +212,10 @@ function pageCompositorTable(targetContainer, data) {
         const compId = descElement.dataset.comp
     }
 
+    // === Table populate ===
+
     for (const c of data.compositors) {
+        /* Setup headings (normal & fixed/floating) */
         const headerCell = () => {
             const headCell = e("div",
                 {
@@ -229,9 +238,12 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     table.appendChild(
+        /* Additional dummy for percentages */
         e("div", { class: "comp-table-dummy" })
     )
+
     for (const c of data.compositors) {
+        /* Setup support percentages */
         const percent = c.supportedPercent
         table.appendChild(
             e("div", {
@@ -249,6 +261,7 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     for (const p of data.protocols) {
+        /* Setup protocol row titles */
         const tags = p.tags.map((t) => {
             const [bg, fg] = tagColors[t] ?? tagColors.__default
             return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
@@ -268,6 +281,7 @@ function pageCompositorTable(targetContainer, data) {
         setCellData(descCell, rowMetadata)
 
         for (const c of data.compositors) {
+            /* Setup data cells */
             const support = p.supportSum[c.id] ?? SUPPORT_NONE
             const [cellClass, cellText] =
                 support === SUPPORT_FULL
@@ -286,6 +300,8 @@ function pageCompositorTable(targetContainer, data) {
             setCellData(cell, { type: "data", comp: c, proto: p })
         }
     }
+
+    // === Setup hover handling ===
 
     function mouseMoveHandlerSet(...elements) {
         const hoverClass = "comp-table-cell-hover"
@@ -320,8 +336,12 @@ function pageCompositorTable(targetContainer, data) {
         document.querySelector("body")
     )
 
+    // === Populate page ===
+
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
+
+    // === Setup fixed header
 
     function setFixWidthVar(name, sel) {
         if (typeof sel === "string")
