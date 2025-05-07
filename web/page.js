@@ -73,9 +73,12 @@ function mapLookupAdd(map, keys, ...items) {
     return set
 }
 
+function mapLookupSet(map, keys) {
+    return map.get(keys.join(":")) ?? new Set()
+}
+
 function mapLookupValues(map, keys) {
-    const set = map.get(keys.join(":"))
-    return set == null ? [] : set.values()
+    return mapLookupSet(map, keys).values()
 }
 
 const tagColors = {
@@ -127,18 +130,18 @@ function pageCompositorTable(targetContainer, data) {
 
     }
 
-    function lookupCells(keys) {
-        return mapLookupValues(cellLookup, keys)
+    function lookupCellSet(...keys) {
+        return mapLookupSet(cellLookup, keys)
     }
 
-    function lookupCellsWithData(keys) {
-        return lookupCells(keys).map((cell) => [cell, cellData[cell]])
+    function lookupCellsWithData(...keys) {
+        return lookupCellSet(keys).values().map((cell) => [cell, cellData[cell]])
     }
 
     function* getCells(opts) {
-        yield* lookupCells(["type", "data"])
+        yield* lookupCellSet("type", "data").values()
         if (opts?.withDesc)
-            yield* lookupCells(["type", "row"])
+            yield* lookupCellSet("type", "row").values()
     }
 
     const tableFix = e("div",
@@ -302,12 +305,13 @@ function pageCompositorTable(targetContainer, data) {
 
     function mouseMoveHandler(ev) {
         const hoverClass = "comp-table-cell-hover"
-        getCells().forEach((cell) => cell.classList.remove(hoverClass))
 
         const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
         const targetElement = findParent(hoverElement, ".comp-table-cell")
-        if (targetElement == null)
-            return
+        const compId = targetElement?.dataset?.comp
+        const included = lookupCellSet("data-comp", compId)
+        
+            .forEach((cell) => ell.classList.remove(hoverClass))
 
         const column = columnCellsByComp[targetElement.dataset.comp]
         if (!column)
