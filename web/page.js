@@ -311,26 +311,32 @@ function pageCompositorTable(targetContainer, data) {
         }
     }
 
-    function mouseMoveHandler(ev) {
+    function mouseMoveHandlerSet(...elements) {
         const hoverClass = "comp-table-cell-hover"
+        let lastCompId = ""
 
-        const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
-        const targetElement = findParent(hoverElement, ".comp-table-cell")
-        const compId = targetElement?.dataset?.comp ?? ""
-        
-        const included = lookupCellSet("data-comp", compId)
-        lookupCellSet("type", "data").values()
-            .forEach((cell) => cell.classList.toggle(hoverClass, included.has(cell)))
-    }
+        function handler(ev) {
+    
+            const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
+            const targetElement = findParent(hoverElement, ".comp-table-cell")
+            const compId = targetElement?.dataset?.comp ?? ""
 
-    function mouseMoveSet(...elements) {
+            if (lastCompId == compId)
+                return
+            lastCompId = compId
+            
+            const included = lookupCellSet("data-comp", compId)
+            lookupCells("type", "data")
+                .forEach((cell) => cell.classList.toggle(hoverClass, included.has(cell)))
+        }
+
         elements.forEach((el) => {
             if (el != null)
-                el.addEventListener("mousemove", mouseMoveHandler)
+                el.addEventListener("mousemove", handler)
         })
     }
 
-    mouseMoveSet(
+    mouseMoveHandlerSet(
         table,
         root,
         targetContainer,
