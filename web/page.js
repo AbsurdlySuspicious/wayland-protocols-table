@@ -71,18 +71,30 @@ function mapDefault(map, key, def) {
     return ex
 }
 
+function mapLookupKey(keys) {
+    return keys.join(":")
+}
+
 function mapLookupAdd(map, keys, ...items) {
-    const set = mapDefault(map, keys.join(":"), () => new Set())
+    const set = mapDefault(map, mapLookupKey(keys), () => new Set())
     set.add(...items)
     return set
 }
 
-function mapLookupSet(map, keys) {
-    return map.get(keys.join(":")) ?? new Set()
+function mapLookupSingleSet(map, keys, value) {
+    return map.set(mapLookupKey(keys), value)
+}
+
+function mapLookupSingleGet(map, keys) {
+    return map.get(mapLookupKey(keys))
+}
+
+function mapLookupMultiple(map, keys) {
+    return map.get(mapLookupKey(keys)) ?? new Set()
 }
 
 function mapLookupValues(map, keys) {
-    return mapLookupSet(map, keys).values()
+    return mapLookupMultiple(map, keys).values()
 }
 
 const tagColors = {
@@ -107,6 +119,8 @@ const SUPPORT_FULL = "full"
 const SUPPORT_PARTIAL = "partial"
 const SUPPORT_NONE = "none"
 
+const EXPAND_STATE_INTERFACES = "interfaces"
+
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
@@ -114,6 +128,7 @@ function pageCompositorTable(targetContainer, data) {
 
     const cellData = new WeakMap()
     const cellLookup = new Map()
+    const isExpandedMap = new Map()
 
     function setCellData(cell, data) {
         cellData.set(cell, data)
@@ -123,16 +138,24 @@ function pageCompositorTable(targetContainer, data) {
         }
         else if (data.type == "row") {
             mapLookupAdd(cellLookup, ["row-proto", data.proto.id], cell)
+            if (data.interface) {
+                mapLookupAdd(cellLookup, ["row-if-proto", data.proto.id], cell)
+                mapLookupAdd(cellLookup, ["if-proto", data.proto.id], cell)
+            }
         }
         else if (data.type == "data") {
             mapLookupAdd(cellLookup, ["data-comp", data.comp.id], cell)
             mapLookupAdd(cellLookup, ["data-proto", data.proto.id], cell)
+            if (!data.summary) {
+                mapLookupAdd(cellLookup, ["data-if-proto", data.proto.id], cell)
+                mapLookupAdd(cellLookup, ["if-proto", data.proto.id], cell)
+            }
         }
 
     }
 
     function lookupCellSet(...keys) {
-        return mapLookupSet(cellLookup, keys)
+        return mapLookupMultiple(cellLookup, keys)
     }
 
     function lookupCells(...keys) {
@@ -171,20 +194,19 @@ function pageCompositorTable(targetContainer, data) {
 
     // === Table handlers ===
 
+    function setDisplay(el, visible) {
+        if (visible)
+            el.style.removeProperty("display")
+        else
+            el.style["display"] = "none"
+    }
+
     function filterByCompClickHandler(ev) {
         const headSelectedClass = "comp-table-name-selected"
 
         const targetHeadCell = ev.currentTarget
         const targetComp = targetHeadCell.dataset.comp
         const clear = targetHeadCell.classList.contains(headSelectedClass)
-
-        function setDisplay(cell, visible) {
-            if (visible)
-                cell.style.removeProperty("display")
-            else
-                cell.style["display"] = "none"
-        }
-
 
         for (const [headCell, meta] of lookupCellsWithData("type", "head")) {
             headCell.classList.toggle(headSelectedClass, !clear && meta.comp.id == targetComp)
@@ -198,18 +220,40 @@ function pageCompositorTable(targetContainer, data) {
         }
     }
 
-    function descButtonToggle(ev) {
+    function descButtonStateGetSet(type, protoId, opts) {
+        const isExpandedKey = `${type}:${protoId}`
+        let isExpanded = isExpandedMap.get(isExpandedKey) ?? null
+        const wasExpanded = isExpanded
+        if (opts?.set != null)
+            isExpanded = opts.set
+        if (opts?.toggle)
+            isExpanded = !isExpanded
+        if (isExpanded !== wasExpanded) {
+            console.log("iw ne", protoId, wasExpanded, isExpanded)
+            isExpandedMap.set(isExpandedKey, isExpanded)
+            for (const rowCell of lookupCells("row-proto", protoId)) {
+                const button = rowCell.querySelector(`.comp-db-${type}`)
+                button?.classList?.toggle("comp-table-db-active", isExpanded)
+            }
+        }
+        return [wasExpanded, isExpanded]
+    }
+
+    function descButtonGetProtoId(ev) {
         const button = ev.currentTarget
-        const isOpen = parseInt(button.dataset.open ?? 0)
-        const newState = !isOpen
-        button.classList.toggle("comp-table-db-active", newState)
-        button.dataset.open = +newState
-        return [findParent(button, ".comp-table-desc"), newState]
+        const descCell = findParent(button, ".comp-table-desc")
+        return descCell.dataset.proto
+    }
+
+    function interfacesExpand(protoId, opts) {
+        const [, expand] = descButtonStateGetSet(EXPAND_STATE_INTERFACES, protoId, opts)
+        lookupCells("if-proto", protoId).forEach((cell) => setDisplay(cell, expand))
     }
 
     function interfacesExpandClickHandler(ev) {
-        const [descElement, currentState] = descButtonToggle(ev)
-        const compId = descElement.dataset.comp
+        const protoId = descButtonGetProtoId(ev)
+        console.log("clk", protoId)
+        interfacesExpand(protoId, { toggle: true })
     }
 
     // === Table populate ===
@@ -262,11 +306,12 @@ function pageCompositorTable(targetContainer, data) {
 
     for (const p of data.protocols) {
         /* Setup protocol row titles */
+
         const tags = p.tags.map((t) => {
             const [bg, fg] = tagColors[t] ?? tagColors.__default
             return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
         })
-        const descCell = e("div", { class: "comp-table-desc" }, [
+        const descCell = e("div", { class: "comp-table-desc", data: { proto: p.id } }, [
             e("div", { class: "comp-table-desc-name", data: { proto: p.id } }, [
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
@@ -280,9 +325,17 @@ function pageCompositorTable(targetContainer, data) {
         const rowMetadata = { type: "row", proto: p, compSupport: new Set() }
         setCellData(descCell, rowMetadata)
 
-        for (const c of data.compositors) {
-            /* Setup data cells */
-            const support = p.supportSum[c.id] ?? SUPPORT_NONE
+        function populateDataCells(c, opts) {
+            const interface = opts?.interface
+            const isSummary = interface == null
+
+            const support =
+                isSummary
+                    ? p.supportSum[c.id] ?? SUPPORT_NONE
+                    : p.supportIf[interface][c.id]
+                        ? SUPPORT_FULL
+                        : SUPPORT_NONE
+
             const [cellClass, cellText] =
                 support === SUPPORT_FULL
                     ? ["comp-table-cell-full", "+"]
@@ -291,14 +344,41 @@ function pageCompositorTable(targetContainer, data) {
                         : support === SUPPORT_NONE
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
-            const cell = e("div", { class: ["comp-table-cell", "comp-table-cell-data"], data: { comp: c.id } }, [
-                e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
-            ])
-            if (support != SUPPORT_NONE)
+
+            if (isSummary && support != SUPPORT_NONE)
                 rowMetadata.compSupport.add(c.id)
+
+            const cellClasses = ["comp-table-cell-content", cellClass]
+            if (!isSummary)
+                cellClasses.push("comp-table-cell-interface")
+            const cell = e("div", { class: ["comp-table-cell", "comp-table-cell-data"], data: { comp: c.id } }, [
+                e("div", { class: cellClasses, title: c.name }, [cellText])
+            ])
+
             table.appendChild(cell)
-            setCellData(cell, { type: "data", comp: c, proto: p })
+            setCellData(cell, { type: "data", comp: c, proto: p, summary: isSummary })
         }
+
+        for (const c of data.compositors) {
+            /* Setup data cells (summary) */
+            populateDataCells(c)
+        }
+
+        for (const interfaceId of Object.keys(p.supportIf)) {
+            /* Setup interface row titles */
+            const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-desc-interface"] }, [
+                e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [interfaceId]),
+            ])
+            table.appendChild(intetfaceCell)
+            setCellData(intetfaceCell, { type: "row", proto: p, interface: interfaceId })
+
+            for (const c of data.compositors) {
+                /* Setup data cells (interfaces) */
+                populateDataCells(c, { interface: interfaceId })
+            }
+        }
+
+        interfacesExpand(p.id, { set: p.defaultExpand })
     }
 
     // === Setup hover handling ===

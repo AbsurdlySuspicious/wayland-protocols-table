@@ -123,22 +123,29 @@ body {
 }
 
 .comp-table-db {
+    --border-color-hover: #cecece;
+    --border-color-active: #8f8f8f;
+    --border-size-active: 2px;
+
     padding: var(--tag-pad-v) 3px;
     min-width: 15px;
     background-color: #eee;
     border-radius: 3px;
     cursor: pointer;
     text-align: center;
-    border: 1px solid #0000;
     user-select: none;
 }
 
 .comp-table-db:hover {
-    border-color: #cecece
+    outline: 1px solid var(--border-color-hover);
 }
 
 .comp-table-db-active {
-    border: 2px solid #8f8f8f
+    outline: var(--border-size-active) solid var(--border-color-active);
+}
+
+.comp-table-db-active:hover {
+    outline: var(--border-size-active) solid var(--border-color-hover);
 }
 
 .comp-table-cell {
@@ -185,8 +192,14 @@ body {
     align-items: center;
     font-size: 25px;
     cursor: default;
+    border-radius: 4px;
 
     margin-bottom: var(--row-gap-real);
+}
+
+.comp-table-cell-interface {
+    border-radius: 9999px;
+    --cell-size: 30px;
 }
 
 .comp-table-cell-part {
