@@ -313,10 +313,11 @@ function pageCompositorTable(targetContainer, data) {
 
     function mouseMoveHandlerSet(...elements) {
         const hoverClass = "comp-table-cell-hover"
+
         let lastCompId = ""
 
-        function handler(ev) {
-    
+        function mouseMovementHandler(ev) {
+
             const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
             const targetElement = findParent(hoverElement, ".comp-table-cell")
             const compId = targetElement?.dataset?.comp ?? ""
@@ -324,7 +325,7 @@ function pageCompositorTable(targetContainer, data) {
             if (lastCompId == compId)
                 return
             lastCompId = compId
-            
+
             const included = lookupCellSet("data-comp", compId)
             lookupCells("type", "data")
                 .forEach((cell) => cell.classList.toggle(hoverClass, included.has(cell)))
@@ -332,7 +333,7 @@ function pageCompositorTable(targetContainer, data) {
 
         elements.forEach((el) => {
             if (el != null)
-                el.addEventListener("mousemove", handler)
+                el.addEventListener("mousemove", mouseMovementHandler)
         })
     }
 
