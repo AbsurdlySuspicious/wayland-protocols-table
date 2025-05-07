@@ -60,6 +60,24 @@ function findParent(child, selector, opts) {
     return child ?? null
 }
 
+function mapDefault(map, key, def) {
+    let ex = map.get(key)
+    if (ex === undefined)
+        map.set(key, ex = def(key))
+    return ex
+}
+
+function mapLookupAdd(map, keys, ...items) {
+    const set = mapDefault(map, keys.join(":"), () => new Set())
+    set.add(...items)
+    return set
+}
+
+function mapLookupValues(map, keys) {
+    const set = map.get(keys.join(":"))
+    return set == null ? [] : set.values()
+}
+
 const tagColors = {
     core: ["rgb(220 252 231)", "rgb(22 101 52)"],
     wayland: ["rgb(219 234 254)", "rgb(30 64 175)"],
@@ -84,10 +102,44 @@ const SUPPORT_NONE = "none"
 
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
+
+    const cellData = new WeakMap()
+    const cellLookup = new Map()
+
     const columnCellsByComp = {}
     const rowCellsSupportedByComp = {}
     const headerCellsByComp = {}
     const interfaceRowCells = {}
+
+    function setCellData(cell, data) {
+        cellData.set(cell, data)
+        mapLookupAdd(cellLookup, ["type", data.type], cell)
+        if (data.type == "head")
+            mapLookupAdd(cellLookup, ["head-comp", data.comp.id], cell)
+        if (data.type == "row")
+            mapLookupAdd(cellLookup, ["row-proto", data.proto.id], cell)
+        if (data.type == "data") {
+            mapLookupAdd(cellLookup, ["data-comp", data.compId], cell)
+            mapLookupAdd(cellLookup, ["data-proto", data.protoId], cell)
+            if (data.support != null && data.support != SUPPORT_NONE)
+                mapLookupAdd(cellLookup, ["support-comp", data.compId], cell)
+        }
+
+    }
+
+    function lookupCells(keys) {
+        return mapLookupValues(cellLookup, keys)
+    }
+
+    function lookupCellsWithData(keys) {
+        return lookupCells(keys).map((cell) => [cell, cellData[cell]])
+    }
+
+    function* getCells(opts) {
+        yield* lookupCells(["type", "data"])
+        if (opts?.withDesc)
+            yield* lookupCells(["type", "row"])
+    }
 
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
@@ -113,20 +165,6 @@ function pageCompositorTable(targetContainer, data) {
         [tableFixOuter, table, bottomPaddingBlock]
     )
 
-    function getCells(opts) {
-        const classes = [".comp-table-cell-data"]
-        if (opts?.withDesc)
-            classes.push(".comp-table-desc")
-        if (classes.length == 0)
-            return []
-
-        const selector = 
-            classes.length == 1 
-            ? classes[0] 
-            : `:is(${classes.join(",")})`
-        return document.querySelectorAll(selector)
-    }
-
     function filterByCompClickHandler(ev) {
         const headSelectedClass = "comp-table-name-selected"
 
@@ -134,13 +172,13 @@ function pageCompositorTable(targetContainer, data) {
         const clear = targetHeadCell.classList.contains(headSelectedClass)
 
         function setDisplay(cell, visible) {
-            if (visible)   
+            if (visible)
                 cell.style.removeProperty("display")
             else
                 cell.style["display"] = "none"
         }
 
-        getCells({withDesc: true}).forEach((cell) => {
+        getCells({ withDesc: true }).forEach((cell) => {
             setDisplay(cell, clear)
         })
         document.querySelectorAll(".comp-table-name").forEach((headCell) => {
@@ -225,16 +263,18 @@ function pageCompositorTable(targetContainer, data) {
             return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
         })
         const descCell = e("div", { class: "comp-table-desc" }, [
-            e("div", { class: "comp-table-desc-name", data: {proto: p.id} }, [
+            e("div", { class: "comp-table-desc-name", data: { proto: p.id } }, [
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
             e("div", { class: ["comp-table-tag-box"] }, [
-                e("div", {class: ["comp-table-db", "comp-db-interfaces"], onClick: interfacesExpandClickHandler}, ["I"]),
-                e("div", {class: ["comp-table-db", "comp-db-description"]}, ["D"]),
+                e("div", { class: ["comp-table-db", "comp-db-interfaces"], onClick: interfacesExpandClickHandler }, ["I"]),
+                e("div", { class: ["comp-table-db", "comp-db-description"] }, ["D"]),
                 ...tags,
             ]),
         ])
         table.appendChild(descCell)
+        setCellData(descCell, { type: "row", proto: p })
+
         const currentProtoCells = [descCell]
 
         for (const c of data.compositors) {
@@ -256,6 +296,7 @@ function pageCompositorTable(targetContainer, data) {
             currentProtoCells.push(cell)
                 ; (columnCellsByComp[c.id] ??= []).push(cell)
             table.appendChild(cell)
+            setCellData(cell, { type: "data", compId: c.id, protoId: p.id, support: support })
         }
     }
 
