@@ -69,6 +69,16 @@ function setDisplay(el, visible) {
         el.style["display"] = "none"
 }
 
+function stateKey(...keys) {
+    return keys.join(":")
+}
+
+function stateToggleBool(map, key, default_) {
+    const newState = !(map.get(key) ?? default_)
+    map.set(key, newState)
+    return newState
+}
+
 // === Defs ===
 
 const tagColors = {
@@ -93,12 +103,119 @@ const SUPPORT_FULL = "full"
 const SUPPORT_PARTIAL = "partial"
 const SUPPORT_NONE = "none"
 
+const KEY_EXPAND_INTERFACES = "interfaces"
+
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
+    const expandDefaultState = {
+        [KEY_EXPAND_INTERFACES]: false,
+    }
+
+    // === Page state ===
+
+    let columnHighlightComp = null
+    let compFilter = null
+    const rowExpandState = new Map()
+
+    function expandStateToggle(type, protoId) {
+        return stateToggleBool(rowExpandState, stateKey(type, protoId), expandDefaultState[type])
+    }
+
+    function isCompFiltered(compId) {
+        return compFilter != null && compFilter === compId
+    }
+
+    function compFilterStateSetToggle(compId) {
+        if (isCompFiltered(compId))
+            compFilter = null
+        else
+            compFilter = compId
+    }
 
     // === State sync ===
 
-    
+    const dynState = new WeakMap()
+    const dynElements = new Set()
+
+    function dynRegister(element, metadata) {
+        dynState.set(element, metadata)
+        dynElements.add(new WeakRef(element))
+        return element
+    }
+
+    const syncState = (() => {
+        const hoverClass = "comp-table-cell-hover"
+        const headSelectedClass = "comp-table-name-selected"
+        const descButtonActiveClass = "comp-table-db-active"
+
+        let lastHighlightComp = null
+
+        function changeVisibility(el, m, visible) {
+            if (m.visible === visible)
+                return
+            visible = visible ?? false
+            setDisplay(el, visible)
+            m.visible = visible
+        }
+
+        function expandGetState(expandType, m) {
+            return rowExpandState.get(stateKey(expandType, m.proto.id)) ?? expandDefaultState[expandType]
+        }
+
+        function protoHide(shouldHide, m) {
+            if (m.interface != null) {
+                shouldHide = shouldHide
+                    || !expandGetState(KEY_EXPAND_INTERFACES, m)
+            }
+
+            if (!shouldHide && compFilter != null) {
+                const support =
+                    m.interface == null
+                        ? m.proto.supportSum[compFilter]
+                        : m.proto.supportIf[m.interface]
+                shouldHide = !(support != null && support !== SUPPORT_NONE)
+            }
+
+            return shouldHide
+        }
+
+        return () => {
+            for (const elWeak of dynElements.values()) {
+                const el = elWeak.deref()
+                const m = dynState.get(el)
+                if (el === undefined || m === undefined) {
+                    dynElements.delete(elWeak)
+                    continue
+                }
+
+                if (m.type == "data") {
+                    shouldHide = protoHide(false, m)
+                    changeVisibility(el, m, !shouldHide)
+
+                    if (m.visible) {
+                        if (lastHighlightComp != columnHighlightComp)
+                            el.classList.toggle(hoverClass, columnHighlightComp == m.comp.id)
+                    }
+                }
+                else if (m.type == "row") {
+                    shouldHide = protoHide(false, m)
+                    changeVisibility(el, m, !shouldHide)
+                }
+                else if (m.type == "head") {
+                    el.classList.toggle(headSelectedClass, isCompFiltered(m.comp.id))
+                }
+                else if (m.type == "descButton") {
+                    const active = expandGetState(m.buttonType, m)
+                    if (active !== m.active) {
+                        m.active = active
+                        el.classList.toggle(descButtonActiveClass, active)
+                    }
+                }
+            }
+
+            lastHighlightComp = columnHighlightComp
+        }
+    })();
 
     // === Root elements ===
 
@@ -129,40 +246,10 @@ function pageCompositorTable(targetContainer, data) {
     // === Table handlers ===
 
     function filterByCompClickHandler(ev) {
-        const headSelectedClass = "comp-table-name-selected"
-
         const targetHeadCell = ev.currentTarget
         const targetComp = targetHeadCell.dataset.comp
-        const clear = targetHeadCell.classList.contains(headSelectedClass)
-
-        for (const [headCell, meta] of lookupCellsWithData("type", "head")) {
-            headCell.classList.toggle(headSelectedClass, !clear && meta.comp.id == targetComp)
-        }
-        for (const [rowCell, meta] of lookupCellsWithData("type", "row")) {
-            const show = clear || meta.compSupport.has(targetComp)
-            setDisplay(rowCell, show)
-            lookupCells("data-proto", meta.proto.id).forEach((dataCell) => {
-                setDisplay(dataCell, show)
-            })
-        }
-    }
-
-    function descButtonStateGetSet(type, protoId, opts) {
-        const isExpandedKey = `${type}:${protoId}`
-        let isExpanded = isExpandedMap.get(isExpandedKey) ?? null
-        const wasExpanded = isExpanded
-        if (opts?.set != null)
-            isExpanded = opts.set
-        if (opts?.toggle)
-            isExpanded = !isExpanded
-        if (isExpanded !== wasExpanded) {
-            isExpandedMap.set(isExpandedKey, isExpanded)
-            for (const rowCell of lookupCells("row-proto", protoId)) {
-                const button = rowCell.querySelector(`.comp-db-${type}`)
-                button?.classList?.toggle("comp-table-db-active", isExpanded)
-            }
-        }
-        return [wasExpanded, isExpanded]
+        compFilterStateSetToggle(targetComp)
+        syncState()
     }
 
     function descButtonGetProtoId(ev) {
@@ -171,14 +258,10 @@ function pageCompositorTable(targetContainer, data) {
         return descCell.dataset.proto
     }
 
-    function interfacesExpand(protoId, opts) {
-        const [, expand] = descButtonStateGetSet(EXPAND_STATE_INTERFACES, protoId, opts)
-        lookupCells("if-proto", protoId).forEach((cell) => setDisplay(cell, expand))
-    }
-
     function interfacesExpandClickHandler(ev) {
         const protoId = descButtonGetProtoId(ev)
-        interfacesExpand(protoId, { toggle: true })
+        expandStateToggle(KEY_EXPAND_INTERFACES, protoId)
+        syncState()
     }
 
     // === Table populate ===
@@ -199,7 +282,7 @@ function pageCompositorTable(targetContainer, data) {
                         : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
                 ]
             )
-            setCellData(headCell, { type: "head", comp: c })
+            dynRegister(headCell, { type: "head", comp: c })
             return headCell
         }
         table.appendChild(headerCell())
@@ -241,17 +324,24 @@ function pageCompositorTable(targetContainer, data) {
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
             e("div", { class: ["comp-table-tag-box"] }, [
-                e("div", { class: ["comp-table-db", "comp-db-interfaces"], onClick: interfacesExpandClickHandler }, ["I"]),
-                e("div", { class: ["comp-table-db", "comp-db-description"] }, ["D"]),
+                dynRegister(
+                    e("div", {
+                        class: ["comp-table-db", "comp-db-interfaces"],
+                        onClick: interfacesExpandClickHandler
+                    }, ["I"]),
+                    { type: "descButton", buttonType: KEY_EXPAND_INTERFACES, proto: p }
+                ),
+                e("div", {
+                    class: ["comp-table-db", "comp-db-description"]
+                }, ["D"]),
                 ...tags,
             ]),
         ])
-        const compSupportSum = new Set()
         table.appendChild(descCell)
-        setCellData(descCell, { type: "row", proto: p, compSupport: compSupportSum  })
+        dynRegister(descCell, { type: "row", proto: p })
 
         function createDataCell(c, opts) {
-            const interface = opts.interface
+            const interface = opts?.interface
             const isSummary = interface == null
 
             const support =
@@ -270,9 +360,6 @@ function pageCompositorTable(targetContainer, data) {
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
 
-            if (opts.supportSet != null && support != SUPPORT_NONE)
-                opts.supportSet.add(c.id)
-
             const cellClasses = ["comp-table-cell-content", cellClass]
             if (!isSummary)
                 cellClasses.push("comp-table-cell-interface")
@@ -281,12 +368,12 @@ function pageCompositorTable(targetContainer, data) {
             ])
 
             table.appendChild(cell)
-            setCellData(cell, { type: "data", comp: c, proto: p, summary: isSummary })
+            dynRegister(cell, { type: "data", comp: c, proto: p, interface })
         }
 
         for (const c of data.compositors) {
             /* Setup data cells (summary) */
-            createDataCell(c, {supportSet: compSupportSum})
+            createDataCell(c)
         }
 
         for (const interfaceId of Object.keys(p.supportIf)) {
@@ -294,39 +381,28 @@ function pageCompositorTable(targetContainer, data) {
             const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-desc-interface"] }, [
                 e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [interfaceId]),
             ])
-            const compSupportIf = new Set()
             table.appendChild(intetfaceCell)
-            setCellData(intetfaceCell, { type: "row", proto: p, interface: interfaceId, compSupport: compSupportIf })
+            dynRegister(intetfaceCell, { type: "row", proto: p, interface: interfaceId })
 
             for (const c of data.compositors) {
                 /* Setup data cells (interfaces) */
-                createDataCell(c, { interface: interfaceId, supportSet: compSupportIf })
+                createDataCell(c, { interface: interfaceId })
             }
         }
 
-        interfacesExpand(p.id, { set: p.defaultExpand })
+        if (p.defaultExpand)
+            rowExpandState.set(stateKey(KEY_EXPAND_INTERFACES, p.id), true)
     }
 
     // === Setup hover handling ===
 
     function mouseMoveHandlerSet(...elements) {
-        const hoverClass = "comp-table-cell-hover"
-
-        let lastCompId = ""
-
         function mouseMovementHandler(ev) {
-
             const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
             const targetElement = findParent(hoverElement, ".comp-table-cell")
-            const compId = targetElement?.dataset?.comp ?? ""
-
-            if (lastCompId == compId)
-                return
-            lastCompId = compId
-
-            const included = lookupCellSet("data-comp", compId)
-            lookupCells("type", "data")
-                .forEach((cell) => cell.classList.toggle(hoverClass, included.has(cell)))
+            const compId = targetElement?.dataset?.comp ?? null
+            columnHighlightComp = compId
+            syncState()
         }
 
         elements.forEach((el) => {
@@ -380,6 +456,8 @@ function pageCompositorTable(targetContainer, data) {
         document.addEventListener("scroll", fixVisibilityCallback)
         fixVisibilityCallback()
     }, 0)
+
+    syncState()
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
