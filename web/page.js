@@ -110,6 +110,8 @@ const SUPPORT_NONE = "none"
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
+    // === Cell lookup ===
+
     const cellData = new WeakMap()
     const cellLookup = new Map()
 
@@ -141,6 +143,8 @@ function pageCompositorTable(targetContainer, data) {
         return lookupCells(keys).map((cell) => [cell, cellData[cell]])
     }
 
+    // === Root elements ===
+
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
         [e("div", { class: "comp-table-dummy" })]
@@ -164,6 +168,8 @@ function pageCompositorTable(targetContainer, data) {
         { class: "comp-table-root", style: { "--cols": compCount + 1 } },
         [tableFixOuter, table, bottomPaddingBlock]
     )
+
+    // === Table handlers ===
 
     function filterByCompClickHandler(ev) {
         const headSelectedClass = "comp-table-name-selected"
@@ -206,6 +212,8 @@ function pageCompositorTable(targetContainer, data) {
         const compId = descElement.dataset.comp
     }
 
+    // === Table populate ===
+
     for (const c of data.compositors) {
         const headerCell = () => {
             const headCell = e("div",
@@ -229,8 +237,10 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     table.appendChild(
+        /* Additional dummy for percentages */
         e("div", { class: "comp-table-dummy" })
     )
+
     for (const c of data.compositors) {
         const percent = c.supportedPercent
         table.appendChild(
@@ -287,6 +297,8 @@ function pageCompositorTable(targetContainer, data) {
         }
     }
 
+    // === Setup hover handling ===
+
     function mouseMoveHandlerSet(...elements) {
         const hoverClass = "comp-table-cell-hover"
 
@@ -320,8 +332,12 @@ function pageCompositorTable(targetContainer, data) {
         document.querySelector("body")
     )
 
+    // === Populate page ===
+
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
+
+    // === Setup fixed header
 
     function setFixWidthVar(name, sel) {
         if (typeof sel === "string")
