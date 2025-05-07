@@ -174,7 +174,7 @@ function pageCompositorTable(targetContainer, data) {
                 const support =
                     m.interface == null
                         ? m.proto.supportSum[compFilter]
-                        : m.proto.supportIf[m.interface]
+                        : m.proto.supportIf[m.interface][compFilter]
                 shouldHide = !(support != null && support !== SUPPORT_NONE)
             }
 
