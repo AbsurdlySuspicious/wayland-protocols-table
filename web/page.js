@@ -85,9 +85,7 @@ const SUPPORT_NONE = "none"
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
     const columnCellsByComp = {}
-    const allColumnCells = []
     const rowCellsSupportedByComp = {}
-    const allRowCells = []
     const headerCellsByComp = {}
     const interfaceRowCells = {}
 
@@ -115,6 +113,20 @@ function pageCompositorTable(targetContainer, data) {
         [tableFixOuter, table, bottomPaddingBlock]
     )
 
+    function getCells(opts) {
+        const classes = [".comp-table-cell-data"]
+        if (opts?.withDesc)
+            classes.push(".comp-table-desc")
+        if (classes.length == 0)
+            return []
+
+        const selector = 
+            classes.length == 1 
+            ? classes[0] 
+            : `:is(${classes.join(",")})`
+        return document.querySelectorAll(selector)
+    }
+
     function filterByCompClickHandler(ev) {
         const headSelectedClass = "comp-table-name-selected"
 
@@ -128,7 +140,7 @@ function pageCompositorTable(targetContainer, data) {
                 cell.style["display"] = "none"
         }
 
-        allRowCells.forEach((cell) => {
+        getCells({withDesc: true}).forEach((cell) => {
             setDisplay(cell, clear)
         })
         document.querySelectorAll(".comp-table-name").forEach((headCell) => {
@@ -223,7 +235,6 @@ function pageCompositorTable(targetContainer, data) {
             ]),
         ])
         table.appendChild(descCell)
-        allRowCells.push(descCell)
         const currentProtoCells = [descCell]
 
         for (const c of data.compositors) {
@@ -236,14 +247,12 @@ function pageCompositorTable(targetContainer, data) {
                         : support === SUPPORT_NONE
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
-            const cell = e("div", { class: "comp-table-cell", data: { comp: c.id } }, [
+            const cell = e("div", { class: ["comp-table-cell", "comp-table-cell-data"], data: { comp: c.id } }, [
                 e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
             ])
             if (support != SUPPORT_NONE) {
                 (rowCellsSupportedByComp[c.id] ??= []).push(currentProtoCells)
             }
-            allColumnCells.push(cell)
-            allRowCells.push(cell)
             currentProtoCells.push(cell)
                 ; (columnCellsByComp[c.id] ??= []).push(cell)
             table.appendChild(cell)
@@ -252,7 +261,7 @@ function pageCompositorTable(targetContainer, data) {
 
     function mouseMoveHandler(ev) {
         const hoverClass = "comp-table-cell-hover"
-        allColumnCells.forEach((cell) => cell.classList.remove(hoverClass))
+        getCells().forEach((cell) => cell.classList.remove(hoverClass))
 
         const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
         const targetElement = findParent(hoverElement, ".comp-table-cell")
