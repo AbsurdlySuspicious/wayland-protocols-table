@@ -78,6 +78,10 @@ const tagColors = {
     __default: ["rgb(244 244 245)", "rgb(39 39 42)"],
 }
 
+const SUPPORT_FULL = "full"
+const SUPPORT_PARTIAL = "partial"
+const SUPPORT_NONE = "none"
+
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
     const columnCellsByComp = {}
@@ -223,19 +227,19 @@ function pageCompositorTable(targetContainer, data) {
         const currentProtoCells = [descCell]
 
         for (const c of data.compositors) {
-            const support = p.supportSum[c.id] ?? "none"
+            const support = p.supportSum[c.id] ?? SUPPORT_NONE
             const [cellClass, cellText] =
-                support === "full"
+                support === SUPPORT_FULL
                     ? ["comp-table-cell-full", "+"]
-                    : support === "partial"
+                    : support === SUPPORT_PARTIAL
                         ? ["comp-table-cell-part", "~"]
-                        : support === "none"
+                        : support === SUPPORT_NONE
                             ? ["comp-table-cell-no", "X"]
                             : ["", "?"]
             const cell = e("div", { class: "comp-table-cell", data: { comp: c.id } }, [
                 e("div", { class: ["comp-table-cell-content", cellClass], title: c.name }, [cellText])
             ])
-            if (support != "none") {
+            if (support != SUPPORT_NONE) {
                 (rowCellsSupportedByComp[c.id] ??= []).push(currentProtoCells)
             }
             allColumnCells.push(cell)
