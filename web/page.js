@@ -117,6 +117,7 @@ function pageCompositorTable(targetContainer, data) {
 
     let columnHighlightComp = null
     let compFilter = null
+    let compFilterInvert = false
     const rowExpandState = new Map()
 
     function expandStateToggle(type, protoId) {
@@ -128,10 +129,16 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     function compFilterStateSetToggle(compId) {
-        if (isCompFiltered(compId))
-            compFilter = null
-        else
+        if (isCompFiltered(compId)) {
+            if (!compFilterInvert)
+                compFilterInvert = true
+            else
+                compFilter = null
+        }
+        else {
             compFilter = compId
+            compFilterInvert = false
+        }
     }
 
     // === State sync ===
@@ -148,6 +155,7 @@ function pageCompositorTable(targetContainer, data) {
     const syncState = (() => {
         const hoverClass = "comp-table-cell-hover"
         const headSelectedClass = "comp-table-name-selected"
+        const headSelectedInvClass = "comp-table-name-selected-inv"
         const descButtonActiveClass = "comp-table-db-active"
 
         let lastHighlightComp = null
@@ -173,9 +181,13 @@ function pageCompositorTable(targetContainer, data) {
             if (!shouldHide && compFilter != null) {
                 const support =
                     m.interface == null
-                        ? m.proto.supportSum[compFilter]
+                        ? m.proto.supportSum[compFilter] ?? SUPPORT_NONE
                         : m.proto.supportIf[m.interface][compFilter]
-                shouldHide = !(support != null && support !== SUPPORT_NONE)
+                            ? SUPPORT_FULL : SUPPORT_NONE
+                if (compFilterInvert)
+                    shouldHide = support === SUPPORT_FULL
+                else
+                    shouldHide = support === SUPPORT_NONE
             }
 
             return shouldHide
@@ -219,7 +231,15 @@ function pageCompositorTable(targetContainer, data) {
                     changeVisibility(el, m, !shouldHide)
                 }
                 else if (m.type === "head") {
-                    el.classList.toggle(headSelectedClass, isCompFiltered(m.comp.id))
+                    const cl = el.classList
+                    if (isCompFiltered(m.comp.id)) {
+                        cl.add(headSelectedClass)
+                        cl.toggle(headSelectedInvClass, compFilterInvert)
+                    }
+                    else {
+                        cl.remove(headSelectedClass, headSelectedInvClass)
+                    }
+
                 }
                 else if (m.type === "descButton") {
                     const active = expandGetState(m.buttonType, m)

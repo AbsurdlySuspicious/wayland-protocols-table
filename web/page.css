@@ -67,6 +67,10 @@ body {
     background-color: #b9d992;
 }
 
+.comp-table-name-selected-inv {
+    background-color: #d6794b;
+}
+
 .comp-table-name-text {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
