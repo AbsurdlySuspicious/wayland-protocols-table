@@ -141,6 +141,13 @@ function pageCompositorTable(targetContainer, data) {
         }
     }
 
+    function getCompositorSupport(compId, proto, interface) {
+        return interface == null
+            ? proto.supportSum[compId] ?? SUPPORT_NONE
+            : proto.supportIf[interface][compId]
+                ? SUPPORT_FULL : SUPPORT_NONE
+    }
+
     // === State sync ===
 
     const dynState = new WeakMap()
@@ -180,10 +187,7 @@ function pageCompositorTable(targetContainer, data) {
 
             if (!shouldHide && compFilter != null) {
                 const support =
-                    m.interface == null
-                        ? m.proto.supportSum[compFilter] ?? SUPPORT_NONE
-                        : m.proto.supportIf[m.interface][compFilter]
-                            ? SUPPORT_FULL : SUPPORT_NONE
+                    getCompositorSupport(compFilter, m.proto, m.interface)
                 if (compFilterInvert)
                     shouldHide = support === SUPPORT_FULL
                 else
@@ -379,14 +383,9 @@ function pageCompositorTable(targetContainer, data) {
 
         function createDataCell(c, opts) {
             const interface = opts?.interface
-            const isSummary = interface == null
 
-            const support =
-                isSummary
-                    ? p.supportSum[c.id] ?? SUPPORT_NONE
-                    : p.supportIf[interface][c.id]
-                        ? SUPPORT_FULL
-                        : SUPPORT_NONE
+            const support = 
+                getCompositorSupport(c.id, p, interface)
 
             const [cellClass, cellText] =
                 support === SUPPORT_FULL
@@ -398,7 +397,7 @@ function pageCompositorTable(targetContainer, data) {
                             : ["", "?"]
 
             const cellClasses = ["comp-table-cell-content", cellClass]
-            if (!isSummary)
+            if (interface != null)
                 cellClasses.push("comp-table-cell-interface")
             const cell = e("div", { class: ["comp-table-cell", "comp-table-cell-data"], data: { comp: c.id } }, [
                 e("div", { class: cellClasses, title: c.name }, [cellText])
