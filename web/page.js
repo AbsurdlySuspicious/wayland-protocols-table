@@ -198,10 +198,8 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         function mouseMoveData(el, m) {
-            if (m.visible) {
-                if (lastHighlightComp != columnHighlightComp)
-                    el.classList.toggle(hoverClass, columnHighlightComp == m.comp.id)
-            }
+            if (lastHighlightComp != columnHighlightComp)
+                el.classList.toggle(hoverClass, columnHighlightComp == m.comp.id)
         }
 
         return (dueTo) => {
@@ -384,7 +382,7 @@ function pageCompositorTable(targetContainer, data) {
         function createDataCell(c, opts) {
             const interface = opts?.interface
 
-            const support = 
+            const support =
                 getCompositorSupport(c.id, p, interface)
 
             const [cellClass, cellText] =
