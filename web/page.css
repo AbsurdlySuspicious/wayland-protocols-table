@@ -55,6 +55,9 @@ body {
 
 .comp-table-name {
     padding-bottom: var(--row-gap);
+    padding-top: var(--row-gap);
+    border-radius: 4px;
+
     display: flex;
     row-gap: .8em;
     flex-flow: column;
@@ -116,7 +119,7 @@ body {
     --tag-fg: #000;
 
     cursor: default;
-    padding: var(--tag-pad-v) 10px;;
+    padding: var(--tag-pad-v) 10px;
     border-radius: 9999px;
     font-weight: 600;
     color: var(--tag-fg);
