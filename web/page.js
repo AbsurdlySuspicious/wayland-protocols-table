@@ -189,6 +189,10 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         return (dueTo) => {
+            if (!dueTo) {
+                columnHighlightComp = null
+            }
+
             for (const elWeak of dynElements.values()) {
                 const el = elWeak.deref()
                 const m = dynState.get(el)
@@ -199,10 +203,10 @@ function pageCompositorTable(targetContainer, data) {
 
                 if (dueTo == SYNC_DUE_TO_MOUSEMOVE) {
                     if (!m.visible)
-                        return
+                        continue
                     if (m.type === "data")
                         mouseMoveData(el, m)
-                    return
+                    continue
                 }
 
                 if (m.type === "data") {
@@ -416,7 +420,7 @@ function pageCompositorTable(targetContainer, data) {
             const compId = targetElement?.dataset?.comp ?? null
             if (compId != columnHighlightComp) {
                 columnHighlightComp = compId
-                syncState()
+                syncState(SYNC_DUE_TO_MOUSEMOVE)
             }
         }
 
