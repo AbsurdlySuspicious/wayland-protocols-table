@@ -155,6 +155,10 @@ body {
     outline: var(--border-size-active) solid var(--border-color-hover);
 }
 
+.comp-table-even-odd {
+    background-color: #575757;
+}
+
 .comp-table-cell {
     margin-right: var(--col-gap);
     padding-top: var(--row-gap-real);

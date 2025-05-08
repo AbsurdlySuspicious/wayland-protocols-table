@@ -203,6 +203,8 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         return (dueTo) => {
+            let rowVisibilityChanged = false
+
             if (!dueTo) {
                 columnHighlightComp = null
             }
@@ -231,6 +233,7 @@ function pageCompositorTable(targetContainer, data) {
                 else if (m.type === "row") {
                     shouldHide = protoHide(false, m)
                     changeVisibility(el, m, !shouldHide)
+                    rowVisibilityChanged = true  // actually detect if changed?
                 }
                 else if (m.type === "head") {
                     const cl = el.classList
@@ -253,6 +256,20 @@ function pageCompositorTable(targetContainer, data) {
             }
 
             lastHighlightComp = columnHighlightComp
+
+            if (rowVisibilityChanged) {
+                setTimeout(async () => {
+                    const cells =
+                        document.querySelectorAll(":is(.comp-table-desc, .comp-table-cell)")
+                    let i = 0
+                    for (const cell of cells) {
+                        const m = dynState.get(cell)
+                        if (!m || !m.visible) continue
+                        if (m.type == "row") i++
+                        cell.classList.toggle("comp-table-even-odd", i % 2 == 0)
+                    }
+                }, 0)
+            }
         }
     })();
 
