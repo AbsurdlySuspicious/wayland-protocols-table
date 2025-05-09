@@ -101,6 +101,10 @@ body {
     background-color: var(--cell-bg);
 }
 
+.comp-table-desc.comp-table-interface {
+    padding-left: 30px;
+}
+
 .comp-table-desc-name {
     flex-basis: 100%;
     display: flex;
@@ -171,6 +175,7 @@ body {
     display: flex;
     width: 100%;
     justify-content: center;
+    align-items: center;
 
     background-color: var(--cell-bg);
 }
