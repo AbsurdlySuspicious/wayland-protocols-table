@@ -43,6 +43,8 @@ function e(elementName, opts, children) {
     }
 
     for (const c of (children || [])) {
+        if (c == null || c === false)
+            continue
         if (typeof c === "string")
             el.appendChild(document.createTextNode(c))
         else
@@ -95,6 +97,7 @@ const tagColors = {
     stable: ["rgb(220 252 231)", "rgb(22 101 52)"],
     staging: ["rgb(254 226 226)", "rgb(153 27 27)"],
     unstable: ["rgb(252 231 243)", "rgb(157 23 77)"],
+    deprecated: ["rgb(252, 236, 231)", "rgb(157, 61, 23)"],
 
     __default: ["rgb(244 244 245)", "rgb(39 39 42)"],
 }
@@ -373,27 +376,32 @@ function pageCompositorTable(targetContainer, data) {
     for (const p of data.protocols) {
         /* Setup protocol row titles */
 
-        const tags = p.tags.map((t) => {
-            const [bg, fg] = tagColors[t] ?? tagColors.__default
-            return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
-        })
+        const tags = ['source', 'deprecated', 'stability']
+            .map((t) => p.tags[t])
+            .filter((t) => t != null)
+            .map((t) => {
+                const [bg, fg] = tagColors[t] ?? tagColors.__default
+                return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
+            })
+
         const descCell = e("div", { class: "comp-table-desc", data: { proto: p.id } }, [
             e("div", { class: "comp-table-desc-name", data: { proto: p.id } }, [
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
             e("div", { class: ["comp-table-tag-box"] }, [
                 ...tags,
-                e("div", { style: "margin-left: auto;" }),
-                dynRegister(
+                e("div", { class: ["comp-table-tag-box"], style: "margin-left: auto;" }, [
+                    dynRegister(
+                        e("div", {
+                            class: ["comp-table-db", "comp-db-interfaces"],
+                            onClick: interfacesExpandClickHandler
+                        }, ["I"]),
+                        { type: "descButton", buttonType: KEY_EXPAND_INTERFACES, proto: p }
+                    ),
                     e("div", {
-                        class: ["comp-table-db", "comp-db-interfaces"],
-                        onClick: interfacesExpandClickHandler
-                    }, ["I"]),
-                    { type: "descButton", buttonType: KEY_EXPAND_INTERFACES, proto: p }
-                ),
-                e("div", {
-                    class: ["comp-table-db", "comp-db-description"]
-                }, ["D"]),
+                        class: ["comp-table-db", "comp-db-description"]
+                    }, ["D"]),
+                ]),
             ]),
         ])
         table.appendChild(descCell)
@@ -434,12 +442,25 @@ function pageCompositorTable(targetContainer, data) {
             createDataCell(c)
         }
 
+        let hasDeprecations = false
+
         for (const interfaceId of Object.keys(p.supportIf)) {
             /* Setup interface row titles */
+
+            const interfaceDeprecation = p.deprecations?.[interfaceId]
+            if (interfaceDeprecation)
+                hasDeprecations = true
+
             const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-interface"] }, [
                 e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [
                     interfaceId.replace(/_/g, "\u200b_"),
                 ]),
+                interfaceDeprecation
+                    ? e("div", { class: ["comp-table-interface-deprecation"] }, [
+                        e("b", {}, ["Deprecated: "]),
+                        e("span", {}, [interfaceDeprecation])
+                    ])
+                    : null,
             ])
             table.appendChild(intetfaceCell)
             dynRegister(intetfaceCell, { type: "row", proto: p, interface: interfaceId })
@@ -450,7 +471,7 @@ function pageCompositorTable(targetContainer, data) {
             }
         }
 
-        if (p.defaultExpand)
+        if ((hasDeprecations && !p.deprecatedFull) || p.defaultExpand)
             rowExpandState.set(stateKey(KEY_EXPAND_INTERFACES, p.id), true)
     }
 

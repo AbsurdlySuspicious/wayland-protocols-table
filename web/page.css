@@ -132,6 +132,14 @@ body {
     color: #2b5b80;
 }
 
+.comp-table-interface-deprecation {
+    color: #b74646;
+}
+
+.comp-table-interface-deprecation b {
+    font-weight: 600;
+}
+
 .comp-table-tag-box {
     --tag-pad-v: 2px;
 

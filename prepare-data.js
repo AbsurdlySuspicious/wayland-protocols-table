@@ -14,6 +14,8 @@ const SUPPORT_FULL = "full"
 const SUPPORT_PARTIAL = "partial"
 const SUPPORT_NONE = "none"
 
+const DEPRECATED_FULL = "deprecated"
+
 function protoPercentageFilter(p) {
     // exclude compositor specific protocols from percentage
     return ![
@@ -30,18 +32,22 @@ const protocols = []
 const protocolInterfaceMap = {}
 const protocolSupportByComp = {}
 protoData.waylandProtocolRegistry.protocols.forEach((p) => {
+    const deprecations = p.deprecated
+        ? Object.fromEntries(p.deprecated.map((d) => [d.name, d.reason]))
+        : null
     const protocol = {
         id: p.id,
         name: p.name,
         desc: p.protocol.description?.summary,
-        tags: [
-            p.source.replace(/-protocols$/, ""), 
-            p.stability
-        ],
+        tags: {
+            source: p.source.replace(/-protocols$/, ""), 
+            stability: p.stability,
+        },
         source: p.source,
         supportIf: {},
         supportSum: {},
         defaultExpand: false,
+        deprecations,
     }
     p.protocol?.interfaces?.forEach((iface) => {
         protocolInterfaceMap[iface.name] = protocol
@@ -71,6 +77,25 @@ compData.compositorRegistry.forEach((c) => {
     }
 })
 
+function deprecationStatus(p) {
+    const d = p.deprecations
+    if (!d || d.length == 0)
+        return null
+    if (Object.keys(p.supportIf).length == 0)
+        return DEPRECATED_FULL
+    
+    const supportedDeprecated = new Set()
+    const supportedInterfaces = Object.keys(p.supportIf)
+    for (const interface of supportedInterfaces) {
+        if (d[interface] != null)
+            supportedDeprecated.add(interface)
+    }
+    if (supportedDeprecated.size == supportedInterfaces.length)
+        return DEPRECATED_FULL
+
+    return null
+}
+
 protocols.forEach((p) => {
     let ifTotal = 0
     let hasNonFull = false
@@ -94,6 +119,12 @@ protocols.forEach((p) => {
             objIncr(protocolSupportByComp, compId, supportGrade == SUPPORT_FULL ? 1 : 0.5)
     }
     p.defaultExpand = hasNonFull
+
+    const deprecation = deprecationStatus(p)
+    if (deprecation === DEPRECATED_FULL) {
+        p.tags.deprecated = deprecation
+        p.deprecatedFull = true
+    }
 })
 
 for (const [compId, supported] of Object.entries(protocolSupportByComp)) {
