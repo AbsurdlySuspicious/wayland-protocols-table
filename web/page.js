@@ -97,7 +97,7 @@ const tagColors = {
     stable: ["rgb(220 252 231)", "rgb(22 101 52)"],
     staging: ["rgb(254 226 226)", "rgb(153 27 27)"],
     unstable: ["rgb(252 231 243)", "rgb(157 23 77)"],
-    deprecated: ["rgb(252, 236, 231)", "rgb(157, 61, 23)"],
+    deprecated: ["rgb(252, 236, 231)", "rgb(157, 61, 23)", ["striped-bg", "comp-table-tag-deprecated"]],
 
     __default: ["rgb(244 244 245)", "rgb(39 39 42)"],
 }
@@ -296,7 +296,7 @@ function pageCompositorTable(targetContainer, data) {
     )
 
     const bottomPaddingBlock = e("div",
-        { class: "comp-table-bottom-pad" }
+        { class: ["comp-table-bottom-pad", "striped-bg"] }
     )
 
     const root = e("div",
@@ -380,8 +380,11 @@ function pageCompositorTable(targetContainer, data) {
             .map((t) => p.tags[t])
             .filter((t) => t != null)
             .map((t) => {
-                const [bg, fg] = tagColors[t] ?? tagColors.__default
-                return e("div", { class: ["comp-table-tag"], style: { "--tag-bg": bg, "--tag-fg": fg } }, [t])
+                const [bg, fg, classes] = tagColors[t] ?? tagColors.__default
+                return e("div", { 
+                    class: ["comp-table-tag", ...(classes ?? [])], 
+                    style: { "--tag-bg": bg, "--tag-fg": fg } 
+                }, [t])
             })
 
         const descCell = e("div", { class: "comp-table-desc", data: { proto: p.id } }, [

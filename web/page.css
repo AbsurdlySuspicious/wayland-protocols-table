@@ -7,6 +7,19 @@ body {
     background-color: var(--bg);
 }
 
+.striped-bg {
+    --stripe-a: #000;
+    --stripe-b: #fff;
+    --stripe-size: 10px;
+    --stripe-dir: 315deg;
+    background:
+        repeating-linear-gradient(var(--stripe-dir),
+            var(--stripe-a),
+            var(--stripe-a) var(--stripe-size),
+            var(--stripe-b) var(--stripe-size),
+            var(--stripe-b) calc(var(--stripe-size) * 2));
+}
+
 .comp-table-root {
     position: relative;
 }
@@ -61,12 +74,7 @@ body {
     --stripe-a: #0000;
     --stripe-b: #e4e4e4;
     --stripe-size: 25px;
-    background:
-        repeating-linear-gradient(315deg,
-            var(--stripe-a),
-            var(--stripe-a) var(--stripe-size),
-            var(--stripe-b) var(--stripe-size),
-            var(--stripe-b) calc(var(--stripe-size) * 2));
+    --stripe-dir: 315deg;
 }
 
 .comp-table-name {
@@ -163,6 +171,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.comp-table-tag-deprecated {
+    --stripe-a: #0000;
+    --stripe-b: rgb(247, 211, 200);
+    --stripe-size: 5px;
 }
 
 .comp-table-db {
