@@ -53,7 +53,7 @@ body {
     padding: 10px;
     width: fit-content;
     display: grid;
-    grid-template-columns: repeat(var(--cols), auto);
+    grid-template-columns: fit-content(350px) repeat(calc(var(--cols) - 1), auto);
 }
 
 .comp-table-bottom-pad {
@@ -108,7 +108,8 @@ body {
 
     display: flex;
     row-gap: 10px;
-    flex-flow: row wrap;
+    flex-flow: column;
+    justify-content: center;
 
     background-color: var(--cell-bg);
 }
@@ -118,10 +119,7 @@ body {
 }
 
 .comp-table-desc-name {
-    flex-basis: 100%;
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
+    word-break: break-word;
 }
 
 .comp-table-desc-name a {

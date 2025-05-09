@@ -436,7 +436,9 @@ function pageCompositorTable(targetContainer, data) {
         for (const interfaceId of Object.keys(p.supportIf)) {
             /* Setup interface row titles */
             const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-interface"] }, [
-                e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [interfaceId]),
+                e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [
+                    interfaceId.replace(/_/g, "\u200b_"),
+                ]),
             ])
             table.appendChild(intetfaceCell)
             dynRegister(intetfaceCell, { type: "row", proto: p, interface: interfaceId })
