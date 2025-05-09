@@ -41,14 +41,13 @@ body {
 
     --row-border: 1px;
     --row-border-style: none;
-    --row-border-color: #bfbfbf;
-    --row-border-color-hover: #6f6f6f;
+    --row-border-color: #0000001f;
+    --row-border-color-hover: #00000029;
 
-    --cell-bg: #e4e4e4;
-    --cell-bg-alt: #cecece;
-    --cell-hover-bg: #98b9cc;
-    --cell-hover-bg-alt: #8aa1ae;
-
+    --cell-bg: #ececec;
+    --cell-bg-alt: #e1e1e1;
+    --cell-hover-bg: #a9cee4;
+    --cell-hover-bg-alt: #9bc2d9;
     --row-gap-real: calc(var(--row-gap) / 2);
 
     padding: 10px;
@@ -140,7 +139,7 @@ body {
 
     display: flex;
     flex-flow: row wrap;
-    gap: 5px;
+    gap: 10px;
     font-size: 13px;
 }
 
@@ -154,6 +153,7 @@ body {
     font-weight: 600;
     color: var(--tag-fg);
     background-color: var(--tag-bg);
+    outline: 1px solid var(--tag-fg);
     display: flex;
     justify-content: center;
     align-items: center;
