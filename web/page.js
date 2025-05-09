@@ -402,20 +402,24 @@ function pageCompositorTable(targetContainer, data) {
             const support =
                 getCompositorSupport(c.id, p, interface)
 
-            const [cellClass, cellText] =
+            const [cellContentClass, cellText] =
                 support === SUPPORT_FULL
                     ? ["comp-table-cell-full", "+"]
                     : support === SUPPORT_PARTIAL
                         ? ["comp-table-cell-part", "~"]
                         : support === SUPPORT_NONE
                             ? ["comp-table-cell-no", "X"]
-                            : ["", "?"]
+                            : ["", "?"];
 
-            const cellClasses = ["comp-table-cell-content", cellClass]
-            if (interface != null)
-                cellClasses.push("comp-table-cell-interface")
-            const cell = e("div", { class: ["comp-table-cell", "comp-table-cell-data"], data: { comp: c.id } }, [
-                e("div", { class: cellClasses, title: c.name }, [cellText])
+            const cellClasses = ["comp-table-cell", "comp-table-cell-data"]
+            const cellContentClasses = ["comp-table-cell-content", cellContentClass]
+            if (interface != null) {
+                cellClasses.push("comp-table-interface")
+                cellContentClasses.push("comp-table-cell-interface-content")
+            }
+
+            const cell = e("div", { class: cellClasses, data: { comp: c.id } }, [
+                e("div", { class: cellContentClasses, title: c.name }, [cellText])
             ])
 
             table.appendChild(cell)
@@ -429,7 +433,7 @@ function pageCompositorTable(targetContainer, data) {
 
         for (const interfaceId of Object.keys(p.supportIf)) {
             /* Setup interface row titles */
-            const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-desc-interface"] }, [
+            const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-interface"] }, [
                 e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [interfaceId]),
             ])
             table.appendChild(intetfaceCell)
