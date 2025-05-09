@@ -58,7 +58,16 @@ body {
 }
 
 .comp-table-bottom-pad {
-    height: 80vh;
+    height: 30vh;
+    --stripe-a: #0000;
+    --stripe-b: #e4e4e4;
+    --stripe-size: 25px;
+    background:
+        repeating-linear-gradient(315deg,
+            var(--stripe-a),
+            var(--stripe-a) var(--stripe-size),
+            var(--stripe-b) var(--stripe-size),
+            var(--stripe-b) calc(var(--stripe-size) * 2));
 }
 
 .comp-table-name {
