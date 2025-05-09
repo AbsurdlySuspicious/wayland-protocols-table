@@ -35,18 +35,19 @@ body {
 }
 
 .comp-table {
-    --row-gap: 10px;
+    --row-gap: 14px;
     --col-gap: 20px;
     --cell-size: 35px;
 
     --row-border: 1px;
     --row-border-style: none;
-    --row-border-color: #000;
+    --row-border-color: #bfbfbf;
+    --row-border-color-hover: #6f6f6f;
 
-    --cell-bg: #0000;
-    --cell-bg-alt: #c6c6c6;
-    --cell-hover-bg: #31a1c48a;
-    --cell-hover-bg-alt: #2c85278a;
+    --cell-bg: #e4e4e4;
+    --cell-bg-alt: #cecece;
+    --cell-hover-bg: #98b9cc;
+    --cell-hover-bg-alt: #8aa1ae;
 
     --row-gap-real: calc(var(--row-gap) / 2);
 
@@ -88,9 +89,12 @@ body {
 }
 
 .comp-table-desc {
+    --padding-left: 10px;
+
     padding-bottom: var(--row-gap-real);
     padding-top: var(--row-gap-real);
     padding-right: var(--col-gap);
+    padding-left: var(--padding-left);
     border-top: var(--row-border) var(--row-border-style) var(--row-border-color);
     min-height: var(--cell-size);
 
@@ -102,7 +106,7 @@ body {
 }
 
 .comp-table-desc.comp-table-interface {
-    padding-left: 30px;
+    padding-left: calc(var(--padding-left) + 30px);
 }
 
 .comp-table-desc-name {
@@ -114,8 +118,12 @@ body {
 
 .comp-table-desc-name a {
     text-decoration: none;
-    color: #07628f;
+    color: #404040;
     font-weight: 800;
+}
+
+.comp-table-desc-name a:hover {
+    color: #2b5b80;
 }
 
 .comp-table-tag-box {
@@ -143,7 +151,7 @@ body {
 }
 
 .comp-table-db {
-    --border-color-hover: #cecece;
+    --border-color-hover: #444;
     --border-color-active: #8f8f8f;
     --border-size-active: 2px;
 
@@ -151,6 +159,8 @@ body {
     min-width: 15px;
     background-color: #eee;
     border-radius: 3px;
+    box-shadow: 0 0 1px 1px #00000036;
+
     cursor: pointer;
     text-align: center;
     user-select: none;
@@ -176,12 +186,14 @@ body {
     width: 100%;
     justify-content: center;
     align-items: center;
+    z-index: 0;
 
     background-color: var(--cell-bg);
 }
 
 .comp-table-cell-hover {
     background-color: var(--cell-hover-bg);
+    --row-border-color: var(--row-border-color-hover);
 }
 
 .comp-table-cell-no-border {
@@ -189,6 +201,10 @@ body {
 }
 
 .comp-table-cell-prc {
+    background: none;
+}
+
+.comp-table-cell-prc-content {
     font-weight: 500;
     margin-bottom: 5px;
     padding: 3px;
@@ -203,7 +219,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -10;
+    z-index: -1;
 }
 
 .comp-table-cell-content {

@@ -357,11 +357,11 @@ function pageCompositorTable(targetContainer, data) {
         const percent = c.supportedPercent
         table.appendChild(
             e("div", {
-                class: ["comp-table-cell", "comp-table-cell-no-border"],
+                class: ["comp-table-cell", "comp-table-cell-prc", "comp-table-cell-no-border"],
                 style: { "--prc": percent / 100 },
             }, [
                 e("div", {
-                    class: ["comp-table-cell-prc"],
+                    class: ["comp-table-cell-prc-content"],
                 }, [
                     `${percent}%`,
                     e("div", { class: ["comp-table-cell-prc-bg"] }),
