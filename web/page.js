@@ -264,8 +264,10 @@ function pageCompositorTable(targetContainer, data) {
                     let i = 0
                     for (const cell of cells) {
                         const m = dynState.get(cell)
-                        if (!m || !m.visible) continue
-                        if (m.type == "row") i++
+                        if (!m || !m.visible)
+                            continue
+                        if (m.type == "row" && m.interface == null)
+                            i++
                         cell.classList.toggle("comp-table-even-odd", i % 2 == 0)
                     }
                 }, 0)
