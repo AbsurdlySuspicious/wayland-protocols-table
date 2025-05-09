@@ -164,9 +164,11 @@ body {
 
     padding: var(--tag-pad-v) 3px;
     min-width: 15px;
-    background-color: #eee;
-    border-radius: 3px;
-    box-shadow: 0 0 1px 1px #00000036;
+    background-color: #0000;
+    border-radius: 5px;
+    outline: 1px solid #0000002e;
+    color: #606060;
+    font-weight: 500;
 
     cursor: pointer;
     text-align: center;

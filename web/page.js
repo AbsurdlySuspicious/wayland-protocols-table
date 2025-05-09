@@ -382,6 +382,8 @@ function pageCompositorTable(targetContainer, data) {
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
             e("div", { class: ["comp-table-tag-box"] }, [
+                ...tags,
+                e("div", { style: "margin-left: auto;" }),
                 dynRegister(
                     e("div", {
                         class: ["comp-table-db", "comp-db-interfaces"],
@@ -392,7 +394,6 @@ function pageCompositorTable(targetContainer, data) {
                 e("div", {
                     class: ["comp-table-db", "comp-db-description"]
                 }, ["D"]),
-                ...tags,
             ]),
         ])
         table.appendChild(descCell)
