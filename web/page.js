@@ -120,7 +120,7 @@ function pageCompositorTable(targetContainer, data) {
 
     let initHeaderWidthSet = false
     let highlightColumnComp = null
-    let highlightRowProto = null
+    let highlightRow = null
     let compFilter = null
     let compFilterInvert = false
     const rowExpandState = new Map()
@@ -151,6 +151,12 @@ function pageCompositorTable(targetContainer, data) {
             ? proto.supportSum[compId] ?? SUPPORT_NONE
             : proto.supportIf[interface]?.[compId]
                 ? SUPPORT_FULL : SUPPORT_NONE
+    }
+
+    function getRowKey(m) {
+        if (m?.proto == null)
+            return null
+        return `${m.proto.id};${m.interface ?? ""}`
     }
 
     // === Adjust header widths ===
@@ -224,13 +230,13 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         function mouseMoveCell(el, m) {
-            if (lastHighlight.comp != highlightColumnComp) {
+            if (lastHighlight.col != highlightColumnComp) {
                 el.classList.toggle(hoverColumnClass, highlightColumnComp == m.comp.id)
                 if (highlightColumnComp == m.comp.id) console.log("col toggled", highlightColumnComp)
             }
-            if (lastHighlight.proto != highlightRowProto) {
-                el.classList.toggle(hoverRowClass, highlightRowProto == m.proto.id)
-                if (highlightRowProto == m.proto.id) console.log("row toggled", highlightRowProto)
+            if (lastHighlight.row != highlightRow) {
+                el.classList.toggle(hoverRowClass, highlightRow == getRowKey(m))
+                if (highlightRow == m.proto.id) console.log("row toggled", highlightRow)
             }
         }
 
@@ -286,8 +292,8 @@ function pageCompositorTable(targetContainer, data) {
                 }
             }
 
-            lastHighlight.comp = highlightColumnComp
-            lastHighlight.proto = highlightRowProto
+            lastHighlight.col = highlightColumnComp
+            lastHighlight.row = highlightRow
 
             if (!dueTo)
                 updateHeaderWidth()
@@ -546,7 +552,7 @@ function pageCompositorTable(targetContainer, data) {
                 console.log("fired", lastHoverElement?.deref(), targetElement)
                 const m = dynState.get(targetElement)
                 highlightColumnComp = m?.comp?.id ?? null
-                highlightRowProto = m?.proto?.id ?? null
+                highlightRow = getRowKey(m)
                 if (targetElement != null)
                     lastHoverElement = new WeakRef(targetElement)
                 syncState(SYNC_DUE_TO_MOUSEMOVE)
