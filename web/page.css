@@ -326,6 +326,22 @@ body {
     --row-border-style: solid;
 }
 
+.comp-table-fulldesc {
+    grid-column: 1 / span var(--cols);
+    justify-content: stretch;
+}
+
+.comp-table-fulldesc .i-wrapper {
+    padding: 20px;
+    display: flex;
+    justify-content: start;
+}
+
+.comp-table-fulldesc .i-text {
+    max-width: 600px;
+    white-space: pre-line;
+}
+
 .comp-icon {
     --size: 20px;
 

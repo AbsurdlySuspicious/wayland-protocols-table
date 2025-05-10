@@ -39,6 +39,7 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         id: p.id,
         name: p.name,
         desc: p.protocol.description?.summary,
+        descFull: p.protocol.description?.text,
         tags: {
             source: p.source.replace(/-protocols$/, ""), 
             stability: p.stability,

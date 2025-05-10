@@ -115,6 +115,7 @@ const SUPPORT_PARTIAL = "partial"
 const SUPPORT_NONE = "none"
 
 const KEY_EXPAND_INTERFACES = "interfaces"
+const KEY_EXPAND_FULLDESC = "fulldesc"
 
 const SYNC_DUE_TO_MOUSEMOVE = 1
 
@@ -122,6 +123,7 @@ function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
     const expandDefaultState = {
         [KEY_EXPAND_INTERFACES]: false,
+        [KEY_EXPAND_FULLDESC]: false,
     }
 
     // === Page state ===
@@ -288,12 +290,12 @@ function pageCompositorTable(targetContainer, data) {
                 }
 
                 if (m.type === "data") {
-                    shouldHide = protoHide(false, m)
+                    let shouldHide = protoHide(false, m)
                     changeVisibility(el, m, !shouldHide)
                     mouseMoveCell(el, m)
                 }
                 else if (m.type === "row") {
-                    shouldHide = protoHide(false, m)
+                    let shouldHide = protoHide(false, m)
                     changeVisibility(el, m, !shouldHide)
                     rowVisibilityChanged = true  // actually detect if changed?
                     mouseMoveCell(el, m)
@@ -318,6 +320,10 @@ function pageCompositorTable(targetContainer, data) {
                 }
                 else if (m.type === "supportPercent") {
                     supportPercentIndicators.set(m.comp.id, el)
+                }
+                else if (m.type === "descFull") {
+                    let shouldHide = !expandGetState(KEY_EXPAND_FULLDESC, m)
+                    changeVisibility(el, m, !shouldHide)
                 }
             }
 
@@ -404,6 +410,12 @@ function pageCompositorTable(targetContainer, data) {
         syncState()
     }
 
+    function fullDescExpandClickHandler(ev) {
+        const protoId = descButtonGetProtoId(ev)
+        expandStateToggle(KEY_EXPAND_FULLDESC, protoId)
+        syncState()
+    }
+
     // === Table populate ===
 
     for (const c of data.compositors) {
@@ -482,9 +494,13 @@ function pageCompositorTable(targetContainer, data) {
                         }, ["I"]),
                         { type: "descButton", buttonType: KEY_EXPAND_INTERFACES, proto: p }
                     ),
-                    e("div", {
-                        class: ["comp-table-db", "comp-db-description"]
-                    }, ["D"]),
+                    dynRegister(
+                        e("div", {
+                            class: ["comp-table-db", "comp-db-description"],
+                            onClick: fullDescExpandClickHandler
+                        }, ["D"]),
+                        { type: "descButton", buttonType: KEY_EXPAND_FULLDESC, proto: p }
+                    ),
                 ]),
             ]),
         ])
@@ -524,6 +540,18 @@ function pageCompositorTable(targetContainer, data) {
         for (const c of data.compositors) {
             /* Setup data cells (summary) */
             createDataCell(c)
+        }
+
+        if (p.descFull) {
+            const fullDescCell = dynRegister(
+                e("div", { class: ["comp-table-cell", "comp-table-fulldesc"] }, [
+                    e("div", { class: ["i-wrapper"] }, [
+                        e("div", { class: ["i-text"] }, [p.descFull]),
+                    ])
+                ]),
+                { type: "descFull", proto: p }
+            )
+            table.appendChild(fullDescCell)
         }
 
         const interfacesToShow = []
