@@ -229,20 +229,21 @@ function pageCompositorTable(targetContainer, data) {
                     || !expandGetState(KEY_EXPAND_INTERFACES, m)
             }
 
-            if (!shouldHide && compFilter != null) {
+            let supportExclude = false
+            if (compFilter != null) {
                 const supportComp =
                     getCompositorSupport(compFilter, m.proto, m.interface)
                 if (compFilterInvert)
-                    shouldHide = supportComp === SUPPORT_FULL
+                    supportExclude = supportComp === SUPPORT_FULL
                 else
-                    shouldHide = supportComp === SUPPORT_NONE
+                    supportExclude = supportComp === SUPPORT_NONE
             }
+            shouldHide = shouldHide || supportExclude
 
-            if (!shouldHide && m.interface == null) {
+            if (!supportExclude && m.interface != null) {
                 if (m.type == "data") {
                     const compId = m.comp.id
                     const supportCell = getCompositorSupport(compId, m.proto, m.interface)
-                    if (supportCell !== SUPPORT_NONE && compId == compFilter) console.log(compId, m.proto.id)
                     stateAdd(supportCount, compId,
                         supportCell === SUPPORT_FULL
                             ? 1
@@ -329,7 +330,6 @@ function pageCompositorTable(targetContainer, data) {
                     const value = count / supportTotal
                     supportIndicator.querySelector(".i-value").innerText = Math.round(value * 100) + "%"
                     supportIndicator.querySelector(".i-bg").style.setProperty("--prc", value)
-                    console.log(compId, value, count, supportTotal)
                 }
             }
             supportCount.clear()
