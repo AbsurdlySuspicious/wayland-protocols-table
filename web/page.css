@@ -61,8 +61,8 @@ body {
     --cell-bg-alt: #e1e1e1;
     --cell-hover-bg: #a9cee4;
     --cell-hover-bg-alt: #9bc2d9;
-    --cell-hover-row-bg: #aaa;
-    --cell-hover-row-bg-alt: #4f4f4f;
+    --cell-hover-row-bg: #c8c8c8;
+    --cell-hover-row-bg-alt: #c8c8c8;
     --row-gap-real: calc(var(--row-gap) / 2);
 
     padding: 10px;
