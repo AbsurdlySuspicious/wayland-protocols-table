@@ -531,9 +531,10 @@ function pageCompositorTable(targetContainer, data) {
 
     function mouseMoveHandlerSet(...elements) {
         let lastHoverElement = null
+        let lastCursorPos = null
 
-        function mouseMovementHandler(ev) {
-            const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
+        function highlightHandler(cursorX, cursorY) {
+            const hoverElement = document.elementFromPoint(cursorX, cursorY)
             const targetElement = findParent(hoverElement, ".comp-table-cell")
 
             if (targetElement == null) {
@@ -552,10 +553,24 @@ function pageCompositorTable(targetContainer, data) {
             }
         }
 
+        function mouseMovementHighlightHandler(ev) {
+            lastCursorPos = [ev.clientX, ev.clientY]
+            highlightHandler(ev.clientX, ev.clientY)
+        }
+
+        function scrollHighlightHandler(ev) {
+            if (lastCursorPos == null)
+                return
+            const [x, y] = lastCursorPos
+            highlightHandler(x, y)
+        }
+
         elements.forEach((el) => {
             if (el != null)
-                el.addEventListener("mousemove", mouseMovementHandler)
+                el.addEventListener("mousemove", mouseMovementHighlightHandler)
         })
+
+        document.addEventListener("scroll", scrollHighlightHandler)
     }
 
     mouseMoveHandlerSet(
