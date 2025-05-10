@@ -230,14 +230,10 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         function mouseMoveCell(el, m) {
-            if (lastHighlight.col != highlightColumnComp) {
+            if (lastHighlight.col != highlightColumnComp)
                 el.classList.toggle(hoverColumnClass, m.comp == null ? false : highlightColumnComp == m.comp.id)
-                if (highlightColumnComp == m.comp?.id) console.log("col toggled", highlightColumnComp)
-            }
-            if (lastHighlight.row != highlightRow) {
+            if (lastHighlight.row != highlightRow)
                 el.classList.toggle(hoverRowClass, highlightRow == getRowKey(m))
-                if (highlightRow == m.proto?.id) console.log("row toggled", highlightRow)
-            }
         }
 
         return (dueTo) => {
@@ -546,15 +542,13 @@ function pageCompositorTable(targetContainer, data) {
 
             if (targetElement == null) {
                 const hadLast = lastHoverElement != null
-                if (hadLast) console.log("fired set null, prev:", lastHoverElement.deref())
                 lastHoverElement = null
                 highlightColumnComp = null
                 highlightRow = null
-                if (hadLast) 
+                if (hadLast)
                     syncState(SYNC_DUE_TO_MOUSEMOVE)
             }
             else if (lastHoverElement == null || lastHoverElement.deref() != targetElement) {
-                console.log("fired", lastHoverElement?.deref(), targetElement)
                 const m = dynState.get(targetElement)
                 highlightColumnComp = m?.comp?.id ?? null
                 highlightRow = getRowKey(m)
