@@ -542,7 +542,7 @@ function pageCompositorTable(targetContainer, data) {
 
         function highlightHandler(cursorX, cursorY) {
             const hoverElement = document.elementFromPoint(cursorX, cursorY)
-            const targetElement = findParent(hoverElement, ".comp-table-cell")
+            const targetElement = findParent(hoverElement, ":is(.comp-table-cell, .comp-table-desc)")
 
             if (targetElement == null) {
                 const hadLast = lastHoverElement != null
