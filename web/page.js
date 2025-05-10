@@ -81,6 +81,14 @@ function stateToggleBool(map, key, default_) {
     return newState
 }
 
+function stateAdd(map, key, value, default_) {
+    default_ ??= 0
+    const oldValue = map.get(key)
+    const newValue = (oldValue ?? default_) + value
+    map.set(key, newValue)
+    return newValue
+}
+
 // === Defs ===
 
 const tagColors = {
@@ -199,6 +207,10 @@ function pageCompositorTable(targetContainer, data) {
 
         let lastHighlight = {}
 
+        const supportPercentIndicators = new Map()
+        const supportCount = new Map()
+        let supportTotal = 0
+
         function changeVisibility(el, m, visible) {
             if (m.visible === visible)
                 return
@@ -218,12 +230,28 @@ function pageCompositorTable(targetContainer, data) {
             }
 
             if (!shouldHide && compFilter != null) {
-                const support =
+                const supportComp =
                     getCompositorSupport(compFilter, m.proto, m.interface)
                 if (compFilterInvert)
-                    shouldHide = support === SUPPORT_FULL
+                    shouldHide = supportComp === SUPPORT_FULL
                 else
-                    shouldHide = support === SUPPORT_NONE
+                    shouldHide = supportComp === SUPPORT_NONE
+            }
+
+            if (!shouldHide && m.interface == null) {
+                if (m.type == "data") {
+                    const compId = m.comp.id
+                    const supportCell = getCompositorSupport(compId, m.proto, m.interface)
+                    if (supportCell !== SUPPORT_NONE && compId == compFilter) console.log(compId, m.proto.id)
+                    stateAdd(supportCount, compId,
+                        supportCell === SUPPORT_FULL
+                            ? 1
+                            : supportCell === SUPPORT_PARTIAL ? 0.5 : 0
+                    )
+                }
+                else if (m.type === "row") {
+                    supportTotal += 1
+                }
             }
 
             return shouldHide
@@ -287,10 +315,26 @@ function pageCompositorTable(targetContainer, data) {
                         el.classList.toggle(descButtonActiveClass, active)
                     }
                 }
+                else if (m.type === "supportPercent") {
+                    supportPercentIndicators.set(m.comp.id, el)
+                }
             }
 
             lastHighlight.col = highlightColumnComp
             lastHighlight.row = highlightRow
+
+            if (supportTotal > 0) {
+                for (const [compId, supportIndicator] of supportPercentIndicators.entries()) {
+                    const count = supportCount.get(compId)
+                    const value = count / supportTotal
+                    supportIndicator.querySelector(".i-value").innerText = Math.round(value * 100) + "%"
+                    supportIndicator.querySelector(".i-bg").style.setProperty("--prc", value)
+                    console.log(compId, value, count, supportTotal)
+                }
+            }
+            supportCount.clear()
+            supportPercentIndicators.clear()
+            supportTotal = 0
 
             if (!dueTo)
                 updateHeaderWidth()
@@ -392,19 +436,20 @@ function pageCompositorTable(targetContainer, data) {
 
     for (const c of data.compositors) {
         /* Setup support percentages */
-        const percent = c.supportedPercent
         table.appendChild(
-            e("div", {
-                class: ["comp-table-cell", "comp-table-cell-prc", "comp-table-cell-no-border"],
-                style: { "--prc": percent / 100 },
-            }, [
+            dynRegister(
                 e("div", {
-                    class: ["comp-table-cell-prc-content"],
+                    class: ["comp-table-cell", "comp-table-cell-prc", "comp-table-cell-no-border"],
                 }, [
-                    `${percent}%`,
-                    e("div", { class: ["comp-table-cell-prc-bg"] }),
+                    e("div", {
+                        class: ["comp-table-cell-prc-content"],
+                    }, [
+                        e("div", { class: ["i-value"] }, ["?"]),
+                        e("div", { class: ["i-bg", "comp-table-cell-prc-bg"] }),
+                    ]),
                 ]),
-            ])
+                { type: "supportPercent", comp: c }
+            )
         )
     }
 
