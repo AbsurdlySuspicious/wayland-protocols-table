@@ -147,7 +147,7 @@ function pageCompositorTable(targetContainer, data) {
     function getCompositorSupport(compId, proto, interface) {
         return interface == null
             ? proto.supportSum[compId] ?? SUPPORT_NONE
-            : proto.supportIf[interface][compId]
+            : proto.supportIf[interface]?.[compId]
                 ? SUPPORT_FULL : SUPPORT_NONE
     }
 
@@ -445,23 +445,39 @@ function pageCompositorTable(targetContainer, data) {
             createDataCell(c)
         }
 
-        let hasDeprecations = false
+        const interfacesToShow = []
+        const hasAnyDeprecations = p.deprecations != null
+        let hasVisibleDeprecations = false
 
         for (const interfaceId of Object.keys(p.supportIf)) {
-            /* Setup interface row titles */
-
+            const data = {id: interfaceId}
             const interfaceDeprecation = p.deprecations?.[interfaceId]
-            if (interfaceDeprecation)
-                hasDeprecations = true
+            if (interfaceDeprecation) {
+                hasVisibleDeprecations = true
+                data.deprecated = interfaceDeprecation
+            }
+            interfacesToShow.push(data)
+        }
+
+        if (interfacesToShow.length == 0 && hasAnyDeprecations) {
+            for (const [interfaceId, reason] of Object.entries(p.deprecations)) {
+                const data = {id: interfaceId, deprecated: reason}
+                interfacesToShow.push(data)
+            }
+        }
+
+        for (const interface of interfacesToShow) {
+            /* Setup interface row titles */
+            const interfaceId = interface.id
 
             const intetfaceCell = e("div", { class: ["comp-table-desc", "comp-table-interface"] }, [
                 e("div", { class: ["comp-table-desc-name", "comp-table-desc-name-interface"] }, [
                     interfaceId.replace(/_/g, "\u200b_"),
                 ]),
-                interfaceDeprecation
+                interface.deprecated
                     ? e("div", { class: ["comp-table-interface-deprecation"] }, [
                         e("b", {}, ["Deprecated: "]),
-                        e("span", {}, [interfaceDeprecation])
+                        e("span", {}, [interface.deprecated])
                     ])
                     : null,
             ])
@@ -474,7 +490,7 @@ function pageCompositorTable(targetContainer, data) {
             }
         }
 
-        if ((hasDeprecations && !p.deprecatedFull) || p.defaultExpand)
+        if ((hasVisibleDeprecations && !p.deprecatedFull) || p.defaultExpand)
             rowExpandState.set(stateKey(KEY_EXPAND_INTERFACES, p.id), true)
     }
 
