@@ -115,7 +115,7 @@ body {
     min-height: var(--cell-size);
 
     display: flex;
-    row-gap: 10px;
+    row-gap: 3px;
     flex-flow: column;
     justify-content: center;
 
@@ -128,16 +128,29 @@ body {
 
 .comp-table-desc-name {
     word-break: break-word;
-}
-
-.comp-table-desc-name a {
-    text-decoration: none;
     color: #404040;
     font-weight: 800;
 }
 
+.comp-table-desc-name a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .comp-table-desc-name a:hover {
     color: #2b5b80;
+}
+
+.comp-table-desc-name-interface {
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.comp-table-desc-id {
+    font-family: monospace;
+    font-size: 13px;
+    color: #444;
 }
 
 .comp-table-interface-deprecation {
@@ -155,6 +168,10 @@ body {
     flex-flow: row wrap;
     gap: 10px;
     font-size: 13px;
+}
+
+.comp-table-tag-box.m-outer {
+    margin: 5px 0;
 }
 
 .comp-table-tag {

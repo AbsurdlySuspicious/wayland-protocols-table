@@ -391,7 +391,8 @@ function pageCompositorTable(targetContainer, data) {
             e("div", { class: "comp-table-desc-name", data: { proto: p.id } }, [
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
-            e("div", { class: ["comp-table-tag-box"] }, [
+            e("div", { class: "comp-table-desc-id"}, [p.id]),
+            e("div", { class: ["comp-table-tag-box", "m-outer"] }, [
                 ...tags,
                 e("div", { class: ["comp-table-tag-box"], style: "margin-left: auto;" }, [
                     dynRegister(
