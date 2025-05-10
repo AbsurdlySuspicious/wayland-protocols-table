@@ -118,6 +118,7 @@ function pageCompositorTable(targetContainer, data) {
 
     // === Page state ===
 
+    let initHeaderWidthSet = false
     let columnHighlightComp = null
     let compFilter = null
     let compFilterInvert = false
@@ -150,6 +151,26 @@ function pageCompositorTable(targetContainer, data) {
             : proto.supportIf[interface]?.[compId]
                 ? SUPPORT_FULL : SUPPORT_NONE
     }
+
+    // === Adjust header widths ===
+
+    function setFixWidthVar(name, sel) {
+        if (typeof sel === "string")
+            sel = table.querySelector(sel)
+        const width = sel.clientWidth
+        tableFix.style.setProperty(name, width + "px")
+        return width
+    }
+
+    function updateHeaderWidth() {
+        const dummyWidth = setFixWidthVar("--dummy-w", ".comp-table-dummy")
+        setFixWidthVar("--head-w", ".comp-table-name")
+        if (!initHeaderWidthSet) {
+            table.querySelector(".comp-table-dummy").style["width"] = dummyWidth + "px"
+            initHeaderWidthSet = true
+        }
+    }
+
 
     // === State sync ===
 
@@ -208,9 +229,8 @@ function pageCompositorTable(targetContainer, data) {
         return (dueTo) => {
             let rowVisibilityChanged = false
 
-            if (!dueTo) {
+            if (!dueTo)
                 columnHighlightComp = null
-            }
 
             for (const elWeak of dynElements.values()) {
                 const el = elWeak.deref()
@@ -259,6 +279,9 @@ function pageCompositorTable(targetContainer, data) {
             }
 
             lastHighlightComp = columnHighlightComp
+
+            if (!dueTo)
+                updateHeaderWidth()
 
             if (rowVisibilityChanged) {
                 setTimeout(async () => {
@@ -381,9 +404,9 @@ function pageCompositorTable(targetContainer, data) {
             .filter((t) => t != null)
             .map((t) => {
                 const [bg, fg, classes] = tagColors[t] ?? tagColors.__default
-                return e("div", { 
-                    class: ["comp-table-tag", ...(classes ?? [])], 
-                    style: { "--tag-bg": bg, "--tag-fg": fg } 
+                return e("div", {
+                    class: ["comp-table-tag", ...(classes ?? [])],
+                    style: { "--tag-bg": bg, "--tag-fg": fg }
                 }, [t])
             })
 
@@ -391,7 +414,7 @@ function pageCompositorTable(targetContainer, data) {
             e("div", { class: "comp-table-desc-name", data: { proto: p.id } }, [
                 e("a", { href: `https://wayland.app/protocols/${p.id}`, target: "_blank" }, [p.name]),
             ]),
-            e("div", { class: "comp-table-desc-id"}, [p.id]),
+            e("div", { class: "comp-table-desc-id" }, [p.id]),
             e("div", { class: ["comp-table-tag-box", "m-outer"] }, [
                 ...tags,
                 e("div", { class: ["comp-table-tag-box"], style: "margin-left: auto;" }, [
@@ -451,7 +474,7 @@ function pageCompositorTable(targetContainer, data) {
         let hasVisibleDeprecations = false
 
         for (const interfaceId of Object.keys(p.supportIf)) {
-            const data = {id: interfaceId}
+            const data = { id: interfaceId }
             const interfaceDeprecation = p.deprecations?.[interfaceId]
             if (interfaceDeprecation) {
                 hasVisibleDeprecations = true
@@ -462,7 +485,7 @@ function pageCompositorTable(targetContainer, data) {
 
         if (interfacesToShow.length == 0 && hasAnyDeprecations) {
             for (const [interfaceId, reason] of Object.entries(p.deprecations)) {
-                const data = {id: interfaceId, deprecated: reason}
+                const data = { id: interfaceId, deprecated: reason }
                 interfacesToShow.push(data)
             }
         }
@@ -521,44 +544,30 @@ function pageCompositorTable(targetContainer, data) {
         document.querySelector("body")
     )
 
+    // === Setup fixed header scroll handling ===
+
+    const fixStyle = tableFixOuter.style
+
+    function fixedHeaderVisibilityCallback() {
+        const offset = table.getBoundingClientRect().y
+        const show = offset < -100
+        if (show)
+            fixStyle["visibility"] = "visible"
+        fixStyle["opacity"] = show ? 1 : 0
+    }
+
+    tableFixOuter.addEventListener("transitionend", () => {
+        const opacity = tableFixOuter.style["opacity"] ?? 0
+        tableFixOuter.style["visibility"] = opacity > 0 ? "visible" : "hidden"
+    })
+
+    document.addEventListener("scroll", fixedHeaderVisibilityCallback)
+    fixedHeaderVisibilityCallback()
+
     // === Populate page ===
 
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
-
-    // === Setup fixed header
-
-    function setFixWidthVar(name, sel) {
-        if (typeof sel === "string")
-            sel = table.querySelector(sel)
-        const width = sel.clientWidth
-        tableFix.style.setProperty(name, width + "px")
-        return width
-    }
-
-    setTimeout(() => {
-        const dummyWidth = setFixWidthVar("--dummy-w", ".comp-table-dummy")
-        setFixWidthVar("--head-w", ".comp-table-name")
-        table.querySelector(".comp-table-dummy").style["width"] = dummyWidth + "px"
-
-        const fixStyle = tableFixOuter.style
-
-        function fixVisibilityCallback() {
-            const offset = table.getBoundingClientRect().y
-            const show = offset < -100
-            if (show)
-                fixStyle["visibility"] = "visible"
-            fixStyle["opacity"] = show ? 1 : 0
-        }
-
-        tableFixOuter.addEventListener("transitionend", () => {
-            const opacity = tableFixOuter.style["opacity"] ?? 0
-            tableFixOuter.style["visibility"] = opacity > 0 ? "visible" : "hidden"
-        })
-
-        document.addEventListener("scroll", fixVisibilityCallback)
-        fixVisibilityCallback()
-    }, 0)
 
     syncState()
 }
