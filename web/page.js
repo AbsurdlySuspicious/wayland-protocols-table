@@ -231,12 +231,12 @@ function pageCompositorTable(targetContainer, data) {
 
         function mouseMoveCell(el, m) {
             if (lastHighlight.col != highlightColumnComp) {
-                el.classList.toggle(hoverColumnClass, highlightColumnComp == m.comp.id)
-                if (highlightColumnComp == m.comp.id) console.log("col toggled", highlightColumnComp)
+                el.classList.toggle(hoverColumnClass, highlightColumnComp == m.comp?.id)
+                if (highlightColumnComp == m.comp?.id) console.log("col toggled", highlightColumnComp)
             }
             if (lastHighlight.row != highlightRow) {
                 el.classList.toggle(hoverRowClass, highlightRow == getRowKey(m))
-                if (highlightRow == m.proto.id) console.log("row toggled", highlightRow)
+                if (highlightRow == m.proto?.id) console.log("row toggled", highlightRow)
             }
         }
 
@@ -257,7 +257,7 @@ function pageCompositorTable(targetContainer, data) {
                 if (dueTo == SYNC_DUE_TO_MOUSEMOVE) {
                     if (!m.visible)
                         continue
-                    if (m.type === "data")
+                    if (m.type === "data" || m.type === "row")
                         mouseMoveCell(el, m)
                     continue
                 }
@@ -271,6 +271,7 @@ function pageCompositorTable(targetContainer, data) {
                     shouldHide = protoHide(false, m)
                     changeVisibility(el, m, !shouldHide)
                     rowVisibilityChanged = true  // actually detect if changed?
+                    mouseMoveCell(el, m)
                 }
                 else if (m.type === "head") {
                     const cl = el.classList
