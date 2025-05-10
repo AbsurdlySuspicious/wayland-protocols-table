@@ -119,7 +119,8 @@ function pageCompositorTable(targetContainer, data) {
     // === Page state ===
 
     let initHeaderWidthSet = false
-    let columnHighlightComp = null
+    let highlightColumnComp = null
+    let highlightRowProto = null
     let compFilter = null
     let compFilterInvert = false
     const rowExpandState = new Map()
@@ -184,12 +185,13 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     const syncState = (() => {
-        const hoverClass = "comp-table-cell-hover"
+        const hoverColumnClass = "comp-table-cell-hover"
+        const hoverRowClass = "comp-table-row-hover"
         const headSelectedClass = "comp-table-name-selected"
         const headSelectedInvClass = "comp-table-name-selected-inv"
         const descButtonActiveClass = "comp-table-db-active"
 
-        let lastHighlightComp = null
+        let lastHighlight = {}
 
         function changeVisibility(el, m, visible) {
             if (m.visible === visible)
@@ -221,16 +223,22 @@ function pageCompositorTable(targetContainer, data) {
             return shouldHide
         }
 
-        function mouseMoveData(el, m) {
-            if (lastHighlightComp != columnHighlightComp)
-                el.classList.toggle(hoverClass, columnHighlightComp == m.comp.id)
+        function mouseMoveCell(el, m) {
+            if (lastHighlight.comp != highlightColumnComp) {
+                el.classList.toggle(hoverColumnClass, highlightColumnComp == m.comp.id)
+                if (highlightColumnComp == m.comp.id) console.log("col toggled", highlightColumnComp)
+            }
+            if (lastHighlight.proto != highlightRowProto) {
+                el.classList.toggle(hoverRowClass, highlightRowProto == m.proto.id)
+                if (highlightRowProto == m.proto.id) console.log("row toggled", highlightRowProto)
+            }
         }
 
         return (dueTo) => {
             let rowVisibilityChanged = false
 
             if (!dueTo)
-                columnHighlightComp = null
+                highlightColumnComp = null
 
             for (const elWeak of dynElements.values()) {
                 const el = elWeak.deref()
@@ -244,14 +252,14 @@ function pageCompositorTable(targetContainer, data) {
                     if (!m.visible)
                         continue
                     if (m.type === "data")
-                        mouseMoveData(el, m)
+                        mouseMoveCell(el, m)
                     continue
                 }
 
                 if (m.type === "data") {
                     shouldHide = protoHide(false, m)
                     changeVisibility(el, m, !shouldHide)
-                    mouseMoveData(el, m)
+                    mouseMoveCell(el, m)
                 }
                 else if (m.type === "row") {
                     shouldHide = protoHide(false, m)
@@ -278,7 +286,8 @@ function pageCompositorTable(targetContainer, data) {
                 }
             }
 
-            lastHighlightComp = columnHighlightComp
+            lastHighlight.comp = highlightColumnComp
+            lastHighlight.proto = highlightRowProto
 
             if (!dueTo)
                 updateHeaderWidth()
@@ -521,12 +530,24 @@ function pageCompositorTable(targetContainer, data) {
     // === Setup hover handling ===
 
     function mouseMoveHandlerSet(...elements) {
+        let lastHoverElement = null
+
         function mouseMovementHandler(ev) {
             const hoverElement = document.elementFromPoint(ev.clientX, ev.clientY)
             const targetElement = findParent(hoverElement, ".comp-table-cell")
-            const compId = targetElement?.dataset?.comp ?? null
-            if (compId != columnHighlightComp) {
-                columnHighlightComp = compId
+
+            if (targetElement == null) {
+                if (lastHoverElement != null)
+                    console.log("fired set null, prev:", lastHoverElement.deref())
+                lastHoverElement = null
+            }
+            else if (lastHoverElement == null || lastHoverElement.deref() != targetElement) {
+                console.log("fired", lastHoverElement?.deref(), targetElement)
+                const m = dynState.get(targetElement)
+                highlightColumnComp = m?.comp?.id ?? null
+                highlightRowProto = m?.proto?.id ?? null
+                if (targetElement != null)
+                    lastHoverElement = new WeakRef(targetElement)
                 syncState(SYNC_DUE_TO_MOUSEMOVE)
             }
         }

@@ -61,6 +61,8 @@ body {
     --cell-bg-alt: #e1e1e1;
     --cell-hover-bg: #a9cee4;
     --cell-hover-bg-alt: #9bc2d9;
+    --cell-hover-row-bg: #aaa;
+    --cell-hover-row-bg-alt: #4f4f4f;
     --row-gap-real: calc(var(--row-gap) / 2);
 
     padding: 10px;
@@ -239,11 +241,6 @@ body {
     background-color: var(--cell-bg);
 }
 
-.comp-table-cell-hover {
-    background-color: var(--cell-hover-bg);
-    --row-border-color: var(--row-border-color-hover);
-}
-
 .comp-table-cell-no-border {
     border: none;
 }
@@ -304,9 +301,25 @@ body {
     color: #7b3723;
 }
 
+.comp-table-row-hover {
+    background-color: var(--cell-hover-row-bg);
+}
+
+.comp-table-cell-hover {
+    background-color: var(--cell-hover-bg);
+    --row-border-color: var(--row-border-color-hover);
+}
+
 .comp-table-even-odd {
-    --cell-hover-bg: var(--cell-hover-bg-alt);
     --cell-bg: var(--cell-bg-alt);
+}
+
+.comp-table-row-hover.comp-table-even-odd {
+    --cell-hover-row-bg: var(--cell-hover-row-bg-alt);
+}
+
+.comp-table-cell-hover.comp-table-even-odd {
+    --cell-hover-bg: var(--cell-hover-bg-alt);
 }
 
 .comp-table-interface {
