@@ -129,6 +129,7 @@ protocols.forEach((p) => {
 
 for (const [compId, supported] of Object.entries(protocolSupportByComp)) {
     compositorsById[compId].supportedPercent = Math.round(supported / protocolsTotal * 100)
+    // TODO unused, remove later when private protocols filter is implemented on client
 }
 
 const dataOut = { compositors, protocols }
