@@ -1,4 +1,4 @@
-const { stdout } = require("process")
+const { stdout, env } = require("process")
 const compData = require("./we-data/compositor-registry")
 const protoData = require("./we-data/protocol-registry")
 
@@ -134,4 +134,4 @@ for (const [compId, supported] of Object.entries(protocolSupportByComp)) {
 }
 
 const dataOut = { compositors, protocols }
-stdout.write(JSON.stringify(dataOut))
+stdout.write(JSON.stringify(dataOut, null, env["PRETTY"] === "1" ? 4 : null))
