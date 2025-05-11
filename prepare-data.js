@@ -32,7 +32,7 @@ function addDescription(to, description, title) {
         return
     const descriptionObj = {
         title: title || null,
-        text: description.text.replace(/\w\r?\n\w/g, " "),
+        text: description.text.replace(/(\w)\r?\n(\w)/g, "$1 $2"),
     }
     if (to != null)
         to.push(descriptionObj)
