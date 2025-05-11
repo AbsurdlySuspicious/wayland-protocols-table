@@ -147,10 +147,14 @@ function pageCompositorTable(targetContainer, data) {
     // === Page state ===
 
     let initHeaderWidthSet = false
-    let highlightColumnComp = null
+
+    let highlightColumn = null
     let highlightRow = null
+    let highlightSourceCellMetadata = null
+
     let compFilter = null
     let compFilterInvert = false
+
     const rowExpandState = new Map()
 
     function expandStateToggle(type, protoId) {
@@ -288,17 +292,25 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         function mouseMoveCell(el, m) {
-            if (lastHighlight.col != highlightColumnComp)
-                el.classList.toggle(hoverColumnClass, m.comp == null ? false : highlightColumnComp == m.comp.id)
+            if (lastHighlight.col != highlightColumn)
+                el.classList.toggle(hoverColumnClass, m.comp == null ? false : highlightColumn == m.comp.id)
             if (lastHighlight.row != highlightRow)
                 el.classList.toggle(hoverRowClass, highlightRow == getRowKey(m))
+        }
+
+        function mouseMoveHeaderSupportInd(el, m) {
+            const hlM = highlightSourceCellMetadata
+            const support = highlightRow != null && hlM.proto
+                ? getCompositorSupport(m.comp.id, hlM.proto, hlM.interface)
+                : null
+            updateHeadSupportIndicator(el, support)
         }
 
         return (dueTo) => {
             let rowVisibilityChanged = false
 
             if (!dueTo)
-                highlightColumnComp = null
+                highlightColumn = null
 
             for (const elWeak of dynElements.values()) {
                 const el = elWeak.deref()
@@ -309,9 +321,9 @@ function pageCompositorTable(targetContainer, data) {
                 }
 
                 if (dueTo == SYNC_DUE_TO_MOUSEMOVE) {
-                    if (!m.visible)
-                        continue
-                    if (m.type === "data" || m.type === "row")
+                    if (m.type === "headHoverSupport")
+                        mouseMoveHeaderSupportInd(el, m)
+                    if (m.visible && (m.type === "data" || m.type === "row"))
                         mouseMoveCell(el, m)
                     continue
                 }
@@ -353,14 +365,11 @@ function pageCompositorTable(targetContainer, data) {
                     changeVisibility(el, m, !shouldHide)
                 }
                 else if (m.type === "headHoverSupport") {
-                    const support = highlightRow.key != null
-                        ? getCompositorSupport(m.comp.id, _, _)
-                        : null
-                    updateHeadSupportIndicator(el, support)
+                    mouseMoveHeaderSupportInd(el, m)
                 }
             }
 
-            lastHighlight.col = highlightColumnComp
+            lastHighlight.col = highlightColumn
             lastHighlight.row = highlightRow
 
             if (supportTotal > 0) {
@@ -648,15 +657,16 @@ function pageCompositorTable(targetContainer, data) {
             if (targetElement == null) {
                 const hadLast = lastHoverElement != null
                 lastHoverElement = null
-                highlightColumnComp = null
+                highlightColumn = null
                 highlightRow = null
                 if (hadLast)
                     syncState(SYNC_DUE_TO_MOUSEMOVE)
             }
             else if (lastHoverElement == null || lastHoverElement.deref() != targetElement) {
                 const m = dynState.get(targetElement)
-                highlightColumnComp = m?.comp?.id ?? null
+                highlightColumn = m?.comp?.id ?? null
                 highlightRow = getRowKey(m)
+                highlightSourceCellMetadata = m
                 if (targetElement != null)
                     lastHoverElement = new WeakRef(targetElement)
                 syncState(SYNC_DUE_TO_MOUSEMOVE)
