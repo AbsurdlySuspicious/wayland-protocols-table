@@ -372,32 +372,6 @@ function pageCompositorTable(targetContainer, data) {
         }
     })();
 
-    // === Root elements ===
-
-    const tableFix = e("div",
-        { class: ["comp-table", "comp-header-fix-inner"] },
-        [e("div", { class: "comp-table-dummy" })]
-    )
-
-    const tableFixOuter = e("div",
-        { class: ["comp-header-fix"] },
-        [tableFix]
-    )
-
-    const table = e("div",
-        { class: "comp-table" },
-        [e("div", { class: "comp-table-dummy" })]
-    )
-
-    const bottomPaddingBlock = e("div",
-        { class: ["comp-table-bottom-pad", "striped-bg"] }
-    )
-
-    const root = e("div",
-        { class: "comp-table-root", style: { "--cols": compCount + 1 } },
-        [tableFixOuter, table, bottomPaddingBlock]
-    )
-
     // === Table handlers ===
 
     function filterByCompClickHandler(ev) {
@@ -427,6 +401,22 @@ function pageCompositorTable(targetContainer, data) {
 
     // === Table populate ===
 
+    function getTableFirstCell() {
+        return e("div", { class: "comp-table-dummy" }, [
+
+        ])
+    }
+
+    const tableFix = e("div",
+        { class: ["comp-table", "comp-header-fix-inner"] },
+        [getTableFirstCell()]
+    )
+    
+    const table = e("div",
+        { class: "comp-table" },
+        [getTableFirstCell()]
+    )
+
     for (const c of data.compositors) {
         /* Setup headings (normal & fixed/floating) */
         const headerCell = () => {
@@ -449,11 +439,6 @@ function pageCompositorTable(targetContainer, data) {
         table.appendChild(headerCell())
         tableFix.appendChild(headerCell())
     }
-
-    table.appendChild(
-        /* Additional dummy for percentages */
-        e("div", { class: "comp-table-dummy" })
-    )
 
     for (const c of data.compositors) {
         /* Setup support percentages */
@@ -611,6 +596,22 @@ function pageCompositorTable(targetContainer, data) {
         if ((hasVisibleDeprecations && !p.deprecatedFull) || p.defaultExpand)
             rowExpandState.set(stateKey(KEY_EXPAND_INTERFACES, p.id), true)
     }
+
+    // === Root elements ===
+
+    const tableFixOuter = e("div",
+        { class: ["comp-header-fix"] },
+        [tableFix]
+    )
+
+    const bottomPaddingBlock = e("div",
+        { class: ["comp-table-bottom-pad", "striped-bg"] }
+    )
+
+    const root = e("div",
+        { class: "comp-table-root", style: { "--cols": compCount + 1 } },
+        [tableFixOuter, table, bottomPaddingBlock]
+    )
 
     // === Setup hover handling ===
 

@@ -24,6 +24,8 @@ body {
     position: relative;
 }
 
+.comp-table-dummy {}
+
 .comp-header-fix {
     --dummy-w: 0px;
     --head-w: 10px;
@@ -77,6 +79,10 @@ body {
     width: fit-content;
     display: grid;
     grid-template-columns: fit-content(350px) repeat(calc(var(--cols) - 1), var(--col-width));
+}
+
+.comp-table .comp-table-dummy {
+    grid-row: 1 / span 2;
 }
 
 .comp-table-bottom-pad {
