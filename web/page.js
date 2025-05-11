@@ -1,11 +1,24 @@
 
 // === Utils ===
 
-function e(elementName, opts, children) {
-    const el = document.createElement(elementName)
+function childrenAppend(target, elements_) {
+    for (const c of (elements_ || [])) {
+        if (c == null || c === false)
+            continue
+        if (Array.isArray(c))
+            childrenAppend(target, c)
+        else if (typeof c === "string")
+            target.appendChild(document.createTextNode(c))
+        else
+            target.appendChild(c)
+    }
+}
+
+function attributesSet(target, attrs) {
+    const el = target
     const sa = (name, value) => el.setAttribute(name, value)
 
-    for (let [name, value] of Object.entries(opts || {})) {
+    for (let [name, value] of Object.entries(attrs || {})) {
         if (value == null || value === false) { }
         else if (value === true) {
             sa(name, "")
@@ -41,16 +54,12 @@ function e(elementName, opts, children) {
         else
             sa(name, value.toString())
     }
+}
 
-    for (const c of (children || [])) {
-        if (c == null || c === false)
-            continue
-        if (typeof c === "string")
-            el.appendChild(document.createTextNode(c))
-        else
-            el.appendChild(c)
-    }
-
+function e(elementName, opts, children) {
+    const el = document.createElement(elementName)
+    attributesSet(el, opts)
+    childrenAppend(el, children)
     return el
 }
 
