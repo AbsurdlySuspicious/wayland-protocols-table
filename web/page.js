@@ -567,11 +567,14 @@ function pageCompositorTable(targetContainer, data) {
             createDataCell(c)
         }
 
-        if (p.descFull) {
+        if (p.descFull != null) {
             const fullDescCell = dynRegister(
                 e("div", { class: ["comp-table-cell", "comp-table-fulldesc"] }, [
                     e("div", { class: ["i-wrapper"] }, [
-                        e("div", { class: ["i-text"] }, [p.descFull]),
+                        p.descFull.flatMap((d) => [
+                            d.title ? e("h1", {}, [d.title]) : null,
+                            e("div", { class: ["i-text"] }, [d.text]),
+                        ])
                     ])
                 ]),
                 { type: "descFull", proto: p }

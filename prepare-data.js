@@ -27,6 +27,18 @@ function protoPercentageFilter(p) {
     ].includes(p.source)
 }
 
+function addDescription(to, description, title) {
+    if (description?.text == null)
+        return
+    const descriptionObj = {
+        title: title || null,
+        text: description.text.replace(/\w\r?\n\w/g, " "),
+    }
+    if (to != null)
+        to.push(descriptionObj)
+    return descriptionObj
+}
+
 let protocolsTotal = 0
 const protocols = []
 const protocolInterfaceMap = {}
@@ -35,11 +47,19 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
     const deprecations = p.deprecated
         ? Object.fromEntries(p.deprecated.map((d) => [d.name, d.reason]))
         : null
+
+    const descriptions = []
+
+    if (p.protocol.description != null)
+        addDescription(descriptions, p.protocol.description, p.name)
+    for (const interface of p.protocol.interfaces)
+        addDescription(descriptions, interface.description, interface.name)
+
     const protocol = {
         id: p.id,
         name: p.name,
         desc: p.protocol.description?.summary,
-        descFull: p.protocol.description?.text,
+        descFull: descriptions,
         tags: {
             source: p.source.replace(/-protocols$/, ""), 
             stability: p.stability,

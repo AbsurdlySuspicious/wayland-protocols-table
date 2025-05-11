@@ -355,13 +355,26 @@ body {
 
 .comp-table-fulldesc .i-wrapper {
     padding: 20px;
-    display: flex;
-    justify-content: start;
+    column-gap: 25px;
+    max-height: 400px;
+    column-width: 500px;
+    column-fill: auto;
+
+    width: 100%;
+    overflow-x: scroll;
 }
 
 .comp-table-fulldesc .i-text {
-    max-width: 600px;
     white-space: pre-line;
+}
+
+.comp-table-fulldesc h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    break-after: avoid;
 }
 
 .comp-icon {
