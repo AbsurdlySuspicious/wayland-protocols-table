@@ -374,7 +374,11 @@ body {
     margin: 0;
     margin-top: 20px;
     margin-bottom: 10px;
-    break-after: avoid;
+    break-after: avoid-column; /* not supported in FF ?? */
+}
+
+.comp-table-fulldesc h1:first-child {
+    margin-top: 0;
 }
 
 .comp-icon {

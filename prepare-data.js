@@ -28,11 +28,14 @@ function protoPercentageFilter(p) {
 }
 
 function addDescription(to, description, title) {
-    if (description?.text == null)
+    let text = description
+    if (typeof text !== "string")
+        text = text?.text
+    if (text == null)
         return
     const descriptionObj = {
         title: title || null,
-        text: description.text.replace(/(\w)\r?\n(\w)/g, "$1 $2"),
+        text: text.replace(/(\w)\r?\n(\w)/g, "$1 $2"),
     }
     if (to != null)
         to.push(descriptionObj)
@@ -49,11 +52,10 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         : null
 
     const descriptions = []
-
-    if (p.protocol.description != null)
-        addDescription(descriptions, p.protocol.description, p.name)
+    addDescription(descriptions, p.protocol.description, p.name)
     for (const interface of p.protocol.interfaces)
         addDescription(descriptions, interface.description, interface.name)
+    addDescription(descriptions, p.protocol.copyright, "Protocol copyright")
 
     const protocol = {
         id: p.id,
