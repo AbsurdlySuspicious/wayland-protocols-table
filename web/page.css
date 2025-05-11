@@ -66,6 +66,13 @@ body {
     --cell-hover-row-bg-alt: #c8c8c8;
     --row-gap-real: calc(var(--row-gap) / 2);
 
+    --cell-support-partial-bg: #fdba64;
+    --cell-support-partial-fg: #533f26;
+    --cell-support-full-bg: #b5ef6e;
+    --cell-support-full-fg: #638429;
+    --cell-support-none-bg: #fd8064;
+    --cell-support-none-fg: #7b3723;
+
     padding: 10px;
     width: fit-content;
     display: grid;
@@ -287,18 +294,18 @@ body {
 }
 
 .comp-table-cell-part {
-    background-color: #fdba64;
-    color: #533f26;
+    background-color: var(--cell-support-partial-bg);
+    color: var(--cell-support-partial-fg);
 }
 
 .comp-table-cell-full {
-    background-color: #b5ef6e;
-    color: #638429;
+    background-color: var(--cell-support-full-bg);
+    color: var(--cell-support-full-fg)
 }
 
 .comp-table-cell-no {
-    background-color: #fd8064;
-    color: #7b3723;
+    background-color: var(--cell-support-none-bg);
+    color: var(--cell-support-none-fg);
 }
 
 .comp-table-row-hover {
