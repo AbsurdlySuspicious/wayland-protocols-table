@@ -120,6 +120,15 @@ body {
     font-weight: 600;
 }
 
+.comp-table-name .i-support-indicator {
+    --size: 10px;
+    --color: #0000;
+    width: var(--size);
+    height: var(--size);
+    background-color: var(--color);
+    border-radius: 100%;
+}
+
 .comp-table-desc {
     --padding-left: 10px;
 
@@ -299,17 +308,17 @@ body {
     --cell-size: 30px;
 }
 
-.comp-table-cell-part {
+.comp-table-cell-support-partial {
     background-color: var(--cell-support-partial-bg);
     color: var(--cell-support-partial-fg);
 }
 
-.comp-table-cell-full {
+.comp-table-cell-support-full {
     background-color: var(--cell-support-full-bg);
     color: var(--cell-support-full-fg)
 }
 
-.comp-table-cell-no {
+.comp-table-cell-support-none {
     background-color: var(--cell-support-none-bg);
     color: var(--cell-support-none-fg);
 }

@@ -100,6 +100,15 @@ function stateAdd(map, key, value, default_) {
 
 // === Defs ===
 
+const SUPPORT_FULL = "full"
+const SUPPORT_PARTIAL = "partial"
+const SUPPORT_NONE = "none"
+
+const KEY_EXPAND_INTERFACES = "interfaces"
+const KEY_EXPAND_FULLDESC = "fulldesc"
+
+const SYNC_DUE_TO_MOUSEMOVE = 1
+
 const tagColors = {
     core: ["rgb(220 252 231)", "rgb(22 101 52)"],
     wayland: ["rgb(219 234 254)", "rgb(30 64 175)"],
@@ -116,17 +125,17 @@ const tagColors = {
     unstable: ["rgb(252 231 243)", "rgb(157 23 77)"],
     deprecated: ["rgb(252, 236, 231)", "rgb(157, 61, 23)", ["striped-bg", "comp-table-tag-deprecated"]],
 
-    __default: ["rgb(244 244 245)", "rgb(39 39 42)"],
+    __default: ["rgb(244 244 245)", "rgb(39 39 42)"]
 }
 
-const SUPPORT_FULL = "full"
-const SUPPORT_PARTIAL = "partial"
-const SUPPORT_NONE = "none"
+const supportCellText = {
+    [SUPPORT_FULL]: "+",
+    [SUPPORT_PARTIAL]: "~",
+    [SUPPORT_NONE]: "X",
 
-const KEY_EXPAND_INTERFACES = "interfaces"
-const KEY_EXPAND_FULLDESC = "fulldesc"
+    __default: "?"
+}
 
-const SYNC_DUE_TO_MOUSEMOVE = 1
 
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
@@ -176,6 +185,15 @@ function pageCompositorTable(targetContainer, data) {
         if (m?.proto == null)
             return null
         return `${m.proto.id};${m.interface ?? ""}`
+    }
+
+    function updateHeadSupportIndicator(inidicator, support) {
+        const style = inidicator.style
+        const target = "--color"
+        if (support != null)
+            style.setProperty(target, `var(--cell-support-${support}-bg)`)
+        else
+            style.removeProperty(target)
     }
 
     // === Adjust header widths ===
@@ -334,6 +352,12 @@ function pageCompositorTable(targetContainer, data) {
                     let shouldHide = !expandGetState(KEY_EXPAND_FULLDESC, m)
                     changeVisibility(el, m, !shouldHide)
                 }
+                else if (m.type === "headHoverSupport") {
+                    const support = highlightRow.key != null
+                        ? getCompositorSupport(m.comp.id, _, _)
+                        : null
+                    updateHeadSupportIndicator(el, support)
+                }
             }
 
             lastHighlight.col = highlightColumnComp
@@ -411,7 +435,7 @@ function pageCompositorTable(targetContainer, data) {
         { class: ["comp-table", "comp-header-fix-inner"] },
         [getTableFirstCell()]
     )
-    
+
     const table = e("div",
         { class: "comp-table" },
         [getTableFirstCell()]
@@ -428,6 +452,10 @@ function pageCompositorTable(targetContainer, data) {
                 },
                 [
                     e("div", { class: "comp-table-name-text" }, [c.name]),
+                    dynRegister(
+                        e("div", { class: "i-support-indicator" }),
+                        { type: "headHoverSupport", comp: c }
+                    ),
                     c.icon == null
                         ? e("div", { class: ["comp-icon", "comp-icon-dummy"] })
                         : e("img", { class: ["comp-icon", "comp-icon-img"], src: `./logos/${c.icon}.svg` }),
@@ -507,14 +535,8 @@ function pageCompositorTable(targetContainer, data) {
             const support =
                 getCompositorSupport(c.id, p, interface)
 
-            const [cellContentClass, cellText] =
-                support === SUPPORT_FULL
-                    ? ["comp-table-cell-full", "+"]
-                    : support === SUPPORT_PARTIAL
-                        ? ["comp-table-cell-part", "~"]
-                        : support === SUPPORT_NONE
-                            ? ["comp-table-cell-no", "X"]
-                            : ["", "?"];
+            const cellContentClass = `comp-table-cell-support-${support}`
+            const cellText = supportCellText[support] ?? supportCellText.__default
 
             const cellClasses = ["comp-table-cell", "comp-table-cell-data"]
             const cellContentClasses = ["comp-table-cell-content", cellContentClass]
