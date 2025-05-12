@@ -24,7 +24,14 @@ body {
     position: relative;
 }
 
-.comp-table-dummy {}
+.comp-table-dummy {
+    display: flex;
+    flex-flow: column;
+    align-items: end;
+    justify-content: end;
+    padding-bottom: 5px;
+    padding-right: var(--desc-gap);
+}
 
 .comp-header-fix {
     --dummy-w: 0px;

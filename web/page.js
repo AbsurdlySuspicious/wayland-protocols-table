@@ -432,11 +432,27 @@ function pageCompositorTable(targetContainer, data) {
         syncState()
     }
 
+    function expandAllClickHandler(ev, key) {
+        const shouldExpand = !expandDefaultState[key]
+        expandDefaultState[key] = shouldExpand
+        rowExpandState.clear()
+        syncState()
+    }
+
     // === Table populate ===
 
     function getTableFirstCell() {
         return e("div", { class: "comp-table-dummy" }, [
-
+            e("div", { class: ["comp-table-tag-box"] }, [
+                e("div", {
+                    class: ["comp-table-db"],
+                    onClick: (ev) => expandAllClickHandler(ev, KEY_EXPAND_INTERFACES)
+                }, ["I"]),
+                e("div", {
+                    class: ["comp-table-db"],
+                    onClick: (ev) => expandAllClickHandler(ev, KEY_EXPAND_FULLDESC)
+                }, ["D"]),
+            ])
         ])
     }
 
@@ -582,7 +598,7 @@ function pageCompositorTable(targetContainer, data) {
             addTitle(d.subTitle, "m-sub")
 
             elements.push(e("div", {
-                class: ["i-text", d.textOpts?.secondary ? "m-sec" : null] 
+                class: ["i-text", d.textOpts?.secondary ? "m-sec" : null]
             }, [d.text]),)
 
             return elements
