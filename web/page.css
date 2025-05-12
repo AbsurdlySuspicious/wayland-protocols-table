@@ -366,18 +366,44 @@ body {
 
 .comp-table-fulldesc .i-text {
     white-space: pre-line;
+    margin-top: 10px;
+}
+
+.comp-table-fulldesc .i-text.m-sec {
+    font-size: .7em;
+    color: #474747;
+}
+
+.comp-table-fulldesc .i-heading {
+    margin: 0;
+    margin-top: 20px;
+
+    break-after: avoid-column;
+    /* not supported in FF ?? */
 }
 
 .comp-table-fulldesc h1 {
     font-size: 20px;
     font-weight: 600;
-    margin: 0;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    break-after: avoid-column; /* not supported in FF ?? */
 }
 
-.comp-table-fulldesc h1:first-child {
+.comp-table-fulldesc h1.m-sub {
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 5px;
+    color: #313131;
+}
+
+.comp-table-fulldesc h2 {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.comp-table-fulldesc .m-mono {
+    font-family: monospace;
+}
+
+.comp-table-fulldesc :is(.i-text, h1, h2):first-child {
     margin-top: 0;
 }
 

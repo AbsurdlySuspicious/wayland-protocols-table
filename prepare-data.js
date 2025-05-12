@@ -19,7 +19,7 @@ const DEPRECATED_FULL = "deprecated"
 function protoPercentageFilter(p) {
     // exclude compositor specific protocols from percentage
     return ![
-        'kde-protocols', 
+        'kde-protocols',
         'hyprland-protocols',
         'cosmic-protocols',
         'weston-protocols',
@@ -27,19 +27,36 @@ function protoPercentageFilter(p) {
     ].includes(p.source)
 }
 
-function addDescription(to, description, title) {
-    let text = description
-    if (typeof text !== "string")
-        text = text?.text
-    if (text == null)
-        return
-    const descriptionObj = {
-        title: title || null,
-        text: text.replace(/(\w)\r?\n(\w)/g, "$1 $2"),
+function createDescriptions() {
+    const descriptions = []
+
+    function getTitle(titleProp) {
+        if (titleProp == null)
+            return null
+        if (typeof titleProp === "string")
+            return { text: titleProp }
+        return titleProp
     }
-    if (to != null)
-        to.push(descriptionObj)
-    return descriptionObj
+
+    return {
+        descriptions,
+        add(text, opts) {
+            if (typeof text !== "string")
+                text = text?.text
+            if (text == null)
+                return
+
+            const descriptionObj = {
+                title: getTitle(opts.title),
+                subTitle: getTitle(opts.subTitle),
+                text: text.replace(/(\w)\r?\n(\w)/g, "$1 $2"),
+                textOpts: { secondary: opts.textSecondary },
+            }
+
+            descriptions.push(descriptionObj)
+            return descriptionObj
+        }
+    }
 }
 
 let protocolsTotal = 0
@@ -47,23 +64,24 @@ const protocols = []
 const protocolInterfaceMap = {}
 const protocolSupportByComp = {}
 protoData.waylandProtocolRegistry.protocols.forEach((p) => {
+    const xml = p.protocol
     const deprecations = p.deprecated
         ? Object.fromEntries(p.deprecated.map((d) => [d.name, d.reason]))
         : null
 
-    const descriptions = []
-    addDescription(descriptions, p.protocol.description, p.name)
-    for (const interface of p.protocol.interfaces)
-        addDescription(descriptions, interface.description, interface.name)
-    addDescription(descriptions, p.protocol.copyright, "Protocol copyright")
+    const descriptions = createDescriptions()
+    descriptions.add(xml.description, { title: p.name, subTitle: { text: p.id, mono: true } })
+    for (const interface of xml.interfaces)
+        descriptions.add(interface.description, { title: { text: interface.name, mono: true } })
+    descriptions.add(xml.copyright, { title: { text: "Protocol copyright", level: 2 }, textSecondary: true })
 
-    const protocol = {
+    const protocolPrepared = {
         id: p.id,
         name: p.name,
-        desc: p.protocol.description?.summary,
-        descFull: descriptions,
+        desc: xml.description?.summary,
+        descFull: descriptions.descriptions,
         tags: {
-            source: p.source.replace(/-protocols$/, ""), 
+            source: p.source.replace(/-protocols$/, ""),
             stability: p.stability,
         },
         source: p.source,
@@ -72,11 +90,13 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         defaultExpand: false,
         deprecations,
     }
-    p.protocol?.interfaces?.forEach((iface) => {
-        protocolInterfaceMap[iface.name] = protocol
+
+    xml?.interfaces.forEach((iface) => {
+        protocolInterfaceMap[iface.name] = protocolPrepared
     })
-    protocols.push(protocol)
-    if (protoPercentageFilter(protocol)) 
+    protocols.push(protocolPrepared)
+
+    if (protoPercentageFilter(protocolPrepared))
         protocolsTotal += 1
 })
 
@@ -106,7 +126,7 @@ function deprecationStatus(p) {
         return null
     if (Object.keys(p.supportIf).length == 0)
         return DEPRECATED_FULL
-    
+
     const supportedDeprecated = new Set()
     const supportedInterfaces = Object.keys(p.supportIf)
     for (const interface of supportedInterfaces) {

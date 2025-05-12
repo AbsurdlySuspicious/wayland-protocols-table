@@ -33,7 +33,7 @@ function attributesSet(target, attrs) {
         }
         else if (name === "class" && Array.isArray(value)) {
             if (value.length > 0)
-                sa(name, value.join(" "))
+                sa(name, value.filter((c) => c != null).join(" "))
         }
         else if (name === "data") {
             for (const [dataName, dataValue] of Object.entries(value)) {
@@ -567,14 +567,32 @@ function pageCompositorTable(targetContainer, data) {
             createDataCell(c)
         }
 
+        function getDescriptionTextElements(d) {
+            const elements = []
+
+            function addTitle(title, class_) {
+                if (title == null)
+                    return
+                elements.push(e(`h${title.level ?? 1}`, {
+                    class: ["i-heading", title.mono ? "m-mono" : null, class_]
+                }, [title.text]))
+            }
+
+            addTitle(d.title)
+            addTitle(d.subTitle, "m-sub")
+
+            elements.push(e("div", {
+                class: ["i-text", d.textOpts?.secondary ? "m-sec" : null] 
+            }, [d.text]),)
+
+            return elements
+        }
+
         if (p.descFull != null) {
             const fullDescCell = dynRegister(
                 e("div", { class: ["comp-table-cell", "comp-table-fulldesc"] }, [
                     e("div", { class: ["i-wrapper"] }, [
-                        p.descFull.flatMap((d) => [
-                            d.title ? e("h1", {}, [d.title]) : null,
-                            e("div", { class: ["i-text"] }, [d.text]),
-                        ])
+                        p.descFull.flatMap((d) => getDescriptionTextElements(d))
                     ])
                 ]),
                 { type: "descFull", proto: p }
