@@ -131,12 +131,13 @@ const tagColors = {
 
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
+
+    // === Page state ===
+
     const expandDefaultState = {
         [KEY_EXPAND_INTERFACES]: false,
         [KEY_EXPAND_FULLDESC]: false,
     }
-
-    // === Page state ===
 
     let initHeaderWidthSet = false
 
@@ -148,6 +149,7 @@ function pageCompositorTable(targetContainer, data) {
     let compFilterInvert = false
 
     const rowExpandState = new Map()
+    const rowExpandAllIsChanged = new Map()
 
     function expandStateToggle(type, protoId) {
         return stateToggleBool(rowExpandState, stateKey(type, protoId), expandDefaultState[type])
@@ -279,7 +281,12 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         function expandGetState(expandType, m) {
-            return rowExpandState.get(stateKey(expandType, m.proto.id)) ?? expandDefaultState[expandType]
+            const key = stateKey(expandType, m.proto.id)
+            if (rowExpandAllIsChanged.get(expandType)) {
+                rowExpandState.delete(key)
+                return expandDefaultState[expandType]
+            }
+            return rowExpandState.get(key) ?? expandDefaultState[expandType]
         }
 
         function protoHide(shouldHide, m) {
@@ -397,6 +404,7 @@ function pageCompositorTable(targetContainer, data) {
 
             lastHighlight.col = highlightColumn
             lastHighlight.row = highlightRow
+            rowExpandAllIsChanged.clear()
 
             for (const { indicator, value } of supportPercentStore.exportAndReset()) {
                 indicator.querySelector(".i-value").innerText = Math.round(value * 100) + "%"
@@ -454,7 +462,7 @@ function pageCompositorTable(targetContainer, data) {
     function expandAllClickHandler(ev, key) {
         const shouldExpand = !expandDefaultState[key]
         expandDefaultState[key] = shouldExpand
-        rowExpandState.clear()
+        rowExpandAllIsChanged.set(key, true)
         syncState()
     }
 
