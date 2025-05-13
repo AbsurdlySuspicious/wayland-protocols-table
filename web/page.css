@@ -197,6 +197,7 @@ body {
 .comp-table-tag-box {
     --tag-pad-v: 2px;
 
+    position: relative;
     display: flex;
     flex-flow: row wrap;
     gap: 10px;
@@ -420,4 +421,26 @@ body {
 
     width: var(--size);
     height: var(--size);
+}
+
+.comp-table-filter.m-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    /* backdrop-filter: blur(2px); */
+    /* background-color: #00000038; */
+}
+
+.comp-table-filter.m-wnd {
+    position: absolute;
+    background-color: #fff;
+    z-index: 2;
+
+    top: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #00000073;
+    box-shadow: 2px 2px 2px 0 #0000004d;
 }

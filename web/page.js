@@ -84,8 +84,8 @@ function stateKey(...keys) {
     return keys.join(":")
 }
 
-function stateToggleBool(map, key, default_) {
-    const newState = !(map.get(key) ?? default_)
+function stateToggleBool(map, key, force, default_) {
+    const newState = force != null ? force : !(map.get(key) ?? default_)
     map.set(key, newState)
     return newState
 }
@@ -106,6 +106,7 @@ const SUPPORT_NONE = "none"
 
 const KEY_EXPAND_INTERFACES = "interfaces"
 const KEY_EXPAND_FULLDESC = "fulldesc"
+const KEY_EXPAND_FILTERS = "filters"
 
 const SYNC_DUE_TO_MOUSEMOVE = 1
 
@@ -137,6 +138,7 @@ function pageCompositorTable(targetContainer, data) {
     const expandDefaultState = {
         [KEY_EXPAND_INTERFACES]: false,
         [KEY_EXPAND_FULLDESC]: false,
+        [KEY_EXPAND_FILTERS]: false,
     }
 
     let initHeaderWidthSet = false
@@ -148,11 +150,11 @@ function pageCompositorTable(targetContainer, data) {
     let compFilter = null
     let compFilterInvert = false
 
-    const rowExpandState = new Map()
-    const rowExpandAllIsChanged = new Map()
+    const expandState = new Map()
+    const expandAllIsChanged = new Map()
 
-    function expandStateToggle(type, protoId) {
-        return stateToggleBool(rowExpandState, stateKey(type, protoId), expandDefaultState[type])
+    function expandRowStateToggle(type, protoId) {
+        return stateToggleBool(expandState, stateKey(type, protoId), null, expandDefaultState[type])
     }
 
     function isCompFiltered(compId) {
@@ -225,6 +227,15 @@ function pageCompositorTable(targetContainer, data) {
         return element
     }
 
+    function dynRegisterAll(elements, metadata) {
+        const iterElements =
+            elements[Symbol.iterator] == null
+                ? Object.values(elements) : elements
+        for (const el of iterElements)
+            dynRegister(el, { ...metadata })
+        return elements
+    }
+
     const syncState = (() => {
 
         function createSupportPercentStore() {
@@ -280,19 +291,23 @@ function pageCompositorTable(targetContainer, data) {
             m.visible = visible
         }
 
-        function expandGetState(expandType, m) {
-            const key = stateKey(expandType, m.proto.id)
-            if (rowExpandAllIsChanged.get(expandType)) {
-                rowExpandState.delete(key)
+        function expandGetState(expandType, ...keys) {
+            const key = stateKey(expandType, ...keys)
+            if (expandAllIsChanged.get(expandType)) {
+                expandState.delete(key)
                 return expandDefaultState[expandType]
             }
-            return rowExpandState.get(key) ?? expandDefaultState[expandType]
+            return expandState.get(key) ?? expandDefaultState[expandType]
+        }
+
+        function expandRowGetState(expandType, m) {
+            return expandGetState(expandType, m.proto.id)
         }
 
         function protoHide(shouldHide, m) {
             if (m.interface != null) {
                 shouldHide = shouldHide
-                    || !expandGetState(KEY_EXPAND_INTERFACES, m)
+                    || !expandRowGetState(KEY_EXPAND_INTERFACES, m)
             }
 
             let supportExclude = false
@@ -384,7 +399,7 @@ function pageCompositorTable(targetContainer, data) {
 
                 }
                 else if (m.type === "descButton") {
-                    const active = expandGetState(m.buttonType, m)
+                    const active = expandRowGetState(m.buttonType, m)
                     if (active !== m.active) {
                         m.active = active
                         el.classList.toggle(descButtonActiveClass, active)
@@ -394,17 +409,19 @@ function pageCompositorTable(targetContainer, data) {
                     supportPercentStore.indicatorAssociate(m.comp.id, el)
                 }
                 else if (m.type === "descFull") {
-                    let shouldHide = !expandGetState(KEY_EXPAND_FULLDESC, m)
-                    changeVisibility(el, m, !shouldHide)
+                    changeVisibility(el, m, expandRowGetState(KEY_EXPAND_FULLDESC, m))
                 }
                 else if (m.type === "headHoverSupport") {
                     mouseMoveHeaderSupportInd(el, m)
+                }
+                else if (m.type === "filterWindow") {
+                    changeVisibility(el, m, expandGetState(KEY_EXPAND_FILTERS))
                 }
             }
 
             lastHighlight.col = highlightColumn
             lastHighlight.row = highlightRow
-            rowExpandAllIsChanged.clear()
+            expandAllIsChanged.clear()
 
             for (const { indicator, value } of supportPercentStore.exportAndReset()) {
                 indicator.querySelector(".i-value").innerText = Math.round(value * 100) + "%"
@@ -449,20 +466,25 @@ function pageCompositorTable(targetContainer, data) {
 
     function interfacesExpandClickHandler(ev) {
         const protoId = descButtonGetProtoId(ev)
-        expandStateToggle(KEY_EXPAND_INTERFACES, protoId)
+        expandRowStateToggle(KEY_EXPAND_INTERFACES, protoId)
         syncState()
     }
 
     function fullDescExpandClickHandler(ev) {
         const protoId = descButtonGetProtoId(ev)
-        expandStateToggle(KEY_EXPAND_FULLDESC, protoId)
+        expandRowStateToggle(KEY_EXPAND_FULLDESC, protoId)
         syncState()
     }
 
     function expandAllClickHandler(ev, key) {
         const shouldExpand = !expandDefaultState[key]
         expandDefaultState[key] = shouldExpand
-        rowExpandAllIsChanged.set(key, true)
+        expandAllIsChanged.set(key, true)
+        syncState()
+    }
+
+    function toggleFilterWindow(force) {
+        stateToggleBool(expandState, KEY_EXPAND_FILTERS, force)
         syncState()
     }
 
@@ -480,11 +502,23 @@ function pageCompositorTable(targetContainer, data) {
     const icInterfaces = "I"
     const icDescription = "D"
 
+    const filterWindow = dynRegisterAll({
+        backdrop: e("div", {
+            class: ["comp-table-filter", "m-backdrop"],
+            onClick: () => toggleFilterWindow(false),
+        }, []),
+        wnd: e("div", { class: ["comp-table-filter", "m-wnd"] }, [
+            e("div", {}, ["meme"]),
+        ]),
+    }, { type: "filterWindow" })
+
     function getTableFirstCell() {
         return e("div", { class: "comp-table-dummy" }, [
             e("div", { class: ["comp-table-tag-box"] }, [
+                filterWindow.wnd,
                 e("div", {
                     class: ["comp-table-db"],
+                    onClick: toggleFilterWindow,
                 }, [icFilters]),
                 e("div", {
                     class: ["comp-table-db"],
@@ -505,7 +539,7 @@ function pageCompositorTable(targetContainer, data) {
 
     const table = e("div",
         { class: "comp-table" },
-        [getTableFirstCell()]
+        [filterWindow.backdrop, getTableFirstCell()]
     )
 
     for (const c of data.compositors) {
@@ -704,7 +738,7 @@ function pageCompositorTable(targetContainer, data) {
         }
 
         if ((hasVisibleDeprecations && !p.deprecatedFull) || p.defaultExpand)
-            rowExpandState.set(stateKey(KEY_EXPAND_INTERFACES, p.id), true)
+            expandState.set(stateKey(KEY_EXPAND_INTERFACES, p.id), true)
     }
 
     // === Root elements ===
