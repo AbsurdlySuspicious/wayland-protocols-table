@@ -536,8 +536,8 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     const icFilters = materialIcons.getIconLazy("tune")
-    const icInterfaces = materialIcons.getIconLazy("description")
-    const icDescription = materialIcons.getIconLazy("list")
+    const icInterfaces = materialIcons.getIconLazy("format_list_bulleted")
+    const icDescription = materialIcons.getIconLazy("description")
 
     const filterWindow = dynRegisterAll({
         backdrop: e("div", {

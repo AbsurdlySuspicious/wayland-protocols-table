@@ -247,11 +247,14 @@ body {
 }
 
 .comp-table-db {
+    --size: 24px;
     --border-color-hover: #444;
     --border-color-active: #8f8f8f;
     --border-size-active: 2px;
 
-    padding: var(--tag-pad-v) 3px;
+    width: var(--size);
+    height: var(--size);
+
     min-width: 15px;
     background-color: #0000;
     border-radius: 5px;
@@ -262,6 +265,15 @@ body {
     cursor: pointer;
     text-align: center;
     user-select: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comp-table-db .material-symbols-outlined {
+    font-size: 16px;
+    font-variation-settings: 'opsz' 20, 'wght' 400;
 }
 
 .comp-table-db:hover {
