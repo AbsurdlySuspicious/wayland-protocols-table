@@ -870,7 +870,18 @@ function pageCompositorTable(targetContainer, data) {
     syncState()
 }
 
+(() => {
+    // === Setup icon font ===
+    const materialIcons = ['tune', 'description', 'format_list_bulleted']
+    const materialIconsUrl = new URL("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
+    materialIconsUrl.searchParams.set("icon_names", materialIcons.sort().join(","))
+    document.querySelector("head").appendChild(
+        e("link", { rel: "stylesheet", href: materialIconsUrl.toString() })
+    )
+})();
+
 document.addEventListener("DOMContentLoaded", async () => {
+    // === Setup page ===
     const container = document.getElementById("content")
     const dataResp = await fetch("./data.json")
     const data = await dataResp.json()
