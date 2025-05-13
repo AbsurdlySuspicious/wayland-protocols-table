@@ -216,6 +216,7 @@ body {
     position: relative;
     display: flex;
     flex-flow: row wrap;
+    align-items: center;
     gap: 10px;
     font-size: 13px;
 }
@@ -229,6 +230,7 @@ body {
     --tag-fg: #000;
 
     cursor: default;
+    height: fit-content;
     padding: var(--tag-pad-v) 10px;
     border-radius: 9999px;
     font-weight: 600;
