@@ -224,6 +224,42 @@ function pageCompositorTable(targetContainer, data) {
     }
 
     const syncState = (() => {
+
+        function createSupportPercentStore() {
+            const init = () => ({
+                supportPercentIndicators: new Map(),
+                supportCount: new Map(),
+                supportTotal: 0,
+            })
+
+            return {
+                state: init(),
+                countAdd(compId, value) {
+                    stateAdd(this.state.supportCount, compId, value)
+                },
+                countGet(compId) {
+                    return this.state.supportCount.get(compId)
+                },
+                totalInc() {
+                    this.state.supportTotal += 1
+                },
+                indicatorAssociate(compId, element) {
+                    this.state.supportPercentIndicators.set(compId, element)
+                },
+                exportAndReset() {
+                    const state = this.state
+                    this.state = init()
+                    const total = state.supportTotal
+                    if (total === 0)
+                        return []
+                    return state.supportPercentIndicators.entries().map(([compId, indicator]) => {
+                        const count = state.supportCount.get(compId)
+                        return { compId, indicator, count, value: count / total }
+                    })
+                }
+            }
+        }
+
         const hoverColumnClass = "comp-table-cell-hover"
         const hoverRowClass = "comp-table-row-hover"
         const headSelectedClass = "comp-table-name-selected"
@@ -232,9 +268,7 @@ function pageCompositorTable(targetContainer, data) {
 
         let lastHighlight = {}
 
-        const supportPercentIndicators = new Map()
-        const supportCount = new Map()
-        let supportTotal = 0
+        const supportPercentStore = createSupportPercentStore()
 
         function changeVisibility(el, m, visible) {
             if (m.visible === visible)
@@ -269,14 +303,14 @@ function pageCompositorTable(targetContainer, data) {
                 if (m.type == "data") {
                     const compId = m.comp.id
                     const supportCell = getCompositorSupport(compId, m.proto, m.interface)
-                    stateAdd(supportCount, compId,
+                    supportPercentStore.countAdd(compId,
                         supportCell === SUPPORT_FULL
                             ? 1
                             : supportCell === SUPPORT_PARTIAL ? 0.5 : 0
                     )
                 }
                 else if (m.type === "row") {
-                    supportTotal += 1
+                    supportPercentStore.totalInc()
                 }
             }
 
@@ -350,7 +384,7 @@ function pageCompositorTable(targetContainer, data) {
                     }
                 }
                 else if (m.type === "supportPercent") {
-                    supportPercentIndicators.set(m.comp.id, el)
+                    supportPercentStore.indicatorAssociate(m.comp.id, el)
                 }
                 else if (m.type === "descFull") {
                     let shouldHide = !expandGetState(KEY_EXPAND_FULLDESC, m)
@@ -364,17 +398,10 @@ function pageCompositorTable(targetContainer, data) {
             lastHighlight.col = highlightColumn
             lastHighlight.row = highlightRow
 
-            if (supportTotal > 0) {
-                for (const [compId, supportIndicator] of supportPercentIndicators.entries()) {
-                    const count = supportCount.get(compId)
-                    const value = count / supportTotal
-                    supportIndicator.querySelector(".i-value").innerText = Math.round(value * 100) + "%"
-                    supportIndicator.querySelector(".i-bg").style.setProperty("--prc", value)
-                }
+            for (const { indicator, value } of supportPercentStore.exportAndReset()) {
+                indicator.querySelector(".i-value").innerText = Math.round(value * 100) + "%"
+                indicator.querySelector(".i-bg").style.setProperty("--prc", value)
             }
-            supportCount.clear()
-            supportPercentIndicators.clear()
-            supportTotal = 0
 
             if (!dueTo)
                 updateHeaderWidth()
