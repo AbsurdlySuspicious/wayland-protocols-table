@@ -82,6 +82,7 @@ body {
     --cell-support-none-bg: #fd8064;
     --cell-support-none-fg: #7b3723;
 
+    position: relative;
     padding: 10px;
     width: fit-content;
     display: grid;

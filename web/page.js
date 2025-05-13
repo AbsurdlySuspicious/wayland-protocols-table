@@ -128,14 +128,6 @@ const tagColors = {
     __default: ["rgb(244 244 245)", "rgb(39 39 42)"]
 }
 
-const supportCellText = {
-    [SUPPORT_FULL]: "+",
-    [SUPPORT_PARTIAL]: "~",
-    [SUPPORT_NONE]: "X",
-
-    __default: "?"
-}
-
 
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
@@ -441,17 +433,32 @@ function pageCompositorTable(targetContainer, data) {
 
     // === Table populate ===
 
+    const icSupportCell = {
+        [SUPPORT_FULL]: "+",
+        [SUPPORT_PARTIAL]: "~",
+        [SUPPORT_NONE]: "X",
+
+        __default: "?"
+    }
+
+    const icFilters = "F"
+    const icInterfaces = "I"
+    const icDescription = "D"
+
     function getTableFirstCell() {
         return e("div", { class: "comp-table-dummy" }, [
             e("div", { class: ["comp-table-tag-box"] }, [
                 e("div", {
                     class: ["comp-table-db"],
+                }, [icFilters]),
+                e("div", {
+                    class: ["comp-table-db"],
                     onClick: (ev) => expandAllClickHandler(ev, KEY_EXPAND_INTERFACES)
-                }, ["I"]),
+                }, [icInterfaces]),
                 e("div", {
                     class: ["comp-table-db"],
                     onClick: (ev) => expandAllClickHandler(ev, KEY_EXPAND_FULLDESC)
-                }, ["D"]),
+                }, [icDescription]),
             ])
         ])
     }
@@ -538,14 +545,14 @@ function pageCompositorTable(targetContainer, data) {
                         e("div", {
                             class: ["comp-table-db", "comp-db-interfaces"],
                             onClick: interfacesExpandClickHandler
-                        }, ["I"]),
+                        }, [icInterfaces]),
                         { type: "descButton", buttonType: KEY_EXPAND_INTERFACES, proto: p }
                     ),
                     dynRegister(
                         e("div", {
                             class: ["comp-table-db", "comp-db-description"],
                             onClick: fullDescExpandClickHandler
-                        }, ["D"]),
+                        }, [icDescription]),
                         { type: "descButton", buttonType: KEY_EXPAND_FULLDESC, proto: p }
                     ),
                 ]),
@@ -561,7 +568,7 @@ function pageCompositorTable(targetContainer, data) {
                 getCompositorSupport(c.id, p, interface)
 
             const cellContentClass = `comp-table-cell-support-${support}`
-            const cellText = supportCellText[support] ?? supportCellText.__default
+            const cellText = icSupportCell[support] ?? icSupportCell.__default
 
             const cellClasses = ["comp-table-cell", "comp-table-cell-data"]
             const cellContentClasses = ["comp-table-cell-content", cellContentClass]
