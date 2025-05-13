@@ -531,14 +531,16 @@ function pageCompositorTable(targetContainer, data) {
         ]),
     }, { type: "filterWindow" })
 
-    function getTableFirstCell() {
+    function getTableFirstCell(opts) {
         return e("div", { class: "comp-table-dummy" }, [
             e("div", { class: ["comp-table-tag-box"] }, [
-                filterWindow.wnd,
-                e("div", {
-                    class: ["comp-table-db"],
-                    onClick: toggleFilterWindow,
-                }, [icFilters]),
+                !opts?.fixedHeader ? [
+                    filterWindow.wnd,
+                    e("div", {
+                        class: ["comp-table-db"],
+                        onClick: toggleFilterWindow,
+                    }, [icFilters]),
+                ] : null,
                 e("div", {
                     class: ["comp-table-db"],
                     onClick: (ev) => expandAllClickHandler(ev, KEY_EXPAND_INTERFACES)
@@ -553,7 +555,7 @@ function pageCompositorTable(targetContainer, data) {
 
     const tableFix = e("div",
         { class: ["comp-table", "comp-header-fix-inner"] },
-        [getTableFirstCell()]
+        [getTableFirstCell({ fixedHeader: true })]
     )
 
     const table = e("div",
