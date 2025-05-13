@@ -63,6 +63,25 @@ function e(elementName, opts, children) {
     return el
 }
 
+const createMaterialIcons = () => ({
+    baseUrl: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
+    usedIcons: new Set(),
+    getIconLazy(name) {
+        this.usedIcons.add(name)
+        return () => e("span", { class: "material-symbols-outlined" }, [name])
+    },
+    initIcons() {
+        if (this.usedIcons.size == 0)
+            return
+        const icons = this.usedIcons.values()
+            .map((i) => encodeURIComponent(i))
+            .toArray().sort().join(",")
+        document.querySelector("head").appendChild(
+            e("link", { rel: "stylesheet", href: `${this.baseUrl}&icon_names=${icons}` })
+        )
+    },
+})
+
 function findParent(child, selector, opts) {
     let skipParents = opts?.skip ?? 0
     while (child != null && (skipParents > 0 || !child.matches(selector))) {
@@ -144,6 +163,8 @@ function pageCompositorTable(targetContainer, data) {
         [KEY_EXPAND_FULLDESC]: false,
         [KEY_EXPAND_FILTERS]: false,
     }
+
+    const materialIcons = createMaterialIcons()
 
     let initHeaderWidthSet = false
 
@@ -513,9 +534,9 @@ function pageCompositorTable(targetContainer, data) {
         __default: "?"
     }
 
-    const icFilters = "F"
-    const icInterfaces = "I"
-    const icDescription = "D"
+    const icFilters = materialIcons.getIconLazy("tune")
+    const icInterfaces = materialIcons.getIconLazy("description")
+    const icDescription = materialIcons.getIconLazy("list")
 
     const filterWindow = dynRegisterAll({
         backdrop: e("div", {
@@ -544,16 +565,16 @@ function pageCompositorTable(targetContainer, data) {
                     e("div", {
                         class: ["comp-table-db"],
                         onClick: toggleFilterWindow,
-                    }, [icFilters]),
+                    }, [icFilters()]),
                 ] : null,
                 e("div", {
                     class: ["comp-table-db"],
                     onClick: (ev) => expandAllClickHandler(ev, KEY_EXPAND_INTERFACES)
-                }, [icInterfaces]),
+                }, [(icInterfaces())]),
                 e("div", {
                     class: ["comp-table-db"],
                     onClick: (ev) => expandAllClickHandler(ev, KEY_EXPAND_FULLDESC)
-                }, [icDescription]),
+                }, [icDescription()]),
             ])
         ])
     }
@@ -640,14 +661,14 @@ function pageCompositorTable(targetContainer, data) {
                         e("div", {
                             class: ["comp-table-db", "comp-db-interfaces"],
                             onClick: interfacesExpandClickHandler
-                        }, [icInterfaces]),
+                        }, [icInterfaces()]),
                         { type: "descButton", buttonType: KEY_EXPAND_INTERFACES, proto: p }
                     ),
                     dynRegister(
                         e("div", {
                             class: ["comp-table-db", "comp-db-description"],
                             onClick: fullDescExpandClickHandler
-                        }, [icDescription]),
+                        }, [icDescription()]),
                         { type: "descButton", buttonType: KEY_EXPAND_FULLDESC, proto: p }
                     ),
                 ]),
@@ -867,18 +888,9 @@ function pageCompositorTable(targetContainer, data) {
     targetContainer.innerHTML = ""
     targetContainer.appendChild(root)
 
+    materialIcons.initIcons()
     syncState()
 }
-
-(() => {
-    // === Setup icon font ===
-    const materialIcons = ['tune', 'description', 'format_list_bulleted']
-    const materialIconsUrl = new URL("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
-    materialIconsUrl.searchParams.set("icon_names", materialIcons.sort().join(","))
-    document.querySelector("head").appendChild(
-        e("link", { rel: "stylesheet", href: materialIconsUrl.toString() })
-    )
-})();
 
 document.addEventListener("DOMContentLoaded", async () => {
     // === Setup page ===
