@@ -1,9 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
 body {
     --bg: rgb(250 250 250);
+    --font-sans: "Noto Sans", sans-serif;
+    --font-mono: "Source Code Pro", monospace;
 
     padding: 0;
     margin: 0;
-    font-family: sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--bg);
 }
 
@@ -187,13 +191,13 @@ body {
 }
 
 .comp-table-desc-name-interface {
-    font-family: monospace;
+    font-family: var(--font-mono);
     font-size: 14px;
     font-weight: 500;
 }
 
 .comp-table-desc-id {
-    font-family: monospace;
+    font-family: var(--font-mono);
     font-size: 13px;
     color: #444;
 }
@@ -421,7 +425,7 @@ body {
 }
 
 .comp-table-fulldesc .m-mono {
-    font-family: monospace;
+    font-family: var(--font-mono);
 }
 
 .comp-table-fulldesc :is(.i-text, h1, h2):first-child {
