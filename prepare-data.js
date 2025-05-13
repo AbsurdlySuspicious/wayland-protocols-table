@@ -16,17 +16,6 @@ const SUPPORT_NONE = "none"
 
 const DEPRECATED_FULL = "deprecated"
 
-function protoPercentageFilter(p) {
-    // exclude compositor specific protocols from percentage
-    return ![
-        'kde-protocols',
-        'hyprland-protocols',
-        'cosmic-protocols',
-        'weston-protocols',
-        'treeland-protocols',
-    ].includes(p.source)
-}
-
 function createDescriptions() {
     const descriptions = []
 
@@ -59,10 +48,8 @@ function createDescriptions() {
     }
 }
 
-let protocolsTotal = 0
 const protocols = []
 const protocolInterfaceMap = {}
-const protocolSupportByComp = {}
 protoData.waylandProtocolRegistry.protocols.forEach((p) => {
     const xml = p.protocol
     const deprecations = p.deprecated
@@ -97,9 +84,6 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         protocolInterfaceMap[iface.name] = protocolPrepared
     })
     protocols.push(protocolPrepared)
-
-    if (protoPercentageFilter(protocolPrepared))
-        protocolsTotal += 1
 })
 
 const compositors = []
@@ -109,7 +93,6 @@ compData.compositorRegistry.forEach((c) => {
         id: c.id,
         name: c.name,
         icon: c.icon,
-        supportedPercent: 0,
     }
     compositors.push(shortData)
     compositorsById[c.id] = shortData
@@ -164,8 +147,6 @@ protocols.forEach((p) => {
             p.countSupportSumAny += 1
         if (supportGrade === SUPPORT_FULL)
             p.countSupportSumFull += 1
-        if (supportGrade != SUPPORT_NONE && protoPercentageFilter(p))
-            objIncr(protocolSupportByComp, compId, supportGrade == SUPPORT_FULL ? 1 : 0.5)
     }
     p.defaultExpand = hasNonFull
 
@@ -175,11 +156,6 @@ protocols.forEach((p) => {
         p.deprecatedFull = true
     }
 })
-
-for (const [compId, supported] of Object.entries(protocolSupportByComp)) {
-    compositorsById[compId].supportedPercent = Math.round(supported / protocolsTotal * 100)
-    // TODO unused, remove later when private protocols filter is implemented on client
-}
 
 const dataOut = { compositors, protocols }
 stdout.write(JSON.stringify(dataOut, null, env["PRETTY"] === "1" ? 4 : null))

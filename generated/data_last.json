@@ -3,89 +3,74 @@
         {
             "id": "mutter",
             "name": "Mutter",
-            "icon": "gnome",
-            "supportedPercent": 39
+            "icon": "gnome"
         },
         {
             "id": "kwin",
             "name": "KWin",
-            "icon": "kde",
-            "supportedPercent": 44
+            "icon": "kde"
         },
         {
             "id": "sway",
             "name": "Sway",
-            "icon": "sway",
-            "supportedPercent": 52
+            "icon": "sway"
         },
         {
             "id": "cosmic",
             "name": "COSMIC",
-            "icon": "cosmic",
-            "supportedPercent": 44
+            "icon": "cosmic"
         },
         {
             "id": "hyprland",
             "name": "Hyprland",
-            "icon": "hyprland",
-            "supportedPercent": 56
+            "icon": "hyprland"
         },
         {
             "id": "niri",
-            "name": "niri",
-            "supportedPercent": 45
+            "name": "niri"
         },
         {
             "id": "weston",
             "name": "Weston",
-            "icon": "weston",
-            "supportedPercent": 17
+            "icon": "weston"
         },
         {
             "id": "labwc",
             "name": "Labwc",
-            "icon": "labwc",
-            "supportedPercent": 51
+            "icon": "labwc"
         },
         {
             "id": "cage",
-            "name": "Cage",
-            "supportedPercent": 25
+            "name": "Cage"
         },
         {
             "id": "wayfire",
             "name": "Wayfire",
-            "icon": "wayfire",
-            "supportedPercent": 44
+            "icon": "wayfire"
         },
         {
             "id": "gamescope",
             "name": "GameScope",
-            "icon": "Steam_Deck",
-            "supportedPercent": 11
+            "icon": "Steam_Deck"
         },
         {
             "id": "jay",
-            "name": "Jay",
-            "supportedPercent": 57
+            "name": "Jay"
         },
         {
             "id": "mir",
             "name": "Mir",
-            "icon": "mir",
-            "supportedPercent": 30
+            "icon": "mir"
         },
         {
             "id": "treeland",
             "name": "Treeland",
-            "icon": "deepin",
-            "supportedPercent": 29
+            "icon": "deepin"
         },
         {
             "id": "louvre",
             "name": "Louvre",
-            "icon": "louvre",
-            "supportedPercent": 37
+            "icon": "louvre"
         }
     ],
     "protocols": [
