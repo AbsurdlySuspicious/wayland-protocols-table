@@ -74,10 +74,11 @@ const createMaterialIcons = () => ({
         if (this.usedIcons.size == 0)
             return
         const icons = this.usedIcons.values()
-            .map((i) => encodeURIComponent(i))
             .toArray().sort().join(",")
+        const url = new URL(this.baseUrl)
+        url.searchParams.set("icon_names", icons)
         document.querySelector("head").appendChild(
-            e("link", { rel: "stylesheet", href: `${this.baseUrl}&icon_names=${icons}` })
+            e("link", { rel: "stylesheet", href: url.toString() })
         )
     },
 })
