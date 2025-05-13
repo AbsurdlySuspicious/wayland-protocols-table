@@ -443,4 +443,6 @@ body {
     padding: 10px;
     border: 1px solid #00000073;
     box-shadow: 2px 2px 2px 0 #0000004d;
+
+    width: max-content;
 }

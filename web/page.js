@@ -130,6 +130,11 @@ const tagColors = {
 }
 
 
+function isProtocolPrivate(proto) {
+    return proto.tags.source != "wayland"
+        && Object.values(proto.supportSum).reduce((a, d) => a + +(d !== SUPPORT_NONE), 0) <= 1
+}
+
 function pageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
@@ -152,6 +157,8 @@ function pageCompositorTable(targetContainer, data) {
 
     const expandState = new Map()
     const expandAllIsChanged = new Map()
+
+    const filterOpts = {}
 
     function expandRowStateToggle(type, protoId) {
         return stateToggleBool(expandState, stateKey(type, protoId), null, expandDefaultState[type])
@@ -321,7 +328,10 @@ function pageCompositorTable(targetContainer, data) {
             }
             shouldHide = shouldHide || supportExclude
 
-            if (!supportExclude && m.interface != null) {
+            if (
+                !supportExclude && m.interface != null
+                && (!filterOpts.excludePrivate || !isProtocolPrivate(m.proto))
+            ) {
                 if (m.type == "data") {
                     const compId = m.comp.id
                     const supportCell = getCompositorSupport(compId, m.proto, m.interface)
@@ -508,7 +518,16 @@ function pageCompositorTable(targetContainer, data) {
             onClick: () => toggleFilterWindow(false),
         }, []),
         wnd: e("div", { class: ["comp-table-filter", "m-wnd"] }, [
-            e("div", {}, ["meme"]),
+            e("label", {}, [
+                e("input", {
+                    type: "checkbox",
+                    onChange: (ev) => {
+                        filterOpts.excludePrivate = ev.currentTarget.checked
+                        syncState()
+                    }
+                }),
+                "Exlude compositor-specific protocols from percentage"
+            ]),
         ]),
     }, { type: "filterWindow" })
 
