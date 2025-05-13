@@ -30,7 +30,7 @@ body {
     align-items: end;
     justify-content: end;
     padding-bottom: 5px;
-    padding-right: var(--desc-gap);
+    margin-right: var(--desc-gap);
 }
 
 .comp-header-fix {
