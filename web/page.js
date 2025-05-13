@@ -212,13 +212,19 @@ function pageCompositorTable(targetContainer, data) {
         return width
     }
 
+    function updateFixedHeaderPosition() {
+        tableFixOuter.style['left'] = table.getBoundingClientRect().x + "px"
+    }
+
     function updateHeaderWidth() {
         const dummyWidth = setFixWidthVar("--dummy-w", ".comp-table-dummy")
         setFixWidthVar("--head-w", ".comp-table-name")
         if (!initHeaderWidthSet) {
             table.querySelector(".comp-table-dummy").style["width"] = dummyWidth + "px"
+            table.style['width'] = "min-content"
             initHeaderWidthSet = true
         }
+        updateFixedHeaderPosition()
     }
 
 
@@ -558,7 +564,7 @@ function pageCompositorTable(targetContainer, data) {
     )
 
     const table = e("div",
-        { class: "comp-table" },
+        { class: ["comp-table", "comp-table-main"] },
         [filterWindow.backdrop, getTableFirstCell()]
     )
 
@@ -852,6 +858,9 @@ function pageCompositorTable(targetContainer, data) {
 
     document.addEventListener("scroll", fixedHeaderVisibilityCallback)
     fixedHeaderVisibilityCallback()
+
+    window.addEventListener("resize", updateHeaderWidth)
+    document.addEventListener("scroll", updateFixedHeaderPosition)
 
     // === Populate page ===
 

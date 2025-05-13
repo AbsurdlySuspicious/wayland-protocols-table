@@ -22,6 +22,12 @@ body {
 
 .comp-table-root {
     position: relative;
+    margin-top: 20px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    min-width: fit-content;
+    width: 100%;
 }
 
 .comp-table-dummy {
@@ -37,7 +43,7 @@ body {
     --dummy-w: 0px;
     --head-w: 10px;
 
-    width: 100%;
+    width: fit-content;
     position: fixed;
     transition: opacity .1s ease-out;
     background-color: #eee;
@@ -46,6 +52,7 @@ body {
     z-index: 10;
     opacity: 0;
     visibility: hidden;
+    top: 0;
 }
 
 .comp-header-fix .comp-table-dummy {
@@ -83,10 +90,14 @@ body {
     --cell-support-none-fg: #7b3723;
 
     position: relative;
-    padding: 10px;
     width: fit-content;
     display: grid;
     grid-template-columns: fit-content(350px) repeat(calc(var(--cols) - 1), var(--col-width));
+}
+
+.comp-header-fix-inner {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .comp-table .comp-table-dummy {
@@ -94,6 +105,7 @@ body {
 }
 
 .comp-table-bottom-pad {
+    width: 100%;
     height: 30vh;
     --stripe-a: #0000;
     --stripe-b: #e4e4e4;
