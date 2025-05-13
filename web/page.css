@@ -250,14 +250,20 @@ body {
 
 .comp-table-db {
     --size: 24px;
+    --icon-size: 16px;
     --border-color-hover: #444;
     --border-color-active: #8f8f8f;
     --border-size-active: 2px;
 
-    width: var(--size);
-    height: var(--size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    min-width: 15px;
+    --gap-size: calc((var(--size) - var(--icon-size)) / 2);
+    padding: 0 var(--gap-size);
+    height: var(--size);
+    column-gap: var(--gap-size);
+
     background-color: #0000;
     border-radius: 5px;
     outline: 1px solid #0000002e;
@@ -267,14 +273,10 @@ body {
     cursor: pointer;
     text-align: center;
     user-select: none;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .comp-table-db .material-symbols-outlined {
-    font-size: 16px;
+    font-size: var(--icon-size);
     font-variation-settings: 'opsz' 20, 'wght' 400;
 }
 

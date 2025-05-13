@@ -566,7 +566,7 @@ function pageCompositorTable(targetContainer, data) {
                     e("div", {
                         class: ["comp-table-db"],
                         onClick: toggleFilterWindow,
-                    }, [icFilters()]),
+                    }, [icFilters(), "Settings"]),
                 ] : null,
                 e("div", {
                     class: ["comp-table-db"],
