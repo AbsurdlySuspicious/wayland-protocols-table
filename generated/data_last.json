@@ -442,6 +442,8 @@
                 "treeland": "partial",
                 "louvre": "partial"
             },
+            "countSupportSumAny": 15,
+            "countSupportSumFull": 0,
             "defaultExpand": true,
             "deprecations": {
                 "wl_shell": "Use xdg-shell",
@@ -519,6 +521,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 13,
+            "countSupportSumFull": 13,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -595,6 +599,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 14,
+            "countSupportSumFull": 14,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -700,6 +706,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 15,
+            "countSupportSumFull": 15,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -787,6 +795,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 15,
+            "countSupportSumFull": 15,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -928,6 +938,8 @@
                 "wayfire": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 9,
+            "countSupportSumFull": 9,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1010,6 +1022,8 @@
                 "mir": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 11,
+            "countSupportSumFull": 11,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1094,6 +1108,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 9,
+            "countSupportSumFull": 9,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1173,6 +1189,8 @@
                 "gamescope": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 5,
+            "countSupportSumFull": 5,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1260,6 +1278,8 @@
                 "mir": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 9,
+            "countSupportSumFull": 9,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1331,6 +1351,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 10,
+            "countSupportSumFull": 10,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1389,6 +1411,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 5,
+            "countSupportSumFull": 5,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1459,6 +1483,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 11,
+            "countSupportSumFull": 11,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1536,6 +1562,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1616,6 +1644,8 @@
             "supportSum": {
                 "jay": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1678,6 +1708,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 7,
+            "countSupportSumFull": 7,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1744,6 +1776,8 @@
                 "cage": "full",
                 "wayfire": "full"
             },
+            "countSupportSumAny": 3,
+            "countSupportSumFull": 3,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1828,6 +1862,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 12,
+            "countSupportSumFull": 12,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1894,6 +1930,8 @@
                 "jay": "full",
                 "treeland": "full"
             },
+            "countSupportSumAny": 9,
+            "countSupportSumFull": 9,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1966,6 +2004,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 6,
+            "countSupportSumFull": 6,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2028,6 +2068,8 @@
                 "labwc": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 7,
+            "countSupportSumFull": 7,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2092,6 +2134,8 @@
                 "sway": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2137,6 +2181,8 @@
                 "kwin": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 3,
+            "countSupportSumFull": 3,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2199,6 +2245,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2255,6 +2303,8 @@
                 "hyprland": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 4,
+            "countSupportSumFull": 4,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2313,6 +2363,8 @@
                 "hyprland": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 5,
+            "countSupportSumFull": 5,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2365,6 +2417,8 @@
                 "mutter": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2447,6 +2501,8 @@
                 "niri": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2499,6 +2555,8 @@
                 "mutter": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2542,6 +2600,8 @@
                 "mutter": "full",
                 "kwin": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2603,6 +2663,8 @@
                 "labwc": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2723,6 +2785,8 @@
                 "hyprland": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 3,
+            "countSupportSumFull": 3,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2758,6 +2822,8 @@
             "source": "wayland-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2793,6 +2859,8 @@
             "source": "wayland-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2867,6 +2935,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 13,
+            "countSupportSumFull": 13,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2932,6 +3002,8 @@
                 "weston": "full",
                 "mir": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2994,6 +3066,8 @@
             "supportSum": {
                 "weston": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3068,6 +3142,8 @@
                 "niri": "full",
                 "wayfire": "full"
             },
+            "countSupportSumAny": 7,
+            "countSupportSumFull": 7,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3122,6 +3198,8 @@
             "source": "wayland-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": {
                 "zwp_linux_explicit_synchronization_v1": "Superseded by linux-drm-syncobj",
@@ -3222,6 +3300,8 @@
                 "mir": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 13,
+            "countSupportSumFull": 13,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3299,6 +3379,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 11,
+            "countSupportSumFull": 11,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3392,6 +3474,8 @@
                 "mir": "full",
                 "treeland": "full"
             },
+            "countSupportSumAny": 12,
+            "countSupportSumFull": 12,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3480,6 +3564,8 @@
                 "mir": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 14,
+            "countSupportSumFull": 14,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3560,6 +3646,8 @@
                 "mir": "full",
                 "treeland": "full"
             },
+            "countSupportSumAny": 10,
+            "countSupportSumFull": 10,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3632,6 +3720,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 12,
+            "countSupportSumFull": 12,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3733,6 +3823,8 @@
                 "labwc": "full",
                 "wayfire": "full"
             },
+            "countSupportSumAny": 7,
+            "countSupportSumFull": 7,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3821,6 +3913,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 14,
+            "countSupportSumFull": 14,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3877,6 +3971,8 @@
             "source": "wayland-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -3973,6 +4069,8 @@
                 "jay": "full",
                 "treeland": "full"
             },
+            "countSupportSumAny": 9,
+            "countSupportSumFull": 9,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4041,6 +4139,8 @@
                 "cage": "full",
                 "wayfire": "full"
             },
+            "countSupportSumAny": 4,
+            "countSupportSumFull": 4,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4105,6 +4205,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 8,
+            "countSupportSumFull": 8,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4181,6 +4283,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 8,
+            "countSupportSumFull": 8,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4225,6 +4329,8 @@
             "source": "wlr-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4297,6 +4403,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 12,
+            "countSupportSumFull": 12,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4402,6 +4510,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 9,
+            "countSupportSumFull": 9,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4474,6 +4584,8 @@
                 "wayfire": "full",
                 "treeland": "full"
             },
+            "countSupportSumAny": 6,
+            "countSupportSumFull": 6,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4554,6 +4666,8 @@
                 "treeland": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 10,
+            "countSupportSumFull": 10,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4616,6 +4730,8 @@
                 "wayfire": "full",
                 "mir": "full"
             },
+            "countSupportSumAny": 7,
+            "countSupportSumFull": 7,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4710,6 +4826,8 @@
                 "mir": "full",
                 "treeland": "full"
             },
+            "countSupportSumAny": 8,
+            "countSupportSumFull": 8,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4760,6 +4878,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4792,6 +4912,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4824,6 +4946,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4874,6 +4998,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4924,6 +5050,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -4959,6 +5087,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5001,6 +5131,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": {
                 "org_kde_kwin_idle": "Use ext-idle-notify",
@@ -5040,6 +5172,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5075,6 +5209,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5119,6 +5255,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5169,6 +5307,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5204,6 +5344,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5254,6 +5396,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5295,6 +5439,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5345,6 +5491,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5377,6 +5525,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5439,6 +5589,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5474,6 +5626,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5524,6 +5678,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5559,6 +5715,8 @@
             "source": "kde-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5617,6 +5775,8 @@
                 "wayfire": "full",
                 "jay": "full"
             },
+            "countSupportSumAny": 9,
+            "countSupportSumFull": 9,
             "defaultExpand": false,
             "deprecations": {
                 "org_kde_kwin_server_decoration_manager": "Use xdg-decoration",
@@ -5671,6 +5831,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5703,6 +5865,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5744,6 +5908,8 @@
             "supportSum": {
                 "kwin": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5797,6 +5963,8 @@
             "supportSum": {
                 "hyprland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5859,6 +6027,8 @@
             "supportSum": {
                 "hyprland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5921,6 +6091,8 @@
             "supportSum": {
                 "hyprland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -5983,6 +6155,8 @@
             "supportSum": {
                 "hyprland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6045,6 +6219,8 @@
             "supportSum": {
                 "hyprland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6095,6 +6271,8 @@
             "supportSum": {
                 "hyprland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6151,6 +6329,8 @@
             "source": "hyprland-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6237,6 +6417,8 @@
             "supportSum": {
                 "cosmic": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6317,6 +6499,8 @@
             "supportSum": {
                 "cosmic": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6373,6 +6557,8 @@
             "source": "cosmic-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6453,6 +6639,8 @@
             "supportSum": {
                 "cosmic": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6503,6 +6691,8 @@
             "supportSum": {
                 "cosmic": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6544,6 +6734,8 @@
             "supportSum": {
                 "cosmic": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6605,6 +6797,8 @@
                 "cosmic": "full",
                 "labwc": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6640,6 +6834,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6666,6 +6862,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6680,6 +6878,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6736,6 +6936,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6780,6 +6982,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6819,6 +7023,8 @@
             "supportSum": {
                 "weston": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6854,6 +7060,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6904,6 +7112,8 @@
             "supportSum": {
                 "weston": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6948,6 +7158,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -6992,6 +7204,8 @@
             "source": "weston-protocols",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7036,6 +7250,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7131,6 +7347,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7190,6 +7408,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7231,6 +7451,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7317,6 +7539,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7367,6 +7591,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7417,6 +7643,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7449,6 +7677,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7490,6 +7720,8 @@
             "supportSum": {
                 "treeland": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7542,6 +7774,8 @@
                 "mir": "full",
                 "louvre": "full"
             },
+            "countSupportSumAny": 11,
+            "countSupportSumFull": 11,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7586,6 +7820,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7621,6 +7857,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7656,6 +7894,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7691,6 +7931,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7771,6 +8013,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7854,6 +8098,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7898,6 +8144,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -7951,6 +8199,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -8019,6 +8269,8 @@
                 "mir": "full",
                 "treeland": "full"
             },
+            "countSupportSumAny": 10,
+            "countSupportSumFull": 10,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -8169,6 +8421,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -8201,6 +8455,8 @@
             "supportSum": {
                 "louvre": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -8227,6 +8483,8 @@
             "source": "external",
             "supportIf": {},
             "supportSum": {},
+            "countSupportSumAny": 0,
+            "countSupportSumFull": 0,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -8259,6 +8517,8 @@
                 "mutter": "full",
                 "wayfire": "full"
             },
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -8345,6 +8605,8 @@
             "supportSum": {
                 "mir": "full"
             },
+            "countSupportSumAny": 1,
+            "countSupportSumFull": 1,
             "defaultExpand": false,
             "deprecations": null
         }

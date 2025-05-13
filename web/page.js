@@ -131,8 +131,7 @@ const tagColors = {
 
 
 function isProtocolPrivate(proto) {
-    return proto.tags.source != "wayland"
-        && Object.values(proto.supportSum).reduce((a, d) => a + +(d !== SUPPORT_NONE), 0) <= 1
+    return proto.tags.source != "wayland" && proto.countSupportSumAny <= 1
 }
 
 function pageCompositorTable(targetContainer, data) {

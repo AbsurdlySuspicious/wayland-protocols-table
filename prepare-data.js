@@ -87,6 +87,8 @@ protoData.waylandProtocolRegistry.protocols.forEach((p) => {
         source: p.source,
         supportIf: {},
         supportSum: {},
+        countSupportSumAny: 0,
+        countSupportSumFull: 0,
         defaultExpand: false,
         deprecations,
     }
@@ -158,6 +160,10 @@ protocols.forEach((p) => {
         p.supportSum[compId] = supportGrade
         if (supportGrade != SUPPORT_FULL)
             hasNonFull = true
+        if (supportGrade !== SUPPORT_NONE)
+            p.countSupportSumAny += 1
+        if (supportGrade === SUPPORT_FULL)
+            p.countSupportSumFull += 1
         if (supportGrade != SUPPORT_NONE && protoPercentageFilter(p))
             objIncr(protocolSupportByComp, compId, supportGrade == SUPPORT_FULL ? 1 : 0.5)
     }
