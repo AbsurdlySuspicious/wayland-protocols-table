@@ -1,6 +1,8 @@
 const { stdout, env } = require("process")
-const compData = require("./we-data/compositor-registry")
-const protoData = require("./we-data/protocol-registry")
+
+const baseDataPath = env["WE_DATA_PATH"]
+const compData = require(`${baseDataPath}/compositor-registry`)
+const protoData = require(`${baseDataPath}/protocol-registry`)
 
 function objIncr(obj, key, incrBy, init) {
     incrBy ??= 1

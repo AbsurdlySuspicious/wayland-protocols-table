@@ -2,17 +2,24 @@
 set -eo pipefail
 
 log() {
-    echo "|" "$@" 1>&2
+    echo "|" "$@"  # 1>&2
 }
 
 if [[ $SKIP_SUBMODULES != 1 ]]; then
     log Updating submodules
     git submodule update --init --depth=1
+    log Submodules updated
 fi
+
+[[ -n $WE_DATA_PATH ]] \
+    || export WE_DATA_PATH=./wayland-explorer/src/data
+log Using data path: "$WE_DATA_PATH"
+[[ -L $WE_DATA_PATH ]] \
+    && log Data path is a symlink to: "$(readlink "$WE_DATA_PATH")"
 
 if [[ $SKIP_TSC != 1 ]]; then
     log Compiling Typescript registry modules
-    pushd we-data
+    pushd "$WE_DATA_PATH"
     tsc compositor-registry.ts protocol-registry.ts
     popd
 fi
