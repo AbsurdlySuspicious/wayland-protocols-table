@@ -1,6 +1,8 @@
 {
     "name": "wayland-explorer-listings",
     "devDependencies": {
-        "@types/node": "^16.7.10"
+        "@types/node": "^16.7.10",
+        "clean-css": "^5.3.3",
+        "terser": "^5.39.1"
     }
 }

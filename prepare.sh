@@ -36,4 +36,9 @@ cp -v wayland-explorer/public/logos/* dist/logos/
 log Running data.json prepare script
 node prepare-data.js | tee generated/data_last.json dist/data.json >/dev/null
 
+if [[ $PRETTY != 1 ]]; then
+    log Minifying dist files
+    node minify.js dist/*
+fi
+
 log Finished
