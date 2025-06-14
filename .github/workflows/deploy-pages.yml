@@ -10,6 +10,12 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      pullWE:
+        description: "Pull wayland-explorer submodule"
+        type: boolean
+        default: false
+        required: true
   schedule:
     - cron: '0 2 * * *'
 
@@ -28,7 +34,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Check trigger event
-        if: ${{ github.event == 'schedule' }}
+        if: ${{ github.event == 'schedule' || inputs.pullWE }}
         run: echo "WE_PULL=1" >>"$GITHUB_ENV"
       - name: Generate dist
         run: |
