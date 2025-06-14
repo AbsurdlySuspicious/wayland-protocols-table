@@ -1073,6 +1073,7 @@
                 "wp_drm_lease_device_v1": {
                     "mutter": 1,
                     "kwin": 1,
+                    "sway": 1,
                     "cosmic": 1,
                     "hyprland": 1,
                     "niri": 1,
@@ -1085,6 +1086,7 @@
             "supportSum": {
                 "mutter": "full",
                 "kwin": "full",
+                "sway": "full",
                 "cosmic": "full",
                 "hyprland": "full",
                 "niri": "full",
@@ -1093,8 +1095,8 @@
                 "jay": "full",
                 "louvre": "full"
             },
-            "countSupportSumAny": 9,
-            "countSupportSumFull": 9,
+            "countSupportSumAny": 10,
+            "countSupportSumFull": 10,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1162,6 +1164,7 @@
                 "wp_linux_drm_syncobj_manager_v1": {
                     "mutter": 1,
                     "kwin": 1,
+                    "sway": 1,
                     "hyprland": 1,
                     "gamescope": 1,
                     "jay": 1
@@ -1170,12 +1173,13 @@
             "supportSum": {
                 "mutter": "full",
                 "kwin": "full",
+                "sway": "full",
                 "hyprland": "full",
                 "gamescope": "full",
                 "jay": "full"
             },
-            "countSupportSumAny": 5,
-            "countSupportSumFull": 5,
+            "countSupportSumAny": 6,
+            "countSupportSumFull": 6,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -1534,22 +1538,24 @@
             },
             "source": "wayland-protocols",
             "supportIf": {
-                "ext_foreign_toplevel_image_capture_source_manager_v1": {
+                "ext_output_image_capture_source_manager_v1": {
+                    "sway": 1,
                     "jay": 1,
                     "louvre": 1
                 },
-                "ext_output_image_capture_source_manager_v1": {
+                "ext_foreign_toplevel_image_capture_source_manager_v1": {
                     "jay": 1,
                     "louvre": 1
                 }
             },
             "supportSum": {
+                "sway": "partial",
                 "jay": "full",
                 "louvre": "full"
             },
-            "countSupportSumAny": 2,
+            "countSupportSumAny": 3,
             "countSupportSumFull": 2,
-            "defaultExpand": false,
+            "defaultExpand": true,
             "deprecations": null
         },
         {
@@ -1623,14 +1629,16 @@
             "source": "wayland-protocols",
             "supportIf": {
                 "ext_image_copy_capture_manager_v1": {
+                    "sway": 1,
                     "jay": 1
                 }
             },
             "supportSum": {
+                "sway": "full",
                 "jay": "full"
             },
-            "countSupportSumAny": 1,
-            "countSupportSumFull": 1,
+            "countSupportSumAny": 2,
+            "countSupportSumFull": 2,
             "defaultExpand": false,
             "deprecations": null
         },
@@ -2478,16 +2486,18 @@
             "source": "wayland-protocols",
             "supportIf": {
                 "ext_data_control_manager_v1": {
+                    "sway": 1,
                     "niri": 1,
                     "jay": 1
                 }
             },
             "supportSum": {
+                "sway": "full",
                 "niri": "full",
                 "jay": "full"
             },
-            "countSupportSumAny": 2,
-            "countSupportSumFull": 2,
+            "countSupportSumAny": 3,
+            "countSupportSumFull": 3,
             "defaultExpand": false,
             "deprecations": null
         },
