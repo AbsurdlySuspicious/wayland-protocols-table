@@ -13,13 +13,14 @@ body {
 
 .page-wrapper {
     width: 100%;
+    min-width: max-content;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
 }
 
 .page-container {
-    width: fit-content;
+    min-width: max-content;
 }
 
 .loading-placeholder {
@@ -87,11 +88,6 @@ body {
 .comp-table-root {
     position: relative;
     margin-top: 20px;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    min-width: fit-content;
-    width: 100%;
 }
 
 .comp-table-dummy {
