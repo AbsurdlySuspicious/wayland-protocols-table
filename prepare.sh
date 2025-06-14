@@ -71,8 +71,12 @@ log Copying logo svgs
 mkdir -v dist/logos || true
 cp -v wayland-explorer/public/logos/* dist/logos/
 
-log Running data.json prepare script
-node prepare-data.js | tee generated/data_last.json dist/data.json >/dev/null
+if [[ $SKIP_PREP = 1 ]]; then
+    log Running data.json prepare script
+    node prepare-data.js | tee generated/data_last.json dist/data.json >/dev/null
+else
+    cp generated/data_last.json dist/data.json
+fi
 
 if [[ $PRETTY != 1 ]]; then
     log Minifying dist files
