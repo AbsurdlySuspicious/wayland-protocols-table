@@ -889,10 +889,29 @@ function renderPageCompositorTable(targetContainer, data) {
     syncState()
 }
 
-document.addEventListener("DOMContentLoaded", () => setTimeout(async () => {
-    // === Setup page ===
-    const container = document.getElementById("content")
-    const dataResp = await fetch("./data.json")
-    const data = await dataResp.json()
-    renderPageCompositorTable(container, data)
-}, 0))
+(() => {
+    const boot = () => setTimeout(async () => {
+        // === Setup page ===
+
+        const container = document.getElementById("content")
+        const statusText = document.getElementById("loading-status")
+        const setStatus = (text) => { if (statusText) statusText.innerText = text }
+
+        setStatus("Downloading data.json...")
+        const dataResp = await fetch("./data.json")
+        const data = await dataResp.json()
+
+        setStatus("Rendering page...")
+        renderPageCompositorTable(container, data)
+    }, 0)
+
+    switch (document.readyState) {
+        case "complete":
+        case "interactive":
+        case "loaded":
+            boot()
+            break
+        default:
+            document.addEventListener("DOMContentLoaded", boot)
+    }
+})();

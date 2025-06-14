@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <script src="./page.js"></script>
-    <link rel="icon" type="image/svg+xml" href="logos/weston.svg">
+    <link rel="stylesheet" href="./base.css" fetchpriority="high">
     <link rel="stylesheet" href="./page.css">
+    <link rel="icon" type="image/svg+xml" href="logos/weston.svg">
     <title>Wayland protocols support table</title>
 </head>
 
@@ -14,7 +14,7 @@
             <div class="content-container" id="content">
                 <div class="loading-placeholder">
                     <div class="i-m">Loading</div>
-                    <div class="i-s">This page needs JS to work</div>
+                    <div class="i-s" id="loading-status">This page needs JS to work</div>
                 </div>
             </div>
             <div class="footer">
@@ -31,6 +31,7 @@
             </div>
         </div>
     </div>
+    <script async src="./page.js"></script>
 </body>
 
 </html>

@@ -1,76 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 
-body {
-    --bg: rgb(250 250 250);
-    --font-sans: "Noto Sans", sans-serif;
-    --font-mono: "Source Code Pro", monospace;
-
-    padding: 0;
-    margin: 0;
-    font-family: var(--font-sans);
-    background-color: var(--bg);
-}
-
-.page-wrapper {
-    width: 100%;
-    min-width: max-content;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-}
-
-.page-container {
-    min-width: max-content;
-}
-
-.loading-placeholder {
-    margin: 50px 0;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    row-gap: 10px;
-    min-width: 50vw;
-}
-
-.loading-placeholder .i-m {
-    font-size: 1.5em;
-    font-weight: 600;
-}
-
-.loading-placeholder .i-s {
-    font-size: 0.75em;
-    font-weight: 400;
-}
-
-.footer {
-    display: flex;
-    flex-flow: column nowrap;
-    row-gap: 20px;
-    margin: 40px 10px;
-    width: 100%;
-}
-
-.footer .i-heading {
-    font-size: 1.2em;
-    font-weight: 600;
-    color: #353535;
-}
-
-.footer .i-info {
-    display: flex;
-    flex-flow: column nowrap;
-    color: #202020;
-    font-size: 0.8em;
-}
-
-.footer .i-info a {
-    color: inherit;
-    text-decoration: underline;
-}
-
-.footer .a-mono {
-    font-family: var(--font-mono);
-}
 
 .striped-bg {
     --stripe-a: #000;
@@ -525,3 +453,5 @@ body {
 
     width: max-content;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
