@@ -1,4 +1,5 @@
 [submodule "wayland-explorer"]
-	path = wayland-explorer
-	url = https://github.com/vially/wayland-explorer.git
-	ignore = dirty
+  path = wayland-explorer
+  url = https://github.com/vially/wayland-explorer.git
+  branch = main
+  ignore = dirty

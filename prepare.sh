@@ -5,9 +5,35 @@ log() {
     echo "|" "$@"  # 1>&2
 }
 
+update_submodules() {
+    local upd_default=(--init --recursive)
+    local upd
+
+    run_update() {
+        [[ $upd == 'default' ]] && upd=("${upd_default[@]}")
+        log "- Updating $path with ${upd[*]}"
+        git submodule update "${upd[@]}" "${path}"
+    }
+
+    while read -r path; do
+        case "$path" in
+            'wayland-explorer')
+                upd=(--init --depth=1)
+                [[ $WE_PULL == 1 ]] && upd+=(--remote)
+                run_update
+                ;;
+            *)
+                # shellcheck disable=SC2178
+                upd="default"
+                run_update
+                ;;
+        esac
+    done < <(git config --file .gitmodules --get-regexp path | cut -d' ' -f2 )
+}
+
 if [[ $SKIP_SUBMODULES != 1 ]]; then
     log Updating submodules
-    git submodule update --init --depth=1
+    update_submodules
     log Submodules updated
 fi
 
