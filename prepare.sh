@@ -43,7 +43,7 @@ template_replace() {
 if [[ $SKIP_SUBMODULES != 1 ]]; then
     log Updating submodules
     update_submodules
-    log Submodules updated
+    log - Submodules updated
 fi
 
 [[ -n $WE_DATA_PATH ]] \
