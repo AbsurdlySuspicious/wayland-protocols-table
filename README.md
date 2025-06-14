@@ -5,7 +5,7 @@
 <p align="center">
 <br>
 Convenient way to explore current Wayland protocols and how well they are supported<br>
-Take a look at <b><a href="https://absurdlysuspicious.github.io/wayland-protocols-table/">GitHub Pages</a></b>
+Try and explore at <b><a href="https://absurdlysuspicious.github.io/wayland-protocols-table/">GitHub Pages</a></b>
 </p>
 
 ## Features
