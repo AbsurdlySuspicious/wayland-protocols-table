@@ -31,6 +31,15 @@ update_submodules() {
     done < <(git config --file .gitmodules --get-regexp path | cut -d' ' -f2 )
 }
 
+template_replace() {
+    local content file=$1
+    content=$(<"$file")
+    sed "
+        s/{{COMMIT}}/$(git rev-parse --short HEAD)/g;
+        s/{{COMMIT_WE}}/$(git -C wayland-explorer rev-parse --short HEAD)/g;
+    " >"$file" <<<"$content"
+}
+
 if [[ $SKIP_SUBMODULES != 1 ]]; then
     log Updating submodules
     update_submodules
@@ -54,6 +63,9 @@ log Preparing 'dist' directory
 rm -r dist || true
 mkdir -v dist
 cp -rv web/* dist
+
+log Replacing build data in index.html
+template_replace dist/index.html
 
 log Copying logo svgs
 mkdir -v dist/logos || true

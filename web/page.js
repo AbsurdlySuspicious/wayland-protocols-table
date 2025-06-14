@@ -154,7 +154,7 @@ function isProtocolPrivate(proto) {
     return proto.tags.source != "wayland" && proto.countSupportSumAny <= 1
 }
 
-function pageCompositorTable(targetContainer, data) {
+function renderPageCompositorTable(targetContainer, data) {
     const compCount = data.compositors.length
 
     // === Page state ===
@@ -796,13 +796,9 @@ function pageCompositorTable(targetContainer, data) {
         [tableFix]
     )
 
-    const bottomPaddingBlock = e("div",
-        { class: ["comp-table-bottom-pad", "striped-bg"] }
-    )
-
     const root = e("div",
         { class: "comp-table-root", style: { "--cols": compCount + 1 } },
-        [tableFixOuter, table, bottomPaddingBlock]
+        [tableFixOuter, table]
     )
 
     // === Setup hover handling ===
@@ -893,10 +889,10 @@ function pageCompositorTable(targetContainer, data) {
     syncState()
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => setTimeout(async () => {
     // === Setup page ===
     const container = document.getElementById("content")
     const dataResp = await fetch("./data.json")
     const data = await dataResp.json()
-    pageCompositorTable(container, data)
-})
+    renderPageCompositorTable(container, data)
+}, 0))

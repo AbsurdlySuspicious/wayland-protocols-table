@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="./page.js"></script>
-        <link rel="icon" type="image/svg+xml" href="logos/weston.svg">
-        <link rel="stylesheet" href="./page.css">
-        <title>Wayland protocols support table</title>
-    </head>
-    <body>
-        <div class="content-container" id="content"></div>
-    </body>
+
+<head>
+    <script src="./page.js"></script>
+    <link rel="icon" type="image/svg+xml" href="logos/weston.svg">
+    <link rel="stylesheet" href="./page.css">
+    <title>Wayland protocols support table</title>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="page-container">
+            <div class="content-container" id="content">
+                <div class="loading-placeholder">
+                    <div class="i-m">Loading</div>
+                    <div class="i-s">This page needs JS to work</div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="i-heading">Wayland protocols table</div>
+                <div class="i-info">
+                    <div>Compiled from: <span class="a-mono">{{COMMIT}}</span> + explorer <span
+                            class="a-mono">{{COMMIT_WE}}</span></div>
+                    <div>Source code: <a target="_blank"
+                            href="https://github.com/AbsurdlySuspicious/wayland-protocols-table">github.com/AbsurdlySuspicious/wayland-protocols-table</a>
+                    </div>
+                    <div>Data source: <a target="_blank" href="https://wayland.app">wayland.app</a> (<a target="_blank"
+                            href="https://github.com/vially/wayland-explorer">wayland-explorer github</a>)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
