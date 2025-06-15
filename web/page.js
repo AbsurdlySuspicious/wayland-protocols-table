@@ -338,12 +338,7 @@ function renderPageCompositorTable(targetContainer, data) {
             return expandGetState(expandType, m.proto.id)
         }
 
-        function protoHide(shouldHide, m) {
-            if (m.interface != null) {
-                shouldHide = shouldHide
-                    || !expandRowGetState(KEY_EXPAND_INTERFACES, m)
-            }
-
+        function isExcludedBySupportFilter(m) {
             let supportExclude = false
             if (compFilter != null) {
                 const supportComp =
@@ -353,6 +348,16 @@ function renderPageCompositorTable(targetContainer, data) {
                 else
                     supportExclude = supportComp === SUPPORT_NONE
             }
+            return supportExclude
+        }
+
+        function protoHide(shouldHide, m) {
+            if (m.interface != null) {
+                shouldHide = shouldHide
+                    || !expandRowGetState(KEY_EXPAND_INTERFACES, m)
+            }
+
+            const supportExclude = isExcludedBySupportFilter(m)
             shouldHide = shouldHide || supportExclude
 
             if (
@@ -446,7 +451,9 @@ function renderPageCompositorTable(targetContainer, data) {
                     supportPercentStore.indicatorAssociate(m.comp.id, el)
                 }
                 else if (m.type === "descFull") {
-                    changeVisibility(el, m, expandRowGetState(KEY_EXPAND_FULLDESC, m))
+                    let shouldHide = !expandRowGetState(KEY_EXPAND_FULLDESC, m)
+                    shouldHide = shouldHide || isExcludedBySupportFilter(m)
+                    changeVisibility(el, m, !shouldHide)
                 }
                 else if (m.type === "headHoverSupport") {
                     mouseMoveHeaderSupportInd(el, m)
