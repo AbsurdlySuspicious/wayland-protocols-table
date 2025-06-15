@@ -34,15 +34,15 @@ See how many of protocols each compositor supports. You can also exclude non-sta
 
 ### Filter protocols by compositor
 
-<img src="repo-imgs/s-filtering-excl.png" width="48%">
-<img src="repo-imgs/s-filtering-incl.png" width="48%">
+<img src="repo-imgs/s-filtering-excl.png" width="45%" align="left">
+<img src="repo-imgs/s-filtering-incl.png" width="45%" align="left">
 <br clear="all"><br>
 Filter protocols by clicking on its name in header. First click will show only protocols supported by this compositor. Clicking again will invert the filter and show only unsupported protocols. Third click will reset the filter. Support percentages in header are also updated when filter is active
 
 ### Hover helpers
 
-<img src="repo-imgs/s-hover1.png" width="48%">
-<img src="repo-imgs/s-hover2.png" width="48%">
+<img src="repo-imgs/s-hover1.png" width="45%" align="left">
+<img src="repo-imgs/s-hover2.png" width="45%" align="left">
 <br clear="all"><br>
 Hover highlights will help with visual navigation within the table. Colored dots under compositor names duplicate support status for currently highlighted protocol row
 
