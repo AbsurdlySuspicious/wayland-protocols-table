@@ -37,7 +37,7 @@ See how many of protocols each compositor supports. You can also exclude non-sta
 <img src="repo-imgs/s-filtering-excl.png" width="48%">
 <img src="repo-imgs/s-filtering-incl.png" width="48%">
 <br clear="all"><br>
-Filter protocols by clicking on its name in header. First click will show only protocols supported by this compositor. Clicking again will invert the filter and show only unsupported protocols. Third click will reset the filter
+Filter protocols by clicking on its name in header. First click will show only protocols supported by this compositor. Clicking again will invert the filter and show only unsupported protocols. Third click will reset the filter. Support percentages in header are also updated when filter is active
 
 ### Hover helpers
 
