@@ -57,6 +57,8 @@ if [[ $SKIP_TSC != 1 ]]; then
     pushd "$WE_DATA_PATH"
     tsc compositor-registry.ts protocol-registry.ts
     popd
+else
+    log Using existing compiled js files as data source '[SKIP_TSC]'
 fi
 
 log Preparing 'dist' directory
@@ -71,10 +73,11 @@ log Copying logo svgs
 mkdir -v dist/logos || true
 cp -v wayland-explorer/public/logos/* dist/logos/
 
-if [[ $SKIP_PREP = 1 ]]; then
+if [[ $SKIP_PREP != 1 ]]; then
     log Running data.json prepare script
     node prepare-data.js | tee generated/data_last.json dist/data.json >/dev/null
 else
+    log Copying data.json from repo '[SKIP_PREP]'
     cp generated/data_last.json dist/data.json
 fi
 
