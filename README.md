@@ -13,27 +13,27 @@ Try it out on <b><a href="https://absurdlysuspicious.github.io/wayland-protocols
 ### Protocol descriptions
 
 <img src="repo-imgs/s-desc.png" width="45%" align="left">
-Click the document icon to view a protocol’s description and author information directly in the table.  
+Click the document icon to view the protocol description and author information directly in the table.  
 Or click its name to read the full description and API specification on <a href="https://wayland.app">Wayland explorer</a>
 <br clear="all">
 
 ### Interfaces listings
 
 <img src="repo-imgs/s-interfaces.png" width="45%" align="left">
-Click the bullet-list icon to view the list of interfaces for each protocol, along with the full compositor support matrix for each interface.  
-Interfaces will auto-expand if any compositor has only partial support.  
-For the complete API specification, click the protocol name to go to <a href="https://wayland.app">Wayland explorer</a>
+Click the bullet-list icon to view the list of interfaces for each protocol, as well as the full compositor support matrix for each interface.  
+If a compositor has only partial support, interface list will expand automatically.  
+To view the complete API specification, click on a protocol name to go to <a href="https://wayland.app">Wayland explorer</a>
 <br clear="all">
 
 ### Open/close all toggles
 
-Toggle all descriptions or interface listings at once using the corresponding icons in the header
+Use the corresponding icons in the header to toggle all descriptions or interface listings at once
 
 ### Supported protocols percentage
 
 <img src="repo-imgs/s-percentage.png" width="45%" align="left">
 See what percentage of listed protocols each compositor supports.  
-You can exclude non-standard protocols from these calculations by toggling the option under Settings button in header
+You can exclude non-standard protocols from these calculations by toggling the option under the Settings button in the header
 <br clear="all">
 
 ### Filter protocols by compositor
@@ -42,20 +42,20 @@ You can exclude non-standard protocols from these calculations by toggling the o
 <img src="repo-imgs/s-filtering-incl.png" width="45%" align="left">
 <br clear="all"><br>
 
-Filter the table by clicking a compositor’s name in the header:
+To filter the table, click on a compositor’s name in the header:
 
 - First click shows only supported protocols
 - Second click shows only unsupported protocols
 - Third click clears the filter
 
-Support percentages in the header are also updated according to active filter
+Support percentages in the header are also updated according to active the filter
 
 ### Hover helpers
 
 <img src="repo-imgs/s-hover1.png" width="45%" align="left">
 <img src="repo-imgs/s-hover2.png" width="45%" align="left">
 <br clear="all"><br>
-Hover highlights help with visual navigation within the table. Colored dots beneath compositor names reflect the support status of the currently highlighted protocol row
+Hover highlights help with visual navigation within the table. Colored dots beneath compositor names indicate the support status of the currently highlighted protocol row
 
 ## Building
 
@@ -73,7 +73,7 @@ Also note that:
 
 ## Why not React, Webpack, etc. ?
 
-Initial goal for this project was to make it with as little dependencies as possible. Even `tsc` is optional if you use precompiled `data.json`. Now that we have a working MVP, any contributions, including refactors that require new dependencies, are welcome
+Initial goal for this project was to make it with as little dependencies as possible. Any contributions, including refactors that require new dependencies, are welcome
 
 ## Acknowledgments
 
