@@ -560,7 +560,7 @@ function renderPageCompositorTable(targetContainer, data) {
                         syncState()
                     }
                 }),
-                "Exlude compositor-specific protocols from percentage"
+                "Exclude compositor‑specific protocols from the percentage calculation"
             ]),
         ]),
     }, { type: "filterWindow" })
