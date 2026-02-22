@@ -896,33 +896,58 @@ function renderPageCompositorTable(targetContainer, data) {
     syncState()
 }
 
-function footerCommitsHandlers() {
-    for (let link of document.querySelectorAll(".commit-link")) {
-        link.addEventListener("click", (ev) => {
-            ev.preventDefault()
-            const ds = ev.currentTarget.dataset
-            if (ds.commit == null)
-                return
-            window.open(ds.url + ds.commit, "_blank").focus()
-        })
-    }
-}
+function footerUpdate(data) {
+    const target = document.getElementById("footer_info")
 
-function footerCommitsUpdate(data) {
-    for (let [commitName, commit] of Object.entries(data.commits)) {
-        const commitSpan = document.getElementById(`commit_${commitName}`)
-        if (commitSpan == null)
-            continue
-        commitSpan.innerText = commit.slice(0, 7)
-        commitSpan.dataset.commit = commit
+    const origCommitElem = document.getElementById("html_commit")
+    let origRepoCommit
+    if (origCommitElem != null) {
+        origRepoCommit = origCommitElem.innerText
+        target.dataset.orig = origRepoCommit
     }
+    else {
+        origRepoCommit = target.dataset.orig
+    }
+
+
+    const repos = {
+        repo: "https://github.com/AbsurdlySuspicious/wayland-protocols-table",
+        we: "https://github.com/vially/wayland-explorer",
+    }
+    const commits = data?.commits
+
+    const basicLink = (href, content) => e("a", { href, target: "_blank" }, [content ?? href.replace(/^https?:\/\//, "")])
+    const commitHref = (repoUrl, commit) => `${repoUrl}/commit/${commit}`
+    const commitLinkRaw = (repoUrl, commit) => e("a", { class: "a-mono", href: commitHref(repoUrl, commit), target: "_blank" }, [commit.slice(0, 7)])
+    const commitLink = (repoName) => commitLinkRaw(repos[repoName], commits[repoName])
+    const commitLinkMulti = (repoName, commitOrig) => {
+        const commit = commits?.[repoName]
+        const repo = repos[repoName]
+        const linkCurrent = commit != null ? commitLinkRaw(repo, commit) : "..."
+        if (commitOrig == null || commit === commitOrig)
+            return linkCurrent
+        return [linkCurrent, " (HTML: ", commitLinkRaw(repo, commitOrig), ")"]
+    }
+
+    target.innerHTML = ""
+    childrenAppend(target, [
+        e("div", {}, [
+            "Compiled from: ",
+            commitLinkMulti("repo", origRepoCommit),
+            commits == null
+                ? []
+                : [" + explorer ", commitLink("we")]
+        ]),
+        e("div", {}, ["Source code: ", basicLink(repos.repo)]),
+        e("div", {}, ["Data source: ", basicLink("https://wayland.app"), " (", basicLink(repos.we, "wayland-explorer github"), ")"])
+    ])
 }
 
 (() => {
     const boot = () => setTimeout(async () => {
         // === Setup page ===
 
-        footerCommitsHandlers()
+        footerUpdate(null)
         const container = document.getElementById("content")
         const statusText = document.getElementById("loading-status")
         const setStatus = (text) => { if (statusText) statusText.innerText = text }
@@ -932,7 +957,7 @@ function footerCommitsUpdate(data) {
         const data = await dataResp.json()
 
         setStatus("Rendering page...")
-        footerCommitsUpdate(data)
+        footerUpdate(data)
         renderPageCompositorTable(container, data)
     }, 0)
 
