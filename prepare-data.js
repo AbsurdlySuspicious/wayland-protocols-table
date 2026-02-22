@@ -159,5 +159,10 @@ protocols.forEach((p) => {
     }
 })
 
-const dataOut = { compositors, protocols }
+const commits = {}
+for (let commit of ["repo", "we"]) {
+    commits[commit] = process.env[`COMMIT_${commit.toUpperCase()}`]
+}
+
+const dataOut = { compositors, protocols, commits }
 stdout.write(JSON.stringify(dataOut, null, env["PRETTY"] === "1" ? 4 : null))

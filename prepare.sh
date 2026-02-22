@@ -31,15 +31,6 @@ update_submodules() {
     done < <(git config --file .gitmodules --get-regexp path | cut -d' ' -f2 )
 }
 
-template_replace() {
-    local content file=$1
-    content=$(<"$file")
-    sed "
-        s/{{COMMIT}}/$(git rev-parse --short HEAD)/g;
-        s/{{COMMIT_WE}}/$(git -C wayland-explorer rev-parse --short HEAD)/g;
-    " >"$file" <<<"$content"
-}
-
 if [[ $SKIP_SUBMODULES != 1 ]]; then
     log Updating submodules
     update_submodules
@@ -67,7 +58,6 @@ mkdir -v dist
 cp -rv web/* dist
 
 log Replacing build data in index.html
-template_replace dist/index.html
 
 log Copying logo svgs
 mkdir -v dist/logos || true
@@ -75,6 +65,9 @@ cp -v wayland-explorer/public/logos/* dist/logos/
 
 if [[ $SKIP_PREP != 1 ]]; then
     log Running data.json prepare script
+    COMMIT_REPO=$(git rev-parse --short HEAD)
+    COMMIT_WE=$(git -C wayland-explorer rev-parse --short HEAD)
+    export COMMIT_REPO COMMIT_WE
     node prepare-data.js | tee generated/data_last.json dist/data.json >/dev/null
 else
     log Copying data.json from repo '[SKIP_PREP]'

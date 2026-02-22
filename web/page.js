@@ -909,6 +909,11 @@ function renderPageCompositorTable(targetContainer, data) {
         const data = await dataResp.json()
 
         setStatus("Rendering page...")
+        for (let [commitName, commit] of Object.entries(data.commits)) {
+            const commitSpan = document.getElementById(`commit_${commitName}`)
+            if (commitSpan != null)
+                commitSpan.innerText = commit
+        }
         renderPageCompositorTable(container, data)
     }, 0)
 
