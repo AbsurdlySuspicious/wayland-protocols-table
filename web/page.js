@@ -896,10 +896,33 @@ function renderPageCompositorTable(targetContainer, data) {
     syncState()
 }
 
+function footerCommitsHandlers() {
+    for (let link of document.querySelectorAll(".commit-link")) {
+        link.addEventListener("click", (ev) => {
+            ev.preventDefault()
+            const ds = ev.currentTarget.dataset
+            if (ds.commit == null)
+                return
+            window.open(ds.url + ds.commit, "_blank").focus()
+        })
+    }
+}
+
+function footerCommitsUpdate(data) {
+    for (let [commitName, commit] of Object.entries(data.commits)) {
+        const commitSpan = document.getElementById(`commit_${commitName}`)
+        if (commitSpan == null)
+            continue
+        commitSpan.innerText = commit.slice(0, 7)
+        commitSpan.dataset.commit = commit
+    }
+}
+
 (() => {
     const boot = () => setTimeout(async () => {
         // === Setup page ===
 
+        footerCommitsHandlers()
         const container = document.getElementById("content")
         const statusText = document.getElementById("loading-status")
         const setStatus = (text) => { if (statusText) statusText.innerText = text }
@@ -909,11 +932,7 @@ function renderPageCompositorTable(targetContainer, data) {
         const data = await dataResp.json()
 
         setStatus("Rendering page...")
-        for (let [commitName, commit] of Object.entries(data.commits)) {
-            const commitSpan = document.getElementById(`commit_${commitName}`)
-            if (commitSpan != null)
-                commitSpan.innerText = commit
-        }
+        footerCommitsUpdate(data)
         renderPageCompositorTable(container, data)
     }, 0)
 

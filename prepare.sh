@@ -65,8 +65,8 @@ cp -v wayland-explorer/public/logos/* dist/logos/
 
 if [[ $SKIP_PREP != 1 ]]; then
     log Running data.json prepare script
-    COMMIT_REPO=$(git rev-parse --short HEAD)
-    COMMIT_WE=$(git -C wayland-explorer rev-parse --short HEAD)
+    COMMIT_REPO=$(git rev-parse HEAD)
+    COMMIT_WE=$(git -C wayland-explorer rev-parse HEAD)
     export COMMIT_REPO COMMIT_WE
     node prepare-data.js | tee generated/data_last.json dist/data.json >/dev/null
 else
