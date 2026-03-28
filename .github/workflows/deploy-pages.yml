@@ -30,16 +30,14 @@ jobs:
           node-version: 22
           cache: 'npm'
       - name: NPM install
-        run: 
-          - npm install
+        run: npm install
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Check trigger event
         if: ${{ github.event_name == 'schedule' || inputs.pullWE }}
         run: echo "WE_PULL=1" >>"$GITHUB_ENV"
       - name: Generate dist
-        run: 
-          - ./prepare.sh
+        run: ./prepare.sh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
