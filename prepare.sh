@@ -59,7 +59,7 @@ log Using data path: "$WE_DATA_PATH"
 if [[ $SKIP_TSC != 1 ]]; then
     log Compiling Typescript registry modules
     pushd "$WE_DATA_PATH"
-    tsc compositor-registry.ts protocol-registry.ts
+    tsc --ignoreConfig compositor-registry.ts protocol-registry.ts
     popd
 else
     log Using existing compiled js files as data source '[SKIP_TSC]'
