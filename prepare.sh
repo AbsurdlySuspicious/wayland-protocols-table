@@ -56,11 +56,17 @@ log Using data path: "$WE_DATA_PATH"
 [[ -L $WE_DATA_PATH ]] \
     && log Data path is a symlink to: "$(readlink "$WE_DATA_PATH")"
 
+tsc_() {
+  npx tsc "$@"
+}
+
 if [[ $SKIP_TSC != 1 ]]; then
     log Compiling Typescript registry modules
     pushd "$WE_DATA_PATH"
-    echo "tsc $(tsc --version)"
-    tsc compositor-registry.ts protocol-registry.ts
+
+    echo "tsc $(tsc_ --version)"
+    tsc_ compositor-registry.ts protocol-registry.ts
+
     popd
 else
     log Using existing compiled js files as data source '[SKIP_TSC]'

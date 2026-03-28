@@ -3,6 +3,7 @@
     "devDependencies": {
         "@types/node": "^16.7.10",
         "clean-css": "^5.3.3",
-        "terser": "^5.39.1"
+        "terser": "^5.39.1",
+        "typescript": "^5.9.3"
     }
 }
